@@ -1,0 +1,16 @@
+{
+  "name": "bugle",
+  "version": "1.0.0",
+  "description": "Bugle Beta App",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo 'Error: No test specified' && exit 1",
+    "start": "node index.js"
+  },
+  "author": "Sumit Srivastava",
+  "license": "ISC",
+  "dependencies": {
+    "angular-route": "^1.6.9",
+    "express": "^4.16.3"
+  }
+}

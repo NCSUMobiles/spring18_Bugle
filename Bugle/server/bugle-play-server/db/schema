@@ -1,0 +1,37 @@
+CREATE TABLE IF NOT EXISTS users (
+	u_id integer PRIMARY KEY,
+	u_name text NOT NULL,
+	email text NOT NULL,
+	mobile text,
+	dob text,
+	password text NOT NULL,
+	type text NOT NULL,
+	description text,
+	location text,
+	website text
+);
+
+CREATE TABLE IF NOT EXISTS events (
+	e_id integer PRIMARY KEY
+	e_name text NOT NULL,
+	location text,
+	datetime text,
+	description text,
+	members text,
+	u_id integer, 
+	status text
+);
+
+CREATE TABLE IF NOT EXISTS applicants (
+	a_id integer PRIMARY KEY,
+	u_id integer NOT NULL,
+	e_id integer NOT NULL,
+	status text
+);
+
+CREATE TABLE IF NOT EXISTS chats (
+	c_id integer PRIMARY KEY,
+	c_name text NOT NULL,
+	u_ids text,
+	status text
+);
