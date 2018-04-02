@@ -23,8 +23,30 @@ app.controller('index', ['$scope', '$http', function ($scope, $http) {
     $scope.events = [
         { 'id': '1', 'name': 'Event 1', 'location': 'Raleigh', 'date': '04.14.18' },
         { 'id': '2', 'name': 'Event 2', 'location': 'Cary', 'date': '03.30.18' },
-        { 'id': '3', 'name': 'Event 3', 'location': 'MOrrisville', 'date': '05.11.18' }
+        { 'id': '3', 'name': 'Event 3', 'location': 'Morrisville', 'date': '05.11.18' }
     ];
+
+    $scope.login = function () {
+        console.log('login called');
+
+        var loginURL = 'https://bugle-pl-srv.herokuapp.com/login';
+        var loginInfo = {
+            'email': $scope.email,
+            'password': $scope.password
+        };
+
+        $http({
+            url: loginURL,
+            method: 'POST',
+            data: loginInfo,
+            headers: { 'Content-Type': 'application/json' }
+        }).then(function (response) {
+            console.log('SUCCESS: ' + JSON.stringify(response));
+            $scope.greeting = response.data.status;
+        }, function (response) {
+            console.log('ERROR: ' + JSON.stringify(response));
+        });
+    }
 
 }
 ]);

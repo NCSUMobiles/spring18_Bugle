@@ -45,16 +45,26 @@ public class HomeController extends Controller {
 		return ok(views.html.index.render());
 	}
 
+	public Result options(String path) {
+		return ok().withHeaders("Access-Control-Allow-Origin", "*")
+				.withHeaders("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+				.withHeaders("Access-Control-Allow-Headers",
+						"Accept, Origin, Content-type, X-Json, X-Prototype-Version, X-Requested-With")
+				.withHeaders("Access-Control-Allow-Credentials", "true").withHeaders("Access-Control-Max-Age", "3600");
+	}
+
 	public Result getOrganizations() {
 		LOG.debug("getOrganizations method called.");
 		List<Users> organizations = databaseService.getOrganizations();
-		return ok(createSuccessResponse("organizations", new Gson().toJson(organizations)));
+		return ok(createSuccessResponse("organizations", new Gson().toJson(organizations)))
+				.withHeader("Access-Control-Allow-Origin", "*");
 	}
 
 	public Result getEvents(String orgId) {
 		LOG.debug("getEvents method called.");
 		List<Events> events = databaseService.getEvents(Integer.valueOf(orgId));
-		return ok(createSuccessResponse("events", new Gson().toJson(events)));
+		return ok(createSuccessResponse("events", new Gson().toJson(events))).withHeader("Access-Control-Allow-Origin",
+				"*");
 	}
 
 	/**
@@ -79,7 +89,7 @@ public class HomeController extends Controller {
 		LOG.debug("createEvent method called.");
 		JsonNode json = request().body().asJson();
 		if (json == null) {
-			return badRequest("Expecting Json data for event.");
+			return badRequest("Expecting Json data for event.").withHeader("Access-Control-Allow-Origin", "*");
 		} else {
 			String name = json.findPath("e_name").textValue();
 			String location = json.findPath("location").textValue();
@@ -93,9 +103,10 @@ public class HomeController extends Controller {
 
 			// save to DB and return response.
 			if (databaseService.insertEvent(event)) {
-				return ok(createSuccessResponse(Strings.MESSAGE, "Event Created"));
+				return ok(createSuccessResponse(Strings.MESSAGE, "Event Created"))
+						.withHeader("Access-Control-Allow-Origin", "*");
 			} else {
-				return ok(createErrorResponse(Strings.FAIL));
+				return ok(createErrorResponse(Strings.FAIL)).withHeader("Access-Control-Allow-Origin", "*");
 			}
 		}
 	}
@@ -109,10 +120,9 @@ public class HomeController extends Controller {
 	 */
 	public Result validateLogin() {
 		LOG.debug("validateLogin method called.");
-
 		JsonNode json = request().body().asJson();
 		if (json == null) {
-			return badRequest("Expecting Json data for login.");
+			return badRequest("Expecting Json data for login.").withHeader("Access-Control-Allow-Origin", "*");
 		} else {
 			String email = json.findPath("email").textValue();
 			String password = json.findPath("password").textValue();
@@ -120,9 +130,10 @@ public class HomeController extends Controller {
 			// validate from DB and return response.
 			Users loginUser = databaseService.validateLogin(email, password);
 			if (loginUser != null) {
-				return ok(createSuccessResponse(Strings.USER, new Gson().toJson(loginUser)));
+				return ok(createSuccessResponse(Strings.USER, new Gson().toJson(loginUser)))
+						.withHeader("Access-Control-Allow-Origin", "*");
 			} else {
-				return ok(createErrorResponse(Strings.LOGIN_FAIL));
+				return ok(createErrorResponse(Strings.LOGIN_FAIL)).withHeader("Access-Control-Allow-Origin", "*");
 			}
 		}
 	}
@@ -147,7 +158,7 @@ public class HomeController extends Controller {
 		LOG.debug("createUser method called.");
 		JsonNode json = request().body().asJson();
 		if (json == null) {
-			return badRequest("Expecting Json data for user.");
+			return badRequest("Expecting Json data for user.").withHeader("Access-Control-Allow-Origin", "*");
 		} else {
 
 			String name = json.findPath("u_name").textValue();
@@ -164,9 +175,10 @@ public class HomeController extends Controller {
 
 			// save to DB and return response.
 			if (databaseService.insertUser(user)) {
-				return ok(createSuccessResponse(Strings.USER, new Gson().toJson(user)));
+				return ok(createSuccessResponse(Strings.USER, new Gson().toJson(user)))
+						.withHeader("Access-Control-Allow-Origin", "*");
 			} else {
-				return ok(createErrorResponse(Strings.FAIL));
+				return ok(createErrorResponse(Strings.FAIL)).withHeader("Access-Control-Allow-Origin", "*");
 			}
 		}
 	}
@@ -178,8 +190,8 @@ public class HomeController extends Controller {
 	 */
 	public Result getVolunteerEvents(String vId) {
 		LOG.debug("getVolunteerEvents method called.");
-
-		return ok(createSuccessResponse(Strings.MESSAGE, "Unimplemented method"));
+		return ok(createSuccessResponse(Strings.MESSAGE, "Unimplemented method"))
+				.withHeader("Access-Control-Allow-Origin", "*");
 	}
 
 	/**
@@ -189,8 +201,8 @@ public class HomeController extends Controller {
 	 */
 	public Result getEventVolunteers(String eId) {
 		LOG.debug("getEventVolunteers method called.");
-
-		return ok(createSuccessResponse(Strings.MESSAGE, "Unimplemented method"));
+		return ok(createSuccessResponse(Strings.MESSAGE, "Unimplemented method"))
+				.withHeader("Access-Control-Allow-Origin", "*");
 	}
 
 	/**
