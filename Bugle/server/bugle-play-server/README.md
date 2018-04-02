@@ -10,3 +10,4 @@
 - Type sbt run to run the application.
 - For stopping the server, Press the Enter key on keyboard.
 - For opening the sbt console, type sbt from the command prompt.
+- This server is also deployed on Heroku: [Bugle Server](https://bugle-pl-srv.herokuapp.com/)
