@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import models.Applicants;
 import models.Events;
 import models.Users;
 import play.Logger;
@@ -60,7 +61,7 @@ public class DatabaseService {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			LOG.error("Error while creating DB connection for initializing database.");
+			LOG.error("Error while getting DB connection for initializing database.");
 		} finally {
 			if (con != null) {
 				try {
@@ -143,7 +144,7 @@ public class DatabaseService {
 				return loginUser;
 			}
 		} catch (Exception e) {
-			LOG.error("Error while creating DB connection for validating Login.");
+			LOG.error("Error while getting DB connection for validating Login.");
 			e.printStackTrace();
 			return loginUser;
 		} finally {
@@ -189,7 +190,7 @@ public class DatabaseService {
 				return organizations;
 			}
 		} catch (Exception e) {
-			LOG.error("Error while creating DB connection for fetching Organizations.");
+			LOG.error("Error while getting DB connection for fetching Organizations.");
 			e.printStackTrace();
 			return organizations;
 		} finally {
@@ -271,7 +272,7 @@ public class DatabaseService {
 				return events;
 			}
 		} catch (Exception e) {
-			LOG.error("Error while creating DB connection for fetching events.");
+			LOG.error("Error while getting DB connection for fetching events.");
 			e.printStackTrace();
 			return events;
 		} finally {
@@ -294,7 +295,112 @@ public class DatabaseService {
 	// public List<Events> getApplicantEvents(int uId){return null;} // to return
 	// list of all events applied for by an applicant.
 
-	// public boolean updateVolunteerStatus(int eId, List<Integer> uIds){return
-	// false;} // to update approval status of volunteers for a particular event.
+	/**
+	 * adds new entry in applicant table.
+	 * 
+	 * @param eId
+	 *            the event ID
+	 * @param uId
+	 *            the user ID
+	 * @return
+	 */
+	public boolean insertApplicant(Applicants applicant) {
+		LOG.debug("Inserting Applicant");
+		String insertStatement = "INSERT INTO applicants (u_id, e_id, status) VALUES(?,?,?)";
+		Connection con = null;
+		try {
+			con = db.getConnection();
+			PreparedStatement pstmt = con.prepareStatement(insertStatement);
+			pstmt.setInt(1, applicant.getuId());
+			pstmt.setInt(2, applicant.geteId());
+			pstmt.setString(3, applicant.getStatus());
+			return pstmt.executeUpdate() > 0;
+		} catch (Exception e) {
+			LOG.error("Error while inserting Applicant.");
+			e.printStackTrace();
+			return false;
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					LOG.error("Error while closing the connection from insert Applicant method");
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	/**
+	 * Updates the status of multiple applicants for a single event
+	 * 
+	 * @param eId
+	 *            the event ID
+	 * @param uIds
+	 *            the list of user IDs
+	 * @param status
+	 *            the status
+	 * @return
+	 */
+	public boolean updateApplicantsStatus(int eId, List<Integer> uIds, String status) {
+		LOG.debug("Updating Applicant status for event ID: " + eId);
+		if (uIds == null || uIds.size() == 0) {
+			LOG.info("No applicants to approve");
+			return false;
+		} else {
+			boolean executionStatus = true;
+			for (int uId : uIds) {
+				executionStatus = updateApplicantStatus(uId, eId, status);
+				if (!executionStatus) {
+					LOG.info("Status Updation failed for uID: " + uId);
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Updates the status of the applicant with given uId and eID.
+	 * 
+	 * @param eId
+	 *            the event ID
+	 * @param uId
+	 *            the user ID
+	 * @param status
+	 *            the status
+	 * @return
+	 */
+	public boolean updateApplicantStatus(int uId, int eId, String status) {
+		LOG.debug("Updating Applicant status");
+		Connection con = null;
+		String updateStatement = "UPDATE applicants set status = ? WHERE u_id = ? AND e_id = ?";
+		try {
+			con = db.getConnection();
+			try (PreparedStatement pstmt = con.prepareStatement(updateStatement)) {
+				pstmt.setString(1, status);
+				pstmt.setInt(2, uId);
+				pstmt.setInt(3, eId);
+				return pstmt.executeUpdate() > 0;
+			} catch (Exception e) {
+				LOG.error("Error while executing query for updating Applicant Status.");
+				e.printStackTrace();
+				return false;
+			}
+
+		} catch (Exception e) {
+			LOG.error("Error while getting DB connection for updating Applicant Status.");
+			e.printStackTrace();
+			return false;
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					LOG.error("Error while closing the connection from update Applicant Status method.");
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 
 }
