@@ -38,3 +38,12 @@ GET     /volunteer-events/:vId                         controllers.HomeControlle
 
 # Get Volunteers who applied for an event.
 GET     /event-volunteers/:eId                         controllers.HomeController.getEventVolunteers(eId: String)
+
+# Apply for an event by a volunteer
+POST     /apply-event						 		   controllers.HomeController.applyEvent
+
+# Approve volunteers for an event
+POST     /approve-volunteers				 		   controllers.HomeController.approveVolunteers
+
+# Approve volunteers for an event
+POST     /reject-volunteers					 		   controllers.HomeController.rejectVolunteers
