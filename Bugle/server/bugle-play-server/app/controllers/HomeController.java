@@ -1,5 +1,6 @@
 package controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -9,6 +10,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 
+import models.Applicants;
 import models.Events;
 import models.Users;
 import play.Logger;
@@ -46,7 +48,7 @@ public class HomeController extends Controller {
 	}
 
 	public Result options(String path) {
-		return ok().withHeaders("Access-Control-Allow-Origin", "*")
+		return ok().withHeaders(Strings.CORS, Strings.STAR)
 				.withHeaders("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 				.withHeaders("Access-Control-Allow-Headers",
 						"Accept, Origin, Content-type, X-Json, X-Prototype-Version, X-Requested-With")
@@ -56,15 +58,14 @@ public class HomeController extends Controller {
 	public Result getOrganizations() {
 		LOG.debug("getOrganizations method called.");
 		List<Users> organizations = databaseService.getOrganizations();
-		return ok(createSuccessResponse("organizations", new Gson().toJson(organizations)))
-				.withHeader("Access-Control-Allow-Origin", "*");
+		return ok(createSuccessResponse("organizations", new Gson().toJson(organizations))).withHeader(Strings.CORS,
+				Strings.STAR);
 	}
 
 	public Result getEvents(String orgId) {
 		LOG.debug("getEvents method called.");
 		List<Events> events = databaseService.getEvents(Integer.valueOf(orgId));
-		return ok(createSuccessResponse("events", new Gson().toJson(events))).withHeader("Access-Control-Allow-Origin",
-				"*");
+		return ok(createSuccessResponse("events", new Gson().toJson(events))).withHeader(Strings.CORS, Strings.STAR);
 	}
 
 	/**
@@ -89,7 +90,7 @@ public class HomeController extends Controller {
 		LOG.debug("createEvent method called.");
 		JsonNode json = request().body().asJson();
 		if (json == null) {
-			return badRequest("Expecting Json data for event.").withHeader("Access-Control-Allow-Origin", "*");
+			return badRequest("Expecting Json data for event.").withHeader(Strings.CORS, Strings.STAR);
 		} else {
 			String name = json.findPath("e_name").textValue();
 			String location = json.findPath("location").textValue();
@@ -103,10 +104,10 @@ public class HomeController extends Controller {
 
 			// save to DB and return response.
 			if (databaseService.insertEvent(event)) {
-				return ok(createSuccessResponse(Strings.MESSAGE, "Event Created"))
-						.withHeader("Access-Control-Allow-Origin", "*");
+				return ok(createSuccessResponse(Strings.MESSAGE, "Event Created")).withHeader(Strings.CORS,
+						Strings.STAR);
 			} else {
-				return ok(createErrorResponse(Strings.FAIL)).withHeader("Access-Control-Allow-Origin", "*");
+				return ok(createErrorResponse(Strings.FAIL)).withHeader(Strings.CORS, Strings.STAR);
 			}
 		}
 	}
@@ -122,7 +123,7 @@ public class HomeController extends Controller {
 		LOG.debug("validateLogin method called.");
 		JsonNode json = request().body().asJson();
 		if (json == null) {
-			return badRequest("Expecting Json data for login.").withHeader("Access-Control-Allow-Origin", "*");
+			return badRequest("Expecting Json data for login.").withHeader(Strings.CORS, Strings.STAR);
 		} else {
 			String email = json.findPath("email").textValue();
 			String password = json.findPath("password").textValue();
@@ -130,10 +131,10 @@ public class HomeController extends Controller {
 			// validate from DB and return response.
 			Users loginUser = databaseService.validateLogin(email, password);
 			if (loginUser != null) {
-				return ok(createSuccessResponse(Strings.USER, new Gson().toJson(loginUser)))
-						.withHeader("Access-Control-Allow-Origin", "*");
+				return ok(createSuccessResponse(Strings.USER, new Gson().toJson(loginUser))).withHeader(Strings.CORS,
+						Strings.STAR);
 			} else {
-				return ok(createErrorResponse(Strings.LOGIN_FAIL)).withHeader("Access-Control-Allow-Origin", "*");
+				return ok(createErrorResponse(Strings.LOGIN_FAIL)).withHeader(Strings.CORS, Strings.STAR);
 			}
 		}
 	}
@@ -158,7 +159,7 @@ public class HomeController extends Controller {
 		LOG.debug("createUser method called.");
 		JsonNode json = request().body().asJson();
 		if (json == null) {
-			return badRequest("Expecting Json data for user.").withHeader("Access-Control-Allow-Origin", "*");
+			return badRequest("Expecting Json data for user.").withHeader(Strings.CORS, Strings.STAR);
 		} else {
 
 			String name = json.findPath("u_name").textValue();
@@ -175,10 +176,10 @@ public class HomeController extends Controller {
 
 			// save to DB and return response.
 			if (databaseService.insertUser(user)) {
-				return ok(createSuccessResponse(Strings.USER, new Gson().toJson(user)))
-						.withHeader("Access-Control-Allow-Origin", "*");
+				return ok(createSuccessResponse(Strings.USER, new Gson().toJson(user))).withHeader(Strings.CORS,
+						Strings.STAR);
 			} else {
-				return ok(createErrorResponse(Strings.FAIL)).withHeader("Access-Control-Allow-Origin", "*");
+				return ok(createErrorResponse(Strings.FAIL)).withHeader(Strings.CORS, Strings.STAR);
 			}
 		}
 	}
@@ -190,8 +191,8 @@ public class HomeController extends Controller {
 	 */
 	public Result getVolunteerEvents(String vId) {
 		LOG.debug("getVolunteerEvents method called.");
-		return ok(createSuccessResponse(Strings.MESSAGE, "Unimplemented method"))
-				.withHeader("Access-Control-Allow-Origin", "*");
+		List<Events> events = databaseService.getApplicantEvents(Integer.valueOf(vId));
+		return ok(createSuccessResponse("events", new Gson().toJson(events))).withHeader(Strings.CORS, Strings.STAR);
 	}
 
 	/**
@@ -201,8 +202,181 @@ public class HomeController extends Controller {
 	 */
 	public Result getEventVolunteers(String eId) {
 		LOG.debug("getEventVolunteers method called.");
-		return ok(createSuccessResponse(Strings.MESSAGE, "Unimplemented method"))
-				.withHeader("Access-Control-Allow-Origin", "*");
+		List<Users> volunteers = databaseService.getEventApplicants(Integer.valueOf(eId));
+		return ok(createSuccessResponse("volunteers", new Gson().toJson(volunteers))).withHeader(Strings.CORS, Strings.STAR);
+	}
+
+	/**
+	 * Applies Volunteers for events. Sample JSON for application:
+	 * 
+	 * <pre>
+	 * {
+	 * "u_id":123,
+	 * "e_id":12
+	 * }
+	 * </pre>
+	 * 
+	 * @return
+	 */
+	public Result applyEvent() {
+		LOG.debug("applyEvent method called.");
+		JsonNode json = request().body().asJson();
+		if (json == null) {
+			return badRequest("Expecting Json data for Applicant.").withHeader(Strings.CORS, Strings.STAR);
+		} else {
+
+			int uId = json.findPath("u_Id").intValue();
+			int eId = json.findPath("e_Id").intValue();
+
+			Applicants applicant = new Applicants(uId, eId, Strings.STATUS_APPLIED);
+
+			// save to DB and return response.
+			if (databaseService.insertApplicant(applicant)) {
+				return ok(createSuccessResponse(Strings.MESSAGE, "Applied successfully.")).withHeader(Strings.CORS,
+						Strings.STAR);
+			} else {
+				return ok(createErrorResponse(Strings.FAIL)).withHeader(Strings.CORS, Strings.STAR);
+			}
+		}
+	}
+
+	/**
+	 * Approves the volunteers for a particular event as specified by the JSON.<br>
+	 * Sample JSON:
+	 * 
+	 * <pre>
+	 * {
+	 *   "e_Id": 1,
+	 *   "u_Ids": "1,2,3"
+	 * }
+	 * </pre>
+	 * 
+	 * @return
+	 */
+	public Result approveVolunteers() {
+		LOG.debug("approveVolunteers method called.");
+		JsonNode json = request().body().asJson();
+		if (json == null) {
+			return badRequest("Expecting Json data for Volnteers.").withHeader(Strings.CORS, Strings.STAR);
+		} else {
+
+			int eId = json.findPath("e_Id").intValue();
+			String uIdsJson = json.findPath("u_Ids").textValue();
+
+			List<Integer> uIds = new ArrayList<Integer>();
+
+			if (uIdsJson == null || uIdsJson.length() == 0) {
+				return ok(createErrorResponse("No Vlounteers to Approve!")).withHeader(Strings.CORS, Strings.STAR);
+			} else {
+				String tokens[] = uIdsJson.split(Strings.COMMA);
+				for (String token : tokens) {
+					uIds.add(Integer.valueOf(token.trim()));
+				}
+			}
+
+			// save to DB and return response.
+			if (databaseService.updateApplicantsStatus(eId, uIds, Strings.STATUS_APPROVED)) {
+				return ok(createSuccessResponse(Strings.MESSAGE, "Approved Volunteers succesfully"))
+						.withHeader(Strings.CORS, Strings.STAR);
+			} else {
+				return ok(createErrorResponse(Strings.FAIL)).withHeader(Strings.CORS, Strings.STAR);
+			}
+		}
+	}
+
+	/**
+	 * Rejects the volunteers for a particular event as specified by the JSON.<br>
+	 * Sample JSON:
+	 * 
+	 * <pre>
+	 * {
+	 *   "e_Id": 1,
+	 *   "u_Ids": "1,2,3"
+	 * }
+	 * </pre>
+	 * 
+	 * @return
+	 */
+	public Result rejectVolunteers() {
+		LOG.debug("rejectVolunteers method called.");
+		JsonNode json = request().body().asJson();
+		if (json == null) {
+			return badRequest("Expecting Json data for Volnteers.").withHeader(Strings.CORS, Strings.STAR);
+		} else {
+
+			int eId = json.findPath("e_Id").intValue();
+			String uIdsJson = json.findPath("u_Ids").textValue();
+
+			List<Integer> uIds = new ArrayList<Integer>();
+
+			if (uIdsJson == null || uIdsJson.length() == 0) {
+				return ok(createErrorResponse("No Vlounteers to Reject!")).withHeader(Strings.CORS, Strings.STAR);
+			} else {
+				String tokens[] = uIdsJson.split(Strings.COMMA);
+				for (String token : tokens) {
+					uIds.add(Integer.valueOf(token.trim()));
+				}
+			}
+
+			// save to DB and return response.
+			if (databaseService.updateApplicantsStatus(eId, uIds, Strings.STATUS_REJECTED)) {
+				return ok(createSuccessResponse(Strings.MESSAGE, "Rejected Volunteers Succesfully"))
+						.withHeader(Strings.CORS, Strings.STAR);
+			} else {
+				return ok(createErrorResponse(Strings.FAIL)).withHeader(Strings.CORS, Strings.STAR);
+			}
+		}
+	}
+
+	public Result mockDB() {
+		LOG.debug("mockDB method called.");
+		JsonNode json = request().body().asJson();
+		if (json == null) {
+			return badRequest("Expecting Json data for Mocking DB.").withHeader(Strings.CORS, Strings.STAR);
+		} else {
+
+			String bugleKey = json.findPath("bugle-key").textValue();
+
+			if (Strings.BUGLE_DB_KEY.equals(bugleKey)) {
+				// save to DB and return response.
+				if (databaseService.mockDatabase()) {
+					return ok(createSuccessResponse(Strings.MESSAGE, "Mocked Database Successfully"))
+							.withHeader(Strings.CORS, Strings.STAR);
+				} else {
+					return ok(createErrorResponse("Unable to generate Mock database!")).withHeader(Strings.CORS,
+							Strings.STAR);
+				}
+			} else {
+				return ok(createErrorResponse(Strings.INCORRECT_KEY)).withHeader(Strings.CORS, Strings.STAR);
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public Result resetDB() {
+		LOG.debug("resetDB method called.");
+		JsonNode json = request().body().asJson();
+		if (json == null) {
+			return badRequest("Expecting Json data for Resetting DB.").withHeader(Strings.CORS, Strings.STAR);
+		} else {
+
+			String bugleKey = json.findPath("bugle-key").textValue();
+
+			if (Strings.BUGLE_DB_KEY.equals(bugleKey)) {
+				// save to DB and return response.
+				if (databaseService.resetDatabase()) {
+					return ok(createSuccessResponse(Strings.MESSAGE, "Database reset Successfully"))
+							.withHeader(Strings.CORS, Strings.STAR);
+				} else {
+					return ok(createErrorResponse("Unable to reset database!")).withHeader(Strings.CORS, Strings.STAR);
+				}
+			} else {
+				return ok(createErrorResponse(Strings.INCORRECT_KEY)).withHeader(Strings.CORS, Strings.STAR);
+			}
+		}
 	}
 
 	/**
