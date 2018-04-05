@@ -9,13 +9,13 @@ GET     /                           controllers.HomeController.index
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
 ##
-#Allow Options request for Angular preflight requests
+# Allow Options request for Angular pre-flight requests
 ##
 OPTIONS    /          			    controllers.HomeController.options(path: String ?= "")
 OPTIONS    /*path    			    controllers.HomeController.options(path)
 
 ##
-#Bugle APIs
+# Bugle APIs
 ##
 
 # Get a list of organizations.
@@ -47,3 +47,9 @@ POST     /approve-volunteers				 		   controllers.HomeController.approveVoluntee
 
 # Approve volunteers for an event
 POST     /reject-volunteers					 		   controllers.HomeController.rejectVolunteers
+
+# Inserts mock records in the database
+POST     /mock-db   						 		   controllers.HomeController.mockDB
+
+# deletes all the entries from the database
+POST     /reset-db							 		   controllers.HomeController.resetDB

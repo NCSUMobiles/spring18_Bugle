@@ -1,5 +1,6 @@
 package controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -190,8 +191,8 @@ public class HomeController extends Controller {
 	 */
 	public Result getVolunteerEvents(String vId) {
 		LOG.debug("getVolunteerEvents method called.");
-		return ok(createSuccessResponse(Strings.MESSAGE, "Unimplemented method")).withHeader(Strings.CORS,
-				Strings.STAR);
+		List<Events> events = databaseService.getApplicantEvents(Integer.valueOf(vId));
+		return ok(createSuccessResponse("events", new Gson().toJson(events))).withHeader(Strings.CORS, Strings.STAR);
 	}
 
 	/**
@@ -201,8 +202,8 @@ public class HomeController extends Controller {
 	 */
 	public Result getEventVolunteers(String eId) {
 		LOG.debug("getEventVolunteers method called.");
-		return ok(createSuccessResponse(Strings.MESSAGE, "Unimplemented method")).withHeader(Strings.CORS,
-				Strings.STAR);
+		List<Users> volunteers = databaseService.getEventApplicants(Integer.valueOf(eId));
+		return ok(createSuccessResponse("volunteers", new Gson().toJson(volunteers))).withHeader(Strings.CORS, Strings.STAR);
 	}
 
 	/**
@@ -239,16 +240,143 @@ public class HomeController extends Controller {
 		}
 	}
 
+	/**
+	 * Approves the volunteers for a particular event as specified by the JSON.<br>
+	 * Sample JSON:
+	 * 
+	 * <pre>
+	 * {
+	 *   "e_Id": 1,
+	 *   "u_Ids": "1,2,3"
+	 * }
+	 * </pre>
+	 * 
+	 * @return
+	 */
 	public Result approveVolunteers() {
 		LOG.debug("approveVolunteers method called.");
-		return ok(createSuccessResponse(Strings.MESSAGE, "Unimplemented method")).withHeader(Strings.CORS,
-				Strings.STAR);
+		JsonNode json = request().body().asJson();
+		if (json == null) {
+			return badRequest("Expecting Json data for Volnteers.").withHeader(Strings.CORS, Strings.STAR);
+		} else {
+
+			int eId = json.findPath("e_Id").intValue();
+			String uIdsJson = json.findPath("u_Ids").textValue();
+
+			List<Integer> uIds = new ArrayList<Integer>();
+
+			if (uIdsJson == null || uIdsJson.length() == 0) {
+				return ok(createErrorResponse("No Vlounteers to Approve!")).withHeader(Strings.CORS, Strings.STAR);
+			} else {
+				String tokens[] = uIdsJson.split(Strings.COMMA);
+				for (String token : tokens) {
+					uIds.add(Integer.valueOf(token.trim()));
+				}
+			}
+
+			// save to DB and return response.
+			if (databaseService.updateApplicantsStatus(eId, uIds, Strings.STATUS_APPROVED)) {
+				return ok(createSuccessResponse(Strings.MESSAGE, "Approved Volunteers succesfully"))
+						.withHeader(Strings.CORS, Strings.STAR);
+			} else {
+				return ok(createErrorResponse(Strings.FAIL)).withHeader(Strings.CORS, Strings.STAR);
+			}
+		}
 	}
-	
+
+	/**
+	 * Rejects the volunteers for a particular event as specified by the JSON.<br>
+	 * Sample JSON:
+	 * 
+	 * <pre>
+	 * {
+	 *   "e_Id": 1,
+	 *   "u_Ids": "1,2,3"
+	 * }
+	 * </pre>
+	 * 
+	 * @return
+	 */
 	public Result rejectVolunteers() {
 		LOG.debug("rejectVolunteers method called.");
-		return ok(createSuccessResponse(Strings.MESSAGE, "Unimplemented method")).withHeader(Strings.CORS,
-				Strings.STAR);
+		JsonNode json = request().body().asJson();
+		if (json == null) {
+			return badRequest("Expecting Json data for Volnteers.").withHeader(Strings.CORS, Strings.STAR);
+		} else {
+
+			int eId = json.findPath("e_Id").intValue();
+			String uIdsJson = json.findPath("u_Ids").textValue();
+
+			List<Integer> uIds = new ArrayList<Integer>();
+
+			if (uIdsJson == null || uIdsJson.length() == 0) {
+				return ok(createErrorResponse("No Vlounteers to Reject!")).withHeader(Strings.CORS, Strings.STAR);
+			} else {
+				String tokens[] = uIdsJson.split(Strings.COMMA);
+				for (String token : tokens) {
+					uIds.add(Integer.valueOf(token.trim()));
+				}
+			}
+
+			// save to DB and return response.
+			if (databaseService.updateApplicantsStatus(eId, uIds, Strings.STATUS_REJECTED)) {
+				return ok(createSuccessResponse(Strings.MESSAGE, "Rejected Volunteers Succesfully"))
+						.withHeader(Strings.CORS, Strings.STAR);
+			} else {
+				return ok(createErrorResponse(Strings.FAIL)).withHeader(Strings.CORS, Strings.STAR);
+			}
+		}
+	}
+
+	public Result mockDB() {
+		LOG.debug("mockDB method called.");
+		JsonNode json = request().body().asJson();
+		if (json == null) {
+			return badRequest("Expecting Json data for Mocking DB.").withHeader(Strings.CORS, Strings.STAR);
+		} else {
+
+			String bugleKey = json.findPath("bugle-key").textValue();
+
+			if (Strings.BUGLE_DB_KEY.equals(bugleKey)) {
+				// save to DB and return response.
+				if (databaseService.mockDatabase()) {
+					return ok(createSuccessResponse(Strings.MESSAGE, "Mocked Database Successfully"))
+							.withHeader(Strings.CORS, Strings.STAR);
+				} else {
+					return ok(createErrorResponse("Unable to generate Mock database!")).withHeader(Strings.CORS,
+							Strings.STAR);
+				}
+			} else {
+				return ok(createErrorResponse(Strings.INCORRECT_KEY)).withHeader(Strings.CORS, Strings.STAR);
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public Result resetDB() {
+		LOG.debug("resetDB method called.");
+		JsonNode json = request().body().asJson();
+		if (json == null) {
+			return badRequest("Expecting Json data for Resetting DB.").withHeader(Strings.CORS, Strings.STAR);
+		} else {
+
+			String bugleKey = json.findPath("bugle-key").textValue();
+
+			if (Strings.BUGLE_DB_KEY.equals(bugleKey)) {
+				// save to DB and return response.
+				if (databaseService.resetDatabase()) {
+					return ok(createSuccessResponse(Strings.MESSAGE, "Database reset Successfully"))
+							.withHeader(Strings.CORS, Strings.STAR);
+				} else {
+					return ok(createErrorResponse("Unable to reset database!")).withHeader(Strings.CORS, Strings.STAR);
+				}
+			} else {
+				return ok(createErrorResponse(Strings.INCORRECT_KEY)).withHeader(Strings.CORS, Strings.STAR);
+			}
+		}
 	}
 
 	/**

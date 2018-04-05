@@ -16,6 +16,7 @@ import models.Users;
 import play.Logger;
 import play.Logger.ALogger;
 import play.db.Database;
+import util.Strings;
 
 /**
  * @author Sumit Srivastava
@@ -41,7 +42,7 @@ public class DatabaseService {
 	 * This method initializes the database if it doesn't already exist.
 	 */
 	public void initializeDatabase() {
-		LOG.debug("Initializing database.");
+		LOG.debug("Initializing database...");
 		Connection con = null;
 		try {
 			con = db.getConnection();
@@ -55,7 +56,7 @@ public class DatabaseService {
 				stmt.execute(createEvents);
 				stmt.execute(createApplicants);
 				stmt.execute(createChats);
-			} catch (SQLException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 				LOG.error("Error while executing query for initializing database.");
 			}
@@ -73,6 +74,110 @@ public class DatabaseService {
 			}
 		}
 		LOG.debug("Initialized database.");
+	}
+
+	public boolean mockDatabase() {
+		LOG.debug("Generating mock data...");
+		List<String> insertStatements = new ArrayList<String>();
+		// users-organizations
+		insertStatements.add(
+				"INSERT INTO users (u_name, email, mobile, password, type, description, location, website) values ('Organization 1','org@org1.com','1236987894','o1pw','org','This is a very big Volunteering organization based in US. For more information visit: xyz.org1.com','Raleigh','xyz.org1.com')");
+		insertStatements.add(
+				"INSERT INTO users (u_name, email, mobile, password, type, description, location, website) values ('Organization 2','org@org2.com','1236547234','o2pw','org','This is the biggest Volunteering organization based in Atlanta, US. For more information visit: xyz.org2.com','Atlanta','xyz.org2.com')");
+		insertStatements.add(
+				"INSERT INTO users (u_name, email, mobile, password, type, description, location, website) values ('Organization 3','org@org3.com','1236547894','o3pw','org','This is the third volunteer organization. We do volunteer work for this and that. For more information visit: xyz.org3.com','Chicago','xyz.org3.com')");
+		// users-volunteers
+		insertStatements.add(
+				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Default User','usr1@vol.com','1232233421','21.08.93','pwd1','vol')");
+		insertStatements.add(
+				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Flower User','usr2@vol.com','1231231233','19.01.90','pwd2','vol')");
+		insertStatements.add(
+				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Google User','usr3@vol.com','1233213458','18.01.95','pwd3','vol')");
+		insertStatements.add(
+				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Facebook User','usr4@vol.com','123764543','24.09.85','pwd4','vol')");
+		insertStatements.add(
+				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Twitter User','usr5@vol.com','123987456','30.09.89','pwd5','vol')");
+		insertStatements.add(
+				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Snapchat User','usr62@vol.com','1239873458','11.11.90','pwd6','vol')");
+		insertStatements.add(
+				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Alien User','usr7@vol.com','1230978345','16.08.94','pwd7','vol')");
+		// events
+		insertStatements.add(
+				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 1','Raleigh','24.5.18 11:00AM','description of a volunteering event!! come volunteer with us','12',1,'active')");
+		insertStatements.add(
+				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 2','Colorado','19.7.18 01:00PM','description of an exciting volunteering event!! come volunteer with us','22',1,'active')");
+		insertStatements.add(
+				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 123','San Jose','11.6.18 10:00AM','description this is a volunteering event!! come volunteer with us in San Jose.','50',1,'active')");
+		insertStatements.add(
+				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 234','New York','16.5.18 03:00PM','description welcome to the volunteering event!! come volunteer with us','10',2,'active')");
+		insertStatements.add(
+				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 23','Atlanta','01.7.18 09:00AM','description volunteering event!! come volunteer with us in Atlanta','5',2,'active')");
+		insertStatements.add(
+				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 47','Florida','15.5.18 11:00AM','description very interesting volunteering event!! come volunteer with us','7',3,'active')");
+		insertStatements.add(
+				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 74','Chicago','21.4.118 08:00AM','description volunteering event. Big volunteering event need lots of volunteers!! come volunteer with us!','100',3,'active')");
+		Connection con = null;
+		try {
+			con = db.getConnection();
+			boolean status = true;
+			for (String insertStatement : insertStatements) {
+				try (PreparedStatement pstmt = con.prepareStatement(insertStatement)) {
+					int recordsInserted = pstmt.executeUpdate();
+					status = recordsInserted > 0;
+				} catch (Exception e) {
+					LOG.error("Error while generating mock data, for Insert statement: " + insertStatement);
+					e.printStackTrace();
+				}
+			}
+			return status;
+		} catch (Exception e) {
+			LOG.error("Error while getting DB connection for generating mock data.");
+			e.printStackTrace();
+			return false;
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					LOG.error("Error while closing the connection from generate mock data method");
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	public boolean resetDatabase() {
+		LOG.debug("Resetting Database...");
+		Connection con = null;
+		try {
+			con = db.getConnection();
+			String resetChats = "DELETE FROM chats";
+			String resetApplicants = "DELETE FROM applicants";
+			String resetEvents = "DELETE FROM events";
+			String resetUsers = "DELETE FROM users";
+			try (Statement stmt = con.createStatement()) {
+				boolean status = stmt.executeUpdate(resetChats) >= 0 && stmt.executeUpdate(resetApplicants) >= 0
+						&& stmt.executeUpdate(resetEvents) >= 0 && stmt.executeUpdate(resetUsers) >= 0;
+				return status;
+			} catch (Exception e) {
+				e.printStackTrace();
+				LOG.error("Error while executing query for resetting database.");
+				return false;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			LOG.error("Error while getting DB connection for resetting database.");
+			return false;
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					LOG.error("Error while closing the database connection from reset database method.");
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	public boolean insertUser(Users user) {
@@ -169,7 +274,7 @@ public class DatabaseService {
 		try {
 			con = db.getConnection();
 			try (PreparedStatement selectStatement = con.prepareStatement(selectQuery)) {
-				selectStatement.setString(1, "org");
+				selectStatement.setString(1, Strings.ORG);
 				ResultSet rs = selectStatement.executeQuery();
 				while (rs.next()) {
 					Users user = new Users();
@@ -247,7 +352,7 @@ public class DatabaseService {
 	public List<Events> getEvents(int uId) {
 		LOG.debug("Fetching Events for: orgID: " + uId);
 		List<Events> events = new ArrayList<Events>();
-		String selectQuery = "SELECT * from events where u_id = ?";
+		String selectQuery = "SELECT * from events where u_id = ? and status='active'";
 		Connection con = null;
 		try {
 			con = db.getConnection();
@@ -289,11 +394,110 @@ public class DatabaseService {
 		return events;
 	}
 
-	// public List<Users> getEventApplicants(int eId){return null;} // to return
-	// list of all applicants for an event.
+	/**
+	 * returns a list of all applicants for an event
+	 * 
+	 * @param eId
+	 *            the event ID.
+	 * @return
+	 */
+	public List<Users> getEventApplicants(int eId) {
+		LOG.debug("Fetching Event applicants for event ID: " + eId);
+		List<Users> users = new ArrayList<Users>();
+		String selectQuery = "SELECT * from applicants where e_id = ?";
+		Connection con = null;
+		try {
+			con = db.getConnection();
+			try (PreparedStatement selectStatement = con.prepareStatement(selectQuery)) {
+				selectStatement.setInt(1, eId);
+				ResultSet rs = selectStatement.executeQuery();
+				while (rs.next()) {
+					Users user = new Users();
+					user.setuId(rs.getInt("u_id"));
+					user.setuName(rs.getString("u_name"));
+					user.setEmail(rs.getString("email"));
+					user.setMobile(rs.getString("mobile"));
+					user.setDob(rs.getString("dob"));
+					user.setPassword(rs.getString("password"));
+					user.setType(rs.getString("type"));
+					user.setDescription(rs.getString("description"));
+					user.setWebsite(rs.getString("website"));
+					users.add(user);
+				}
+			} catch (Exception e) {
+				LOG.error("Error while executing query for fetching event's applicants.");
+				e.printStackTrace();
+				return users;
+			}
+		} catch (Exception e) {
+			LOG.error("Error while getting DB connection for fetching event's applicants.");
+			e.printStackTrace();
+			return users;
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					LOG.error("Error while closing the connection from get Event Applicants method.");
+					e.printStackTrace();
+				}
+			}
+		}
+		LOG.debug("Fetched applicants for the event.");
+		return users;
+	}
 
-	// public List<Events> getApplicantEvents(int uId){return null;} // to return
-	// list of all events applied for by an applicant.
+	/**
+	 * return a list of all the events applied to by a volunteer
+	 * 
+	 * @param uId
+	 *            the user ID of the volunteer
+	 * @return
+	 */
+	public List<Events> getApplicantEvents(int uId) {
+		LOG.debug("Fetching Applicant's Events for user ID: " + uId);
+		List<Events> events = new ArrayList<Events>();
+		String selectQuery = "SELECT * from events where u_id = ?";
+		Connection con = null;
+		try {
+			con = db.getConnection();
+			try (PreparedStatement selectStatement = con.prepareStatement(selectQuery)) {
+				selectStatement.setInt(1, uId);
+				ResultSet rs = selectStatement.executeQuery();
+				while (rs.next()) {
+					Events event = new Events();
+					event.seteId(rs.getInt("e_id"));
+					event.seteName(rs.getString("e_name"));
+					event.setLocation(rs.getString("location"));
+					event.setDatetime(rs.getString("datetime"));
+					event.setDescription(rs.getString("description"));
+					event.setMembers(rs.getString("members"));
+					event.setuId(rs.getInt("u_id"));
+					event.setStatus(rs.getString("status"));
+					events.add(event);
+				}
+			} catch (Exception e) {
+				LOG.error("Error while executing query for fetching applicant's events.");
+				e.printStackTrace();
+				return events;
+			}
+		} catch (Exception e) {
+			LOG.error("Error while getting DB connection for fetching applicant's events.");
+			e.printStackTrace();
+			return events;
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					LOG.error("Error while closing the connection from get Applicant Events method.");
+					e.printStackTrace();
+				}
+			}
+		}
+		LOG.debug("Fetched Events for the applicant.");
+		return events;
+	}
 
 	/**
 	 * adds new entry in applicant table.
