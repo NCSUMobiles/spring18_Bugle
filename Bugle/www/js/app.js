@@ -12,6 +12,34 @@ app.controller('index', ['$scope', '$http', function ($scope, $http) {
         'type': 'vol'
     };
 
+    
+
+    $scope.registerVol = function () {
+        console.log('login called');
+
+        var signupURL = 'https://bugle-pl-srv.herokuapp.com/signup';
+        var signupInfo = {
+            'u_name': $scope.u_name,
+            'email': $scope.email,
+            'mobile': $scope.mobile,
+            'dob': $scope.dob,
+            'password': $scope.password,
+            'type': $scope.type,
+        };
+
+        $http({
+            url: signupURL,
+            method: 'POST',
+            data: signupInfo,
+            headers: { 'Content-Type': 'application/json' }
+        }).then(function (response) {
+            console.log('SUCCESS: ' + JSON.stringify(response));
+            $scope.greeting = response.data.status;
+        }, function (response) {
+            console.log('ERROR: ' + JSON.stringify(response));
+        });
+    }
+
     // The actual list will com from the Database via the API
     $scope.organizations = [
         { 'id': '1', 'name': 'Organization 1', 'location': 'Raleigh' },
