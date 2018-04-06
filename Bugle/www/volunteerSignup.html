@@ -21,6 +21,7 @@
             <!-- ngIf: flash -->
             <!-- ngView: --><div ng-view="" class="ng-scope"><div class="col-md-6 col-md-offset-3 ng-scope">
 <h2>Volunteer Sign Up</h2>
+<<<<<<< HEAD
 <form name="form" ng-submit="registerVol()" role="form" class="ng-dirty ng-valid-parse ng-invalid ng-invalid-required">
         <div class="imgcontainer">
                 <img src="img/logo_128.png" alt="logo" class="logo">
@@ -58,6 +59,43 @@
 
     <div class="form-actions">
         <button type="submit" ng-disabled="form.$invalid || dataLoading" class="btn btn-primary" disabled="disabled">Create Profile</button>
+=======
+<form name="form" ng-submit="vm.register()" role="form" class="ng-dirty ng-valid-parse ng-invalid ng-invalid-required">
+        <div class="imgcontainer">
+                <img src="img/logo_128.png" alt="logo" class="logo">
+            </div>
+            <div class="form-group" ng-class="{ 'has-error': form.username.$dirty &amp;&amp; form.username.$error.required }">
+                <label for="username">Username<font size="3" color="red"> *</font></label>
+                <input name="username" id="username" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="vm.user.username" required="" type="text">
+                <span ng-show="form.username.$dirty &amp;&amp; form.username.$error.required" class="help-block ng-hide">Username is required</span>
+            </div>
+             <div class="form-group" ng-class="{ 'has-error': form.emailid.$dirty &amp;&amp; form.emailid.$error.required }">
+                <label for="emailid">Emailid<font size="3" color="red"> *</font></label>
+                <input name="emailid" id="emailid" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="vm.user.emailid" required="" type="email">
+                <span ng-show="form.emailid.$dirty &amp;&amp; form.emailid.$error.required" class="help-block ng-hide">emailid is required</span>
+                <span ng-show="form.emailid.$error.email" class="help-block ng-hide"><font color="#830303">Provided emailid is invalid</font></span>
+            </div>
+            <div class="form-group" ng-class="{ 'has-error': form.mobile.$dirty &amp;&amp; form.mobile.$error.required }">
+                <label for="mobile">Mobile</label>
+                <input name="mobile" id="mobile" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="vm.user.mobile"  type="text">
+            </div>
+            <label for="bdate">
+            <b>Birth Date<font size="3" color="red"> *</font></b>
+            </label>
+            <input type="date" placeholder="Enter date of birth" id="bdate" name="bdate" required>
+            <div class="form-group" ng-class="{ 'has-error': form.psw.$dirty &amp;&amp; form.psw.$error.required }">
+                <label for="psw">Password<font size="3" color="red"> *</font></label>
+                <input name="psw" id="psw" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="vm.user.psw" required="" type="text">
+                <span ng-show="form.psw.$dirty &amp;&amp; form.psw.$error.required" class="help-block ng-hide">Password is required</span>
+            </div>
+            <div class="form-group" ng-class="{ 'has-error': form.cpsw.$dirty &amp;&amp; form.cpsw.$error.required }">
+                <label for="cpsw">Confirm Password<font size="3" color="red"> *</font></label>
+                <input name="cpsw" id="cpsw" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="vm.user.cpsw" required="" type="text">
+                <span ng-show="form.cpsw.$dirty &amp;&amp; form.cpsw.$error.required" class="help-block ng-hide">Confirm Password is required</span>
+            </div>
+    <div class="form-actions">
+        <button type="submit" ng-disabled="form.$invalid || vm.dataLoading" class="btn btn-primary" disabled="disabled">Create Profile</button>
+>>>>>>> master
         <!-- ngIf: vm.dataLoading -->
         <a href="login.html" class="btn btn-link">Cancel</a>
     </div>
