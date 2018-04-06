@@ -1,6 +1,6 @@
 var app = angular.module('root', []);
 
-app.controller('index', ['$scope', '$http', function ($scope, $http) {
+app.controller('index', ['$scope', '$http', '$window', function ($scope, $http, $window) {
 
     $scope.title = 'Bugle Beta App';
 
@@ -53,7 +53,7 @@ app.controller('index', ['$scope', '$http', function ($scope, $http) {
 
 
     // Register Vol function Begin
-    $scope.registerVol = function () {
+    $scope.register = function (type) {
         console.log('registerVol called');
 
         var signupURL = 'https://bugle-pl-srv.herokuapp.com/signup';
@@ -63,7 +63,7 @@ app.controller('index', ['$scope', '$http', function ($scope, $http) {
             'mobile': $scope.mobile,
             'dob': $scope.dob,
             'password': $scope.password,
-            'type': 'vol',
+            'type': type,
         };
 
         $http({
@@ -80,34 +80,5 @@ app.controller('index', ['$scope', '$http', function ($scope, $http) {
         });
     }
     //Register Vol function end.
-
-    // Register Org function Begin
-    $scope.registerOrg = function () {
-        console.log('registerVol called');
-
-        var signupURL = 'https://bugle-pl-srv.herokuapp.com/signup';
-        var signupInfo = {
-            'u_name': $scope.u_name,
-            'email': $scope.email,
-            'mobile': $scope.mobile,
-            'dob': $scope.dob,
-            'password': $scope.password,
-            'type': 'org',
-        };
-
-        $http({
-            url: signupURL,
-            method: 'POST',
-            data: signupInfo,
-            headers: { 'Content-Type': 'application/json' }
-        }).then(function (response) {
-            console.log('SUCCESS: ' + JSON.stringify(response));
-            $scope.greeting = response.data.status;
-            $window.location.href = '/organization.html';
-        }, function (response) {
-            console.log('ERROR: ' + JSON.stringify(response));
-        });
-    }
-    //Register Org function end.
 
 }]);
