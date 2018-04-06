@@ -28,8 +28,19 @@ button {
     width: 100%;
 }
 
-.signup {
+a.signup {
     background-color: rgb(223, 157, 83);
+    color: white;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    font-weight: bold;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 0.6rem;
+    cursor: pointer;
+    width: 100%;
 }
 
 .imgcontainer {
