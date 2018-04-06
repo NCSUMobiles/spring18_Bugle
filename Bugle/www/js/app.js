@@ -3,6 +3,7 @@ var app = angular.module('root', []);
 app.controller('index', ['$scope', '$http', '$window', function ($scope, $http, $window) {
 
     $scope.title = 'Bugle Beta App';
+    $scope.loggedInUser = '-';
 
     // Actual User data will be fetched from the session
     $scope.user = {
@@ -42,10 +43,19 @@ app.controller('index', ['$scope', '$http', '$window', function ($scope, $http, 
             method: 'POST',
             data: loginInfo,
             headers: { 'Content-Type': 'application/json' }
-        }).then(function (response) {
+        }).then(function successLogin(response) {
             console.log('SUCCESS: ' + JSON.stringify(response));
-            $scope.greeting = response.data.status;
-        }, function (response) {
+            var user = JSON.parse(response.data.user);
+            $scope.greeting = response.data.status + '. Hello ' + user.uName;
+            if (user.type === 'vol') {
+                updateScopeUser(user);
+                $window.location.href = '/volunteer.html';
+            } else {
+                updateScopeUser(user);
+                $window.location.href = '/organization.html';
+            }
+           
+        }, function failLogin(response) {
             console.log('ERROR: ' + JSON.stringify(response));
         });
     }
@@ -54,7 +64,7 @@ app.controller('index', ['$scope', '$http', '$window', function ($scope, $http, 
 
     // Register Vol function Begin
     $scope.register = function (type) {
-        console.log('registerVol called');
+        console.log('register called for ' + type);
 
         var signupURL = 'https://bugle-pl-srv.herokuapp.com/signup';
         var signupInfo = {
@@ -73,12 +83,24 @@ app.controller('index', ['$scope', '$http', '$window', function ($scope, $http, 
             headers: { 'Content-Type': 'application/json' }
         }).then(function (response) {
             console.log('SUCCESS: ' + JSON.stringify(response));
-            $scope.greeting = response.data.status;
-            $window.location.href = '/volunteer.html';
+            var user = JSON.parse(response.data.user);
+            $scope.greeting = response.data.status + '. Hello ' + user.uName;          
+            if (type === 'vol') {
+                updateScopeUser();
+                $window.location.href = '/volunteer.html';
+            } else {
+                updateScopeUser();
+                $window.location.href = '/organization.html';
+            }
         }, function (response) {
             console.log('ERROR: ' + JSON.stringify(response));
         });
     }
     //Register Vol function end.
 
+
+    var updateScopeUser = function(user) {
+        console.log('updating scope');
+        $scope.loggedInUser = user;
+    }
 }]);
