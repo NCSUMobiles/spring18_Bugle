@@ -74,6 +74,43 @@ app.controller('index', ['$scope', '$http', function ($scope, $http) {
         }, function (response) {
             console.log('ERROR: ' + JSON.stringify(response));
         });
+
+        $scope.registerVol = function () {
+            console.log('login called');
+    
+            var signupURL = 'https://bugle-pl-srv.herokuapp.com/signup';
+            var signupInfo = {
+                'u_name': $scope.u_name,
+                'email': $scope.email,
+                'mobile': $scope.mobile,
+                'dob': $scope.dob,
+                'password': $scope.password,
+                'type': $scope.type,
+            };
+    
+            $http({
+                url: signupURL,
+                method: 'POST',
+                data: signupInfo,
+                headers: { 'Content-Type': 'application/json' }
+            }).then(function (response) {
+                console.log('SUCCESS: ' + JSON.stringify(response));
+                $scope.greeting = response.data.status;
+            }, function (response) {
+                console.log('ERROR: ' + JSON.stringify(response));
+            });
+        }
+
+
+
+
+
+
+
+
+
+
+
     }
 
 }
