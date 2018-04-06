@@ -44,7 +44,13 @@ app.controller('index', ['$scope', '$http', '$window', function ($scope, $http, 
             headers: { 'Content-Type': 'application/json' }
         }).then(function (response) {
             console.log('SUCCESS: ' + JSON.stringify(response));
-            $scope.greeting = response.data.status;
+            $scope.user = response.data.user;
+            $scope.greeting = response.data.status + '. Hello ' + $scope.user.uName;
+            if ($scope.user.type === 'vol') {
+                $window.location.href = '/volunteer.html';
+            } else {
+                $window.location.href = '/organization.html';
+            }
         }, function (response) {
             console.log('ERROR: ' + JSON.stringify(response));
         });
@@ -54,7 +60,7 @@ app.controller('index', ['$scope', '$http', '$window', function ($scope, $http, 
 
     // Register Vol function Begin
     $scope.register = function (type) {
-        console.log('registerVol called');
+        console.log('register called for ' + type);
 
         var signupURL = 'https://bugle-pl-srv.herokuapp.com/signup';
         var signupInfo = {
@@ -74,7 +80,11 @@ app.controller('index', ['$scope', '$http', '$window', function ($scope, $http, 
         }).then(function (response) {
             console.log('SUCCESS: ' + JSON.stringify(response));
             $scope.greeting = response.data.status;
-            $window.location.href = '/volunteer.html';
+            if (type === 'vol') {
+                $window.location.href = '/volunteer.html';
+            } else {
+                $window.location.href = '/organization.html';
+            }
         }, function (response) {
             console.log('ERROR: ' + JSON.stringify(response));
         });
