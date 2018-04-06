@@ -3,6 +3,7 @@ var app = angular.module('root', []);
 app.controller('index', ['$scope', '$http', '$window', function ($scope, $http, $window) {
 
     $scope.title = 'Bugle Beta App';
+    $scope.loggedInUser = '-';
 
     // Actual User data will be fetched from the session
     $scope.user = {
@@ -42,16 +43,19 @@ app.controller('index', ['$scope', '$http', '$window', function ($scope, $http, 
             method: 'POST',
             data: loginInfo,
             headers: { 'Content-Type': 'application/json' }
-        }).then(function (response) {
+        }).then(function successLogin(response) {
             console.log('SUCCESS: ' + JSON.stringify(response));
-            $scope.user = response.data.user;
-            $scope.greeting = response.data.status + '. Hello ' + $scope.user.uName;
-            if ($scope.user.type === 'vol') {
+            var user = JSON.parse(response.data.user);
+            $scope.greeting = response.data.status + '. Hello ' + user.uName;
+            if (user.type === 'vol') {
+                updateScopeUser(user);
                 $window.location.href = '/volunteer.html';
             } else {
+                updateScopeUser(user);
                 $window.location.href = '/organization.html';
             }
-        }, function (response) {
+           
+        }, function failLogin(response) {
             console.log('ERROR: ' + JSON.stringify(response));
         });
     }
@@ -79,10 +83,13 @@ app.controller('index', ['$scope', '$http', '$window', function ($scope, $http, 
             headers: { 'Content-Type': 'application/json' }
         }).then(function (response) {
             console.log('SUCCESS: ' + JSON.stringify(response));
-            $scope.greeting = response.data.status;
+            var user = JSON.parse(response.data.user);
+            $scope.greeting = response.data.status + '. Hello ' + user.uName;          
             if (type === 'vol') {
+                updateScopeUser();
                 $window.location.href = '/volunteer.html';
             } else {
+                updateScopeUser();
                 $window.location.href = '/organization.html';
             }
         }, function (response) {
@@ -91,4 +98,9 @@ app.controller('index', ['$scope', '$http', '$window', function ($scope, $http, 
     }
     //Register Vol function end.
 
+
+    var updateScopeUser = function(user) {
+        console.log('updating scope');
+        $scope.loggedInUser = user;
+    }
 }]);
