@@ -12,24 +12,24 @@
 </head>
 
 <body ng-controller="index">
-    <form ng-submit ="login()">
-         <div class="imgcontainer">
-             <img src="img/logo_128.png" alt="logo" class="logo">
-         </div>
- 
-         <div class="container">
+    <form ng-submit="login()">
+        <div class="imgcontainer">
+            <img src="img/logo_128.png" alt="logo" class="logo">
+        </div>
+
+        <div class="container">
             <label for="email">
                 <b>Email</b>
-             </label>
+            </label>
             <input type="text" placeholder="Enter Email" name="email" ng-model="email" required>
- 
+
             <label for="pwd">
-                 <b>Password</b>
-             </label>
+                <b>Password</b>
+            </label>
             <input type="password" placeholder="Enter Password" name="pwd" ng-model="password" required>
- 
- 
-             <button type="submit">Login</button>
+
+
+            <button type="submit">Login</button>
             <span ng-model="greeting">{{greeting}}</span>
             <label>
                 <input type="checkbox" checked="checked" name="remember"> Remember me
@@ -37,10 +37,8 @@
         </div>
 
         <div class='container'>
-            <a href="volunteerSignup.html">
-                <button class="signup">Volunteer Sign Up</button></a>
-            <a href="organisationSignup.html">    
-            <button class="signup">Organization Sign Up</button></a>
+            <a href="volunteerSignup.html" class="signup">Volunteer Sign Up</a>
+            <a href="organisationSignup.html" class="signup">Organization Sign Up</a>
         </div>
 
         <div class="container">
@@ -49,6 +47,7 @@
             </span>
         </div>
     </form>
+
 </body>
 
 </html>

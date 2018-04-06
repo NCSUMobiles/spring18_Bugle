@@ -15,8 +15,8 @@ public class Strings {
 	public static final String ERROR = "error";
 	public static final String USER = "user";
 	public static final String EVENT = "event";
-	public static final String CORS = "event";
-	public static final String STAR = "event";
+	public static final String CORS = "Access-Control-Allow-Origin";
+	public static final String STAR = "*";
 	public static final String ORG = "org";
 	public static final String VOL = "vol";
 
