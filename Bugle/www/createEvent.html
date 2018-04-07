@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html ng-app="root">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bugle</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link rel="stylesheet" type="text/css" href="css/base.css" />
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <script type="text/javascript" src="js/app.js"></script>
+</head>
+
+<body ng-controller="index">
+
+    <!-- The Organization Home Page -->
+
+    <div class='home active'>
+
+        <div class='home__header center_text'>
+            <h1>Welcome {{user.name}}</h1>
+        </div>
+
+        <div  class='home__content container' style="width:30%; margin: 25px auto">
+                <h4>
+                   Create a Event
+                </h4>
+
+                <div class="form-group" >
+                    <form action="/event" method="post">
+                        <label for="e_name">Event Name</label>
+                        <input class="form-control" type="text" id='e_name' name="e_name"/>
+                        
+                         <label for="location">Location</label>
+                        <input class="form-control" type="text" id='location' name="location"/>
+                        
+                         <label for="datetime">Time</label>
+                        <input class="form-control" type="datetime-local" id='datetime' name="datetime"/>
+                        
+                         <label for="description">Description</label>
+                        <input class="form-control" type="text" id='description' name="description"/>
+                                                
+                         <label for="members">Members</label>
+                        <input class="form-control" type="number" step="1" min="1" id='members' name="members"/>
+                                                
+
+                        <input class="form-control" type="hidden" id='u_id' name="u_id" value="{{user.id}}"/>
+                        <input class="form-control" type="hidden" id='status' name="status" value="active"/>
+                        <br>
+                        <button type="submit" class="btn btn-primary  btn-block ">Create</button>
+                    </form>
+                </div>
+        </div>
+
+        <div class='home__footer'>
+            <div class="navbar">
+                <a href="organization.html" class="active">Events</a>
+                <a href="eventVolunteers.html">Volunteers</a>
+                <a href="chat.html">Chat</a>
+                <a href="profile.html">Profile</a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- End Organization Home Page -->
+    
+</body>
+
+</html>
