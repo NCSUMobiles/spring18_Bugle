@@ -24,7 +24,22 @@ app.controller('index', ['$scope', '$http', '$window', function ($scope, $http, 
     $scope.events = [
         { 'id': '1', 'name': 'Event 1', 'location': 'Raleigh', 'date': '04.14.18' },
         { 'id': '2', 'name': 'Event 2', 'location': 'Cary', 'date': '03.30.18' },
-        { 'id': '3', 'name': 'Event 3', 'location': 'Morrisville', 'date': '05.11.18' }
+        { 'id': '3', 'name': 'Event 3', 'location': 'Morrisville', 'date': '05.11.18' },
+        { 'id': '4', 'name': 'Event 4', 'location': 'Morrisville', 'date': '05.11.18' },
+        { 'id': '5', 'name': 'Event 5', 'location': 'Morrisville', 'date': '05.11.18' }
+    ];
+    // The actual list will com from the Database via the API
+    $scope.event = { 
+        'id': '1', 'name': 'Event 1', 'location': 'Raleigh', 'date': '04.14.18' 
+    };
+    
+    // The actual list will com from the Database via the API
+    $scope.volunteers = [
+        {'id': '1', 'name': 'Lin'},
+        {'id': '2', 'name': 'Tom'},
+        {'id': '3', 'name': 'Jack'},
+        {'id': '4', 'name': 'John'}
+          
     ];
 
     // Login function Begin.
