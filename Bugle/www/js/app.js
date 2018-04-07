@@ -79,13 +79,13 @@ app.controller('index', ['$scope', '$http', '$window', function ($scope, $http, 
 
     // Register Vol function Begin
     $scope.register = function (type) {
+        $scope.dataLoading = true;
         console.log('register called for ' + type);
 
         var signupURL = 'https://bugle-pl-srv.herokuapp.com/signup';
         var signupInfo = {
             'u_name': $scope.u_name,
             'email': $scope.email,
-            'mobile': $scope.mobile,
             'dob': $scope.dob,
             'password': $scope.password,
             'type': type,
@@ -109,6 +109,8 @@ app.controller('index', ['$scope', '$http', '$window', function ($scope, $http, 
             }
         }, function (response) {
             console.log('ERROR: ' + JSON.stringify(response));
+        }).finally(function() {
+            $scope.dataLoading = false;
         });
     }
     //Register Vol function end.
