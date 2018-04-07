@@ -85,7 +85,6 @@ app.controller('index', ['$scope', '$http', '$window', function ($scope, $http, 
         var signupInfo = {
             'u_name': $scope.u_name,
             'email': $scope.email,
-            'mobile': $scope.mobile,
             'dob': $scope.dob,
             'password': $scope.password,
             'type': type,

@@ -16,60 +16,58 @@
 </head>
 
 <body ng-controller="index">
-    <div class="container">
-        <div class="col-sm-8 col-sm-offset-2">
-            <!-- ngIf: flash -->
-            <!-- ngView: --><div ng-view="" class="ng-scope"><div class="col-md-6 col-md-offset-3 ng-scope">
-<h2>Volunteer Sign Up</h2>
-<form name="form" ng-submit="register('vol')" role="form" class="ng-dirty ng-valid-parse ng-invalid ng-invalid-required">
+
+    <form name="form" ng-submit="register('vol')" role="form" class="ng-dirty ng-valid-parse ng-invalid ng-invalid-required">
         <div class="imgcontainer">
-                <img src="img/logo_64.png" alt="logo" class="logo">
-            </div>
+            <img src="img/logo_64.png" alt="logo" class="logo">
+        </div>
+        <div class="container">
+            <h4 align='center'>Volunteer Sign Up</h4>
             <div class="form-group" ng-class="{ 'has-error': form.u_name.$dirty &amp;&amp; form.u_name.$error.required }">
-                <label for="u_name">Name<font size="3" color="red"> *</font></label>
-                <input name="u_name" id="u_name" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="u_name" required="" type="text">
+                <label for="u_name">Name</label>
+                <input name="u_name" id="u_name" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched"
+                    ng-model="u_name" required="" type="text">
                 <span ng-show="form.u_name.$dirty &amp;&amp; form.u_name.$error.required" class="help-block ng-hide">Username is required</span>
             </div>
-             <div class="form-group" ng-class="{ 'has-error': form.email.$dirty &amp;&amp; form.email.$error.required }">
-                <label for="email">Email ID<font size="3" color="red"> *</font></label>
-                <input name="email" id="email" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="email" required="" type="email">
+            <div class="form-group" ng-class="{ 'has-error': form.email.$dirty &amp;&amp; form.email.$error.required }">
+                <label for="email">Email ID</label>
+                <input name="email" id="email" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched"
+                    ng-model="email" required="" type="email">
                 <span ng-show="form.email.$dirty &amp;&amp; form.email.$error.required" class="help-block ng-hide">emailid is required</span>
-                <span ng-show="form.email.$error.email" class="help-block ng-hide"><font color="#830303">Provided emailid is invalid</font></span>
+                <span ng-show="form.email.$error.email" class="help-block ng-hide">
+                    <font color="#830303">Provided emailid is invalid</font>
+                </span>
             </div>
-            <div class="form-group" ng-class="{ 'has-error': form.mobile.$dirty &amp;&amp; form.mobile.$error.required }">
-                <label for="mobile">Mobile</label>
-                <input name="mobile" id="mobile" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="mobile"  type="text">
-            </div>
-            <label for="dob">
-            <b>Birth Date<font size="3" color="red"> *</font></b>
-            </label>
+            <label for="dob"><b>Birth Date</b></label>
             <input type="date" placeholder="Enter date of birth" id="dob" name="dob" required>
             <div class="form-group" ng-class="{ 'has-error': form.password.$dirty &amp;&amp; form.password.$error.required }">
-                <label for="password">Password<font size="3" color="red"> *</font></label>
-                <input type="password" name="password" id="password" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="password" required="" type="text">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched"
+                    ng-model="password" required="" type="text">
                 <span ng-show="form.password.$dirty &amp;&amp; form.password.$error.required" class="help-block ng-hide">Password is required</span>
             </div>
             <div class="form-group" ng-class="{ 'has-error': form.cpsw.$dirty &amp;&amp; form.cpsw.$error.required }">
-                <label for="cpsw">Confirm Password<font size="3" color="red"> *</font></label>
-                <input type="password" name="cpsw" id="cpsw" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="cpsw" required="" type="text">
+                <label for="cpsw">Confirm Password</label>
+                <input type="password" name="cpsw" id="cpsw" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched"
+                    ng-model="cpsw" required="" type="text">
                 <span ng-show="form.cpsw.$dirty &amp;&amp; form.cpsw.$error.required" class="help-block ng-hide">Confirm Password is required</span>
             </div>
             <input type="hidden" name="type" ng-model="type" value="vol">
 
-    <div class="form-actions">
-        <button type="submit" ng-disabled="form.$invalid || dataLoading" class="btn btn-primary" disabled="disabled">Create Profile</button>
-        <!-- ngIf: vm.dataLoading -->
-        <a href="login.html" class="btn btn-link">Cancel</a>
-    </div>
-</form>
-</div>
-</div>
+            <!-- <div class="form-actions"> -->
+                <button type="submit" ng-disabled="form.$invalid || dataLoading" disabled="disabled">Create Profile</button>
+                <a href="login.html" class="linkbuttonred">Cancel</a>
+            <!-- </div> -->
+
         </div>
-    </div>
-        
-       
+
+
     </form>
-            
+
+
+
+    </form>
+
 </body>
 
 </html>
