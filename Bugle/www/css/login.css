@@ -38,6 +38,10 @@ button {
     width: 100%;
 }
 
+button:disabled {
+    opacity: 0.3;
+}
+
 a.linkbutton {
     background-color: rgb(223, 157, 83);
     color: white;
@@ -87,4 +91,8 @@ span.psw {
     text-align: center;
     float: none;
     padding-top: .5rem;
+}
+
+span.fcred {
+    color: red;
 }

@@ -16,58 +16,44 @@
 </head>
 
 <body ng-controller="index">
-    <div class="container">
-        <div class="col-sm-8 col-sm-offset-2">
-            <!-- ngIf: flash -->
-            <!-- ngView: --><div ng-view="" class="ng-scope"><div class="col-md-6 col-md-offset-3 ng-scope">
-<h2>Organization Sign Up</h2>
-<form name="form" ng-submit="register('org')" role="form" class="ng-dirty ng-valid-parse ng-invalid ng-invalid-required">
+
+    <form name="form" ng-submit="register('org')" role="form" class="ng-dirty ng-valid-parse ng-invalid ng-invalid-required">
+
         <div class="imgcontainer">
-                <img src="img/logo_64.png" alt="logo" class="logo">
-            </div>
-            <div class="form-group" ng-class="{ 'has-error': form.orgname.$dirty &amp;&amp; form.orgname.$error.required }">
-                <label for="orgname">Org Name<font size="3" color="red"> *</font></label>
-                <input name="orgname" id="orgname" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="vm.user.orgname" required="" type="text">
-                <span ng-show="form.orgname.$dirty &amp;&amp; form.orgname.$error.required" class="help-block ng-hide">Org Name is required</span>
-            </div>
-             <div class="form-group" ng-class="{ 'has-error': form.emailid.$dirty &amp;&amp; form.emailid.$error.required }">
-                <label for="emailid">Email Id<font size="3" color="red"> *</font></label>
-                <input name="emailid" id="emailid" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="vm.user.emailid" required="" type="email">
-                <span ng-show="form.emailid.$dirty &amp;&amp; form.emailid.$error.required" class="help-block ng-hide">emailid is required</span>
-                <span ng-show="form.emailid.$error.email" class="help-block ng-hide"><font color="#830303">Provided emailid is invalid</font></span>
-            </div>
-            <div class="form-group" >
-                <label for="mobile">Mobile</label>
-                <input name="mobile" id="mobile" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="vm.user.mobile"  type="text">
-            </div>
-            <div class="form-group" ng-class="{ 'has-error': form.psw.$dirty &amp;&amp; form.psw.$error.required }">
-                <label for="psw">Password<font size="3" color="red"> *</font></label>
-                <input type="password" name="psw" id="psw" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="vm.user.psw" required="" type="text">
-                <span ng-show="form.psw.$dirty &amp;&amp; form.psw.$error.required" class="help-block ng-hide">Password is required</span>
-            </div>
-            <div class="form-group" ng-class="{ 'has-error': form.cpsw.$dirty &amp;&amp; form.cpsw.$error.required }">
-                <label for="cpsw">Confirm Password<font size="3" color="red"> *</font></label>
-                <input type="password" name="cpsw" id="cpsw" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="vm.user.cpsw" required="" type="text">
-                <span ng-show="form.cpsw.$dirty &amp;&amp; form.cpsw.$error.required" class="help-block ng-hide">Confirm Password is required</span>
-            </div>
-            <div class="form-group" >
-                <label for="desc">Description</label>
-                <input name="desc" id="desc" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="vm.user.desc"  type="text">
-            </div>
-    <div class="form-actions">
-        <button type="submit" ng-disabled="form.$invalid || vm.dataLoading" class="btn btn-primary" disabled="disabled">Create Profile</button>
-        <!-- ngIf: vm.dataLoading -->
-        <a href="login.html" class="btn btn-link">Cancel</a>
-    </div>
-</form>
-</div>
-</div>
+            <img src="img/logo_64.png" alt="logo" class="logo">
         </div>
-    </div>
-        
-       
+
+        <div class="container">
+
+            <div class="form-group" ng-class="{ 'has-error': form.orgname.$dirty &amp;&amp; form.orgname.$error.required }">
+                <label for="orgname">Organization Name</label> &nbsp; <span ng-show="form.orgname.$dirty &amp;&amp; form.orgname.$error.required" class="ng-hide fcred">Organization Name is required</span>
+                <input name="orgname" id="orgname" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="orgname" required="" type="text">
+            </div>
+
+            <div class="form-group" ng-class="{ 'has-error': form.emailid.$dirty &amp;&amp; form.emailid.$error.required }">
+                <label for="emailid">Email Id</label> &nbsp; <span ng-show="form.emailid.$dirty &amp;&amp; form.emailid.$error.required" class="ng-hide fcred">Email Id is required</span> &nbsp; <span ng-show="form.emailid.$error.email" class="ng-hide fcred">Provided Email Id is invalid</span>
+                <input name="emailid" id="emailid" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="emailid" required="" type="email">
+            </div>
+
+            <div class="form-group" ng-class="{ 'has-error': form.psw.$dirty &amp;&amp; form.psw.$error.required }">
+                <label for="psw">Password</label> &nbsp; <span ng-show="form.psw.$dirty &amp;&amp; form.psw.$error.required" class="ng-hide fcred">Password is required</span>
+                <input type="password" name="psw" id="psw" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="psw" required="" type="text">
+            </div>
+
+            <div class="form-group" ng-class="{ 'has-error': form.cpsw.$dirty &amp;&amp; form.cpsw.$error.required }">
+                <label for="cpsw">Confirm Password</label> &nbsp; <span ng-show="form.cpsw.$dirty &amp;&amp; form.cpsw.$error.required" class="ng-hide fcred">Confirm Password is required</span>
+                <input type="password" name="cpsw" id="cpsw" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="cpsw" required="" type="text">
+                
+            </div>
+
+            <button type="submit" ng-disabled="form.$invalid || dataLoading" disabled="disabled">Sign Up</button>
+            <a href="login.html" class="linkbuttonred">Cancel</a>
+
+        </div>
+
+
     </form>
-            
+
 </body>
 
 </html>
