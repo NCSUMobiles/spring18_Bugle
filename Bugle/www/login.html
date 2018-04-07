@@ -13,7 +13,9 @@
 </head>
 
 <body ng-controller="index">
+
     <form ng-submit="login()">
+
         <div class="imgcontainer">
             <img src="img/logo_128.png" alt="logo" class="logo">
         </div>
@@ -29,17 +31,15 @@
             </label>
             <input type="password" placeholder="Enter Password" name="pwd" ng-model="password" required>
 
-
             <button type="submit">Login</button>
-            <span ng-model="greeting">{{greeting}}</span>
             <label>
                 <input type="checkbox" checked="checked" name="remember"> Remember me
             </label>
         </div>
 
         <div class='container'>
-            <a href="volunteerSignup.html" class="signup">Volunteer Sign Up</a>
-            <a href="organisationSignup.html" class="signup">Organization Sign Up</a>
+            <a href="volunteerSignup.html" class="linkbutton">Volunteer Sign Up</a>
+            <a href="organisationSignup.html" class="linkbutton">Organization Sign Up</a>
         </div>
 
         <div class="container">
@@ -47,6 +47,7 @@
                 <a href="#">Forgot Password?</a>
             </span>
         </div>
+        
     </form>
 
 </body>
