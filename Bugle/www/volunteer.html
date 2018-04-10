@@ -27,8 +27,8 @@
                 Available volunteer Organizations
             </h4>
             <br><br>
-            <ul>
-                <li data-ng-repeat="org in organizations">{{org.name}}
+            <ul data-ng-init="getOrganizations()">
+                <li data-ng-repeat="org in organizations">{{org.uName}}
                 </li>
             </ul>
         </div>

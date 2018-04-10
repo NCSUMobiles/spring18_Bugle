@@ -3,6 +3,7 @@ var app = angular.module('root', []);
 app.service('UserService', function () {
     var loggedInUser = '';
     var currentEvents = '';
+    var organizations = '';
 
     return {
         getLoggedInUser: function () {
@@ -16,6 +17,12 @@ app.service('UserService', function () {
         },
         setCurrentEvents: function (ev) {
             currentEvents = ev;
+        },
+        getOrganizations: function () {
+            return organizations;
+        },
+        setOrganizations: function (orgs) {
+            organizations = orgs;
         }
     }
 });
@@ -33,20 +40,23 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', function (
     $scope.user = UserService.loggedInUser;
 
     // The actual list will come from the Database via the API
-    $scope.organizations = [
-        { 'id': '1', 'name': 'Organization 1', 'location': 'Raleigh' },
-        { 'id': '2', 'name': 'Organization 2', 'location': 'Cary' },
-        { 'id': '3', 'name': 'Organization 3', 'location': 'MOrrisville' }
-    ];
+    $scope.organizations = [];
+    // $scope.organizations = [
+    //     { 'id': '1', 'name': 'Organization 1', 'location': 'Raleigh' },
+    //     { 'id': '2', 'name': 'Organization 2', 'location': 'Cary' },
+    //     { 'id': '3', 'name': 'Organization 3', 'location': 'MOrrisville' }
+    // ];
 
     // The actual list will come from the Database via the API
-    $scope.events = [
-        { 'id': '1', 'name': 'Event 1', 'location': 'Raleigh', 'date': '04.14.18' },
-        { 'id': '2', 'name': 'Event 2', 'location': 'Cary', 'date': '03.30.18' },
-        { 'id': '3', 'name': 'Event 3', 'location': 'Morrisville', 'date': '05.11.18' },
-        { 'id': '4', 'name': 'Event 4', 'location': 'Morrisville', 'date': '05.11.18' },
-        { 'id': '5', 'name': 'Event 5', 'location': 'Morrisville', 'date': '05.11.18' }
-    ];
+    $scope.events = [];
+    // $scope.events = [
+    //     { 'id': '1', 'name': 'Event 1', 'location': 'Raleigh', 'date': '04.14.18' },
+    //     { 'id': '2', 'name': 'Event 2', 'location': 'Cary', 'date': '03.30.18' },
+    //     { 'id': '3', 'name': 'Event 3', 'location': 'Morrisville', 'date': '05.11.18' },
+    //     { 'id': '4', 'name': 'Event 4', 'location': 'Morrisville', 'date': '05.11.18' },
+    //     { 'id': '5', 'name': 'Event 5', 'location': 'Morrisville', 'date': '05.11.18' }
+    // ];
+
     // The actual list will come from the Database via the API
     $scope.event = {
         'id': '1', 'name': 'Event 1', 'location': 'Raleigh', 'date': '04.14.18'
@@ -77,6 +87,7 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', function (
             data: loginInfo,
             headers: { 'Content-Type': 'application/json' }
         }).then(function successLogin(response) {
+            //TODO: check if status in response is 'success'
             console.log('SUCCESS: ' + JSON.stringify(response));
             var user = JSON.parse(response.data.user);
             $scope.greeting = response.data.status + '. Hello ' + user.uName;
@@ -113,6 +124,7 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', function (
             data: signupInfo,
             headers: { 'Content-Type': 'application/json' }
         }).then(function (response) {
+            //TODO: check if status in response is 'success'
             console.log('SUCCESS: ' + JSON.stringify(response));
             // var user = JSON.parse(response.data.user);
             var user = response.data.user;
@@ -131,19 +143,37 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', function (
     }
     //Register function end.
 
+    // Get organizations function start
+    $scope.getOrganizations = function() {
+        console.log('fetching organizations from server');
+        $http({
+            method: 'GET',
+            url: 'https://bugle-pl-srv.herokuapp.com/organizations',
+            headers: { 'Content-Type': '*/*' }
+        }).then(function (response) {
+            //TODO: check if status in response is 'success'
+            console.log('SUCCESS: ' + JSON.stringify(response));
+            var orgs = JSON.parse(response.data.organizations);
+            updateScopeOrganizations(orgs);
+        }, function (response) {
+            console.log('ERROR: ' + JSON.stringify(response));
+        });
+    }
+    // Get organizations function end
+
     // Get volunteer events function start
     $scope.getVolunteerEvents = function (vId) {
-        console.log('the passed vID is: ' + vId);
+        //TODO: remove hardcoded value later.
         vId = 1;
         console.log('fetching events for volunteer: ' + vId);
         var srvURL = 'https://bugle-pl-srv.herokuapp.com/volunteer-events/' + vId;
-        // var srvURL = 'localhost:9000/volunteer-events/' + vId;
         console.log('API URL: ' + srvURL)
         $http({
             method: 'GET',
             url: srvURL,
             headers: { 'Content-Type': '*/*' }
         }).then(function (response) {
+            //TODO: check if status in response is 'success'
             console.log('SUCCESS: ' + JSON.stringify(response));
             var events = JSON.parse(response.data.events);
             updateScopeEvents(events);
@@ -153,15 +183,28 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', function (
     }
     // Get volunteer events function end
 
-    var updateScopeEvents = function (ev) {
-        console.log('updating Service events')
-        UserService.currentEvents = ev;
-        $scope.events = ev;
-    }
-
+    // Update Scope User function Start
     var updateScopeUser = function (usr) {
         console.log('updating Service user');
         UserService.loggedInUser = usr;
         $scope.user = usr;
     }
+    // Update Scope User function end
+
+    // Update Scope User function Start
+    var updateScopeOrganizations = function (orgs) {
+        console.log('updating Service organizations');
+        UserService.organizations = orgs;
+        $scope.organizations = orgs;
+    }
+    // Update Scope User function end
+
+    // Update Scope Events function Start
+    var updateScopeEvents = function (ev) {
+        console.log('updating Service events')
+        UserService.currentEvents = ev;
+        $scope.events = ev;
+    }
+    // Update Scope Events function end
+
 }]);
