@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html ng-app="root">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bugle</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link rel="stylesheet" type="text/css" href="css/base.css" />
+    <script type="text/javascript" src="js/app.js"></script>
+</head>
+
+<body ng-controller="index">
+
+    <!-- The Volunteer Events Page -->
+
+    <div class='home active'>
+
+        <div class='home__header center_text'>
+            <h1>Welcome <span>{{user.uName}}</span></h1>
+        </div>
+
+        <div class='home__content my_container'>
+            <h4>
+                Events You have applied to
+            </h4>
+            <br><br>
+            <ul data-ng-init="getVolunteerEvents(user.uId)">
+                <li data-ng-repeat="event in events">{{event.eName}}</li>
+            </ul>
+        </div>
+
+        <div class='home__footer'>
+            <div class="nav_bar">
+                <a href="volunteer.html">Organizations</a>
+                <a href="volunteerEvents.html" class="active" ng-click="getVolunteerEvents(user.uId)">Applied</a>
+                <a href="chat.html">Chat</a>
+                <a href="profile.html">Profile</a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- End Volunteer Events Page -->
+   
+</body>
+
+</html>
