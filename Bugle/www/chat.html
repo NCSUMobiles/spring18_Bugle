@@ -19,7 +19,7 @@
     <div class='home active'>
 
         <div class='home__header center_text'>
-            <h1>Welcome {{user.name}}</h1>
+            <h1>Welcome {{user.uName}}</h1>
         </div>
 
         <div class='home__content my_container'>
@@ -30,8 +30,8 @@
             <div class="nav_bar"> <!-- use ng-if to check the type of user and display this menu accordingly -->
                 <a href="organization.html" ng-if="user.type == 'org'">Events</a>
                 <a href="volunteer.html" ng-if="user.type == 'vol'">Organizations</a>
-                <a href="#home" ng-if="user.type == 'vol'">Applied</a>
-                <a href="#news" ng-if="user.type == 'org'">Volunteers</a>
+                <a href="volunteerEvents.html" ng-if="user.type == 'vol'">Applied</a>
+                <a href="eventVolunteers.html" ng-if="user.type == 'org'">Volunteers</a>
                 <a href="chat.html" class="active">Chat</a>
                 <a href="profile.html">Profile</a>
             </div>

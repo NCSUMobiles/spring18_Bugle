@@ -14,15 +14,17 @@
 
 <body ng-controller="index">
 
-    <!-- The Organization Home Page -->
+    <!-- The Event Volunteers Page -->
 
     <div class='home active'>
 
         <div class='home__header center_text'>
-            <h1>Welcome {{user.name}}</h1>
+            <h1>Welcome {{user.uName}}</h1>
         </div>
 
         <div  class='home__content my_container' >
+
+            <!-- Show a drop down for all active events of that organization here from where they can select the event for which they want to show the volunteers. By default show the volunteers of the first active event. -->
                 <h4>
                     Volunteer Applications for {{event.name}}
                 </h4>
@@ -53,7 +55,7 @@
 
     </div>
 
-    <!-- End Organization Home Page -->
+    <!-- End Organization Volunteers Page -->
     
 </body>
 
