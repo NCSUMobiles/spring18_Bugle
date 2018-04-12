@@ -1,14 +1,14 @@
-var app = angular.module('root', ['chat']);
+var app = angular.module('root', []);
 
-angular.module('chat').constant( 'config', {
-    rltm: {
-        service: 'pubnub', 
-        config: {
-            publishKey: 'pub-c-e576563c-1012-43eb-854b-f347ae67ebee',
-            subscribeKey: 'sub-c-8bdbbb38-3e09-11e8-afae-2a65d00afee8'
-        }
-    }
-});
+// angular.module('chat').constant('config', {
+//     rltm: {
+//         service: 'pubnub', 
+//         config: {
+//             publishKey: 'pub-c-e576563c-1012-43eb-854b-f347ae67ebee',
+//             subscribeKey: 'sub-c-8bdbbb38-3e09-11e8-afae-2a65d00afee8'
+//         }
+//     }
+// });
 
 // or use socket.io
 // make sure to run socket.io-server from rltm.js
