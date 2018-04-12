@@ -22,7 +22,17 @@
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // AngularJS Chat Module
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-angular.module( 'chat', [] );
+var cm = angular.module( 'chat', [] );
+
+cm.constant('config', {
+    rltm: {
+        service: 'pubnub', 
+        config: {
+            publishKey: 'pub-c-e576563c-1012-43eb-854b-f347ae67ebee',
+            subscribeKey: 'sub-c-8bdbbb38-3e09-11e8-afae-2a65d00afee8'
+        }
+    }
+});;
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // Common JS
