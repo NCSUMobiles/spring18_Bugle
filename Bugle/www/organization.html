@@ -29,11 +29,9 @@
             <a class="btn btn-success pull-right" href="createEvent.html">Create Event</a>
             </h4>
             <br>
-            <ul>
-                <!--<li data-ng-repeat="event in events"><a href="/event-volunteers/{{event.id}}">{{event.name}}</a></li>-->
-                
+            <ul data-ng-init="getOrganizationEvents(user.uId)">
                 <!--TODO: should we redirect it to a edit event page instead?-->
-                <li data-ng-repeat="event in events"><a href="eventVolunteers.html">{{event.name}}</a></li>
+                <li data-ng-repeat="event in events"><a href="eventVolunteers.html">{{event.eName}}</a></li>
             </ul>
         </div>
 

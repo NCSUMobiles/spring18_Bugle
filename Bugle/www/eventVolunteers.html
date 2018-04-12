@@ -22,25 +22,33 @@
             <h1>Welcome {{user.uName}}</h1>
         </div>
 
-        <div  class='home__content my_container' >
+        <div class='home__content my_container'>
+
+            <!-- Drop down to show the organization's events -->
+            Select an Event to view its volunteers: <select data-ng-init="getOrganizationEvents(user.uId)" ng-model="eventSelected" ng-options="e as e.eName for e in events" ng-change="getEventVolunteers()">
+                <option value="{{e.eId}}"></option>
+            </select>
+
 
             <!-- Show a drop down for all active events of that organization here from where they can select the event for which they want to show the volunteers. By default show the volunteers of the first active event. -->
+            <div ng-if="eventSelected">
                 <h4>
-                    Volunteer Applications for {{event.name}}
+                    Volunteer Applications for {{event.eName}}
                 </h4>
                 <br>
-                <form action ="#" method="post">
-                <input type="hidden" id='e_id' name="e_id" value='{{event.id}}'/>
-                <ul>
-                    <li data-ng-repeat="volunteer in volunteers">
-                        <input name='u_ids' value="{{volunteer.id}}" type="checkbox">
-                        {{volunteer.name}}
-                    </li>
-                </ul>
-                <br>
-                <button type="submit" name="approve" formaction="/approve-volunteers" class="btn btn-success">Approve</button>
-                <button type="submit" name="reject" formaction="/reject-volunteers" class="btn btn-danger pull-right">Reject</button>
-            </form>
+                <form action="#" method="post">
+                    <input type="hidden" id='e_id' name="e_id" value='{{event.id}}' />
+                    <ul>
+                        <li data-ng-repeat="volunteer in volunteers">
+                            <input name='u_ids' value="{{volunteer.uId}}" type="checkbox"> {{volunteer.uName}}
+                        </li>
+                    </ul>
+                    <br>
+                    <div ng-if="volunteers.length == 0"> No voluteers yet.</div>
+                    <button type="submit" ng-if="volunteers.length > 0" name="approve" formaction="/approve-volunteers" class="btn btn-success">Approve</button>
+                    <button type="submit" ng-if="volunteers.length > 0" name="reject" formaction="/reject-volunteers" class="btn btn-danger pull-right">Reject</button>
+                </form>
+            </div>
 
         </div>
         
