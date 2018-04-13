@@ -68,3 +68,12 @@ li {
   .my_container{
       margin: 0.9rem;
   }
+
+  .back_button {
+    float: left;
+    border-style: solid;
+    border-radius: 0.7rem;
+    padding: 0.2rem;
+    margin: 0.5rem;
+    text-decoration: none;
+  }

@@ -1,25 +1,12 @@
-var app = angular.module('root', []);
+var app = angular.module('root', ['LocalStorageModule']);
 
-// angular.module('chat').constant('config', {
-//     rltm: {
-//         service: 'pubnub', 
-//         config: {
-//             publishKey: 'pub-c-e576563c-1012-43eb-854b-f347ae67ebee',
-//             subscribeKey: 'sub-c-8bdbbb38-3e09-11e8-afae-2a65d00afee8'
-//         }
-//     }
-// });
+app.config(function (localStorageServiceProvider) {
+    localStorageServiceProvider
+        .setPrefix('bugleApp')
+        .setStorageType('sessionStorage')
+        .setNotify(true, true);
+});
 
-// or use socket.io
-// make sure to run socket.io-server from rltm.js
-// angular.module('chat').constant( 'config', {
-//     rltm: {
-//         service: 'socketio', 
-//         config: {
-//             endpoint: 'http://localhost:5000'
-//         }
-//     }
-// });
 
 app.service('UserService', function () {
     var loggedInUser = '';
@@ -63,51 +50,43 @@ app.service('UserService', function () {
 });
 
 
-app.controller('index', ['$scope', '$http', '$window', 'UserService', function ($scope, $http, $window, UserService) {
+app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStorageService', function ($scope, $http, $window, UserService, localStorageService) {
 
     $scope.title = 'Bugle Beta App';
-   
-    // Actual User data will be fetched from the session
+    
+    // Actual User data will be fetched from the session - remove this hardcoding after session is implemented.
     UserService.loggedInUser = {
         "uId": 4, "uName": "Default User", "email": "usr1@vol.com", "mobile": "1232233421", "dob": "21.08.93", "password": "pwd1", "type": "vol"
     };
+    // userID = 1-3 for organizations and userID 4-7 for volunteers.    
 
     $scope.user = UserService.loggedInUser;
 
     // The actual list will come from the Database via the API
     $scope.organizations = [];
-    // $scope.organizations = [
-    //     { 'id': '1', 'name': 'Organization 1', 'location': 'Raleigh' },
-    //     { 'id': '2', 'name': 'Organization 2', 'location': 'Cary' },
-    //     { 'id': '3', 'name': 'Organization 3', 'location': 'MOrrisville' }
-    // ];
 
     // The actual list will come from the Database via the API
     $scope.events = [];
-    // $scope.events = [
-    //     { 'id': '1', 'name': 'Event 1', 'location': 'Raleigh', 'date': '04.14.18' },
-    //     { 'id': '2', 'name': 'Event 2', 'location': 'Cary', 'date': '03.30.18' },
-    //     { 'id': '3', 'name': 'Event 3', 'location': 'Morrisville', 'date': '05.11.18' },
-    //     { 'id': '4', 'name': 'Event 4', 'location': 'Morrisville', 'date': '05.11.18' },
-    //     { 'id': '5', 'name': 'Event 5', 'location': 'Morrisville', 'date': '05.11.18' }
-    // ];
 
     // The actual list will come from the Database via the API
     $scope.event = {};
-    // $scope.event = {
-    //     'eId': '1', 'eName': 'Event 1', 'location': 'Raleigh', 'datetime': '04.14.18 11:00AM', 'description': 'description of a volunteering event!', 'members': '12', 'uId': 1, 'status': 'active'
-    // };
 
+    $scope.organization = {};
+    
     $scope.eventSelected = false;
 
     // The actual list will com from the Database via the API
     $scope.volunteers = [];
-    // $scope.volunteers = [
-    //     { 'uId': '1', 'uName': 'Lin' },
-    //     { 'uId': '2', 'uName': 'Tom' },
-    //     { 'uId': '3', 'uName': 'Jack' },
-    //     { 'uId': '4', 'uName': 'John' }
-    // ];
+
+    $scope.fetchSession = function() {
+        $scope.user = localStorageService.get('sessionUser');
+        $scope.organizations = localStorageService.get('organizations');
+        $scope.organization = localStorageService.get('organization');
+        $scope.events = localStorageService.get('events');
+        $scope.event = localStorageService.get('event');
+        $scope.volunteers = localStorageService.get('volunteers');
+        // $scope.eventSelected = localStorageService.get('');
+    }
 
     // Login function Begin.
     $scope.login = function () {
@@ -131,6 +110,9 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', function (
             var user = JSON.parse(response.data.user);
             $scope.greeting = response.data.status + '. Hello ' + user.uName;
             updateScopeUser(user);
+            console.log('updating session user to: ' + JSON.stringify(user));
+            localStorageService.set('sessionUser', null);
+            localStorageService.set('sessionUser', user);
             if (user.type === 'vol') {
                 $window.location.href = '/volunteer.html';
             } else {
@@ -169,6 +151,9 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', function (
             var user = response.data.user;
             $scope.greeting = response.data.status + '. Hello ' + user.uName;
             updateScopeUser(user);
+            console.log('updating session user to: ' + JSON.stringify(user));
+            localStorageService.set('sessionUser', null);
+            localStorageService.set('sessionUser', user);
             if (type === 'vol') {
                 $window.location.href = '/volunteer.html';
             } else {
@@ -194,6 +179,9 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', function (
             console.log('SUCCESS: ' + JSON.stringify(response));
             var orgs = JSON.parse(response.data.organizations);
             updateScopeOrganizations(orgs);
+            console.log('updating session organizations to: ' + JSON.stringify(orgs));
+            localStorageService.set('organizations', null);
+            localStorageService.set('organizations', orgs);
         }, function (response) {
             console.log('ERROR: ' + JSON.stringify(response));
         });
@@ -216,16 +204,18 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', function (
             console.log('SUCCESS: ' + JSON.stringify(response));
             var events = JSON.parse(response.data.events);
             updateScopeEvents(events);
+            console.log('updating session events to: ' + JSON.stringify(events));
+            localStorageService.set('events', null);
+            localStorageService.set('events', events);
         }, function (response) {
             console.log('ERROR: ' + JSON.stringify(response));
         });
     }
     // Get volunteer events function end
 
-     // Get organization events function start
-     $scope.getOrganizationEvents = function (uId) {
-        //TODO: remove hardcoded value later.
-        uId = 2;
+    // Get organization events function start
+    $scope.getOrganizationEvents = function (uId) {
+        uId = 2;//TODO: Remove this
         console.log('fetching events for organization ID: ' + uId);
         var srvURL = 'https://bugle-pl-srv.herokuapp.com/organizations/' + uId;
         console.log('API URL: ' + srvURL)
@@ -238,6 +228,9 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', function (
             console.log('SUCCESS: ' + JSON.stringify(response));
             var events = JSON.parse(response.data.events);
             updateScopeEvents(events);
+            console.log('updating session events to: ' + JSON.stringify(events));
+            localStorageService.set('events', null);
+            localStorageService.set('events', events);
         }, function (response) {
             console.log('ERROR: ' + JSON.stringify(response));
         });
@@ -248,6 +241,9 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', function (
     $scope.getEventVolunteers = function() {
         console.log('Fetching Events Volunteers for the selected Event: ' + JSON.stringify($scope.eventSelected));
         updateScopeEvent($scope.eventSelected);
+        console.log('updating session event to: ' + JSON.stringify($scope.eventSelected));
+        localStorageService.set('event', null);
+        localStorageService.set('event', $scope.eventSelected);
         var srvURL = 'https://bugle-pl-srv.herokuapp.com/event-volunteers/' + $scope.eventSelected.eId;
         console.log('API URL: ' + srvURL)
         $http({
@@ -259,7 +255,9 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', function (
             console.log('SUCCESS: ' + JSON.stringify(response));
             var volunteers = JSON.parse(response.data.volunteers);
             updateScopeVolunteers(volunteers);
-            // console.log('Scope volunteers length: ' + $scope.volunteers.length + ' =>  value is: ' + ($scope.volunteers.length==0));
+            console.log('updating session volunteers to: ' + JSON.stringify(volunteers));
+            localStorageService.set('volunteers', null);
+            localStorageService.set('volunteers', volunteers);
         }, function (response) {
             console.log('ERROR: ' + JSON.stringify(response));
         });
@@ -305,75 +303,14 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', function (
         $scope.volunteers = v;
     }
     // Update Scope Volunteers function end
+    
+    // open org events function start
+    $scope.openOrgEvents = function (org) {
+        console.log('updating session organization to: ' + JSON.stringify(org));
+        localStorageService.set('organization', null);
+        localStorageService.set('organization', org);
+        $window.location.href = '/orgEvents.html';
+    }
+    // open org events function end
 
 }]);
-
-// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// Chat App Controller
-// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-app.controller( 'BasicController', ['$scope', 'Messages', function($scope, Messages) {
-
-    // Sent Indicator
-    $scope.status = "";
-
-    // Keep an Array of Messages
-    $scope.messages = [];
-
-    var sillyname = function() {
-        // Basic Random
-        function rnd(n) { return Math.floor(Math.random()*n) }
-    
-        // First Name
-        return ["Runny","Buttercup","Dinky","Princess","Crusty",
-        "Greasy","Gidget","Cheesypoof","Lumpy","Wacky","Tiny","Flunky",
-        "Fluffy","Zippy","Doofus","Gobsmacked","Slimy","Grimy","Salamander",
-        "Dr","Burrito","Bumpy","Loopy",
-        "Snotty","Irving","Egbert"][rnd(25)] +
-    
-        // Last Name
-        ["Waffer","Lilly","Bubblegum","Sand","Fuzzy","Kitty",
-        "Puppy","Snuggles","SpacePrincess","Stinky","Lulu",
-        "Lala","Sparkle","Glitter",
-        "Silver","Golden","Rainbow","Cloud",
-        "Rain","Stormy","Wink","Sugar",
-        "Twinkle","Star","Halo","Angel"][rnd(25)];
-    };
-    
-    $scope.me = {name: sillyname()};
-
-    // Set User Data
-    Messages.user($scope.me);
-
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // Get Received Messages and Add it to Messages Array.
-    // This will automatically update the view.
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    var chatmessages = document.querySelector(".chat-messages");
-
-    Messages.receive(function(msg) {
-        
-        $scope.messages.push(msg);
-    
-        setTimeout(function() {
-            chatmessages.scrollTop = chatmessages.scrollHeight;
-        }, 10);
-
-    });
-
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // Send Messages
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    $scope.send = function() {
-
-        Messages.send({data: $scope.textbox});
-        
-        $scope.status = "sending";
-        $scope.textbox = "";
-
-        setTimeout(function() { 
-            $scope.status = "" 
-        }, 1200 );
-
-    };
-
-} ] );
