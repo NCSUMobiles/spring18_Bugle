@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bugle: Your Events</title>
+    <title>Bugle: Organization Events</title>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
     <script src="/node_modules/angular-local-storage/src/angular-local-storage.js"></script>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
@@ -15,28 +15,30 @@
 
 <body ng-controller="index" ng-init="fetchSession()">
 
-    <!-- The Volunteer Events Page -->
+    <!-- The Volunteer Home Page -->
 
     <div class='home active'>
 
         <div class='home__header center_text'>
+            <a href="volunteer.html" class="back_button">Back</a>
             <h2>Welcome {{user.uName}}</h2>
         </div>
 
         <div class='home__content my_container'>
             <h4>
-                Events You have applied to
+                Events hosted by Organization: {{org.uName}}
             </h4>
             <br><br>
-            <ul data-ng-init="getVolunteerEvents(user.uId)">
-                <li data-ng-repeat="event in events">{{event.eName}}</li>
+            <ul data-ng-init="getOrganizationEvents(organization.uId)">
+                <li data-ng-repeat="event in events">{{event.eName}}
+                </li>
             </ul>
         </div>
 
         <div class='home__footer'>
             <div class="nav_bar">
-                <a href="volunteer.html">Organizations</a>
-                <a href="volunteerEvents.html" class="active">Applied</a>
+                <a href="volunteer.html" class="active">Organizations</a>
+                <a href="volunteerEvents.html">Applied</a>
                 <a href="chat.html">Chat</a>
                 <a href="profile.html">Profile</a>
             </div>
@@ -44,7 +46,7 @@
 
     </div>
 
-    <!-- End Volunteer Events Page -->
+    <!-- End Volunteer Home Page -->
    
 </body>
 
