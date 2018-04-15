@@ -488,7 +488,7 @@ public class DatabaseService {
 	public List<Events> getApplicantEvents(int uId) {
 		LOG.debug("Fetching Applicant's Events for user ID: " + uId);
 		List<Events> events = new ArrayList<Events>();
-		String selectQuery = "SELECT * from events where u_id = ?";
+		String selectQuery = "SELECT * from events where e_id IN (SELECT e_id from applicants where u_id = ?)";
 		Connection con = null;
 		try {
 			con = db.getConnection();
