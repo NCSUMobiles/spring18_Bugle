@@ -10,7 +10,7 @@
 
 .home.active {
     display: grid;
-    grid-template-rows: 100px auto 100px;
+    grid-template-rows: 50px auto 50px;
 }
 
 .center_text {
@@ -50,7 +50,7 @@ li {
     display: block;
     color: #f2f2f2;
     text-align: center;
-    padding: 14px 16px;
+    padding: 10px 10px;
     text-decoration: none;
     font-size: 17px;
   }

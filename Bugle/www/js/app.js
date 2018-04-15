@@ -85,7 +85,20 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
         $scope.events = localStorageService.get('events');
         $scope.event = localStorageService.get('event');
         $scope.volunteers = localStorageService.get('volunteers');
-        // $scope.eventSelected = localStorageService.get('');
+        
+        var validUnauthPage = $window.location.href.includes('/login.html') || $window.location.href.includes('/organisationSignup.html') || $window.location.href.includes('/volunteerSignup.html');
+
+        if (!validUnauthPage && !$scope.user) {
+            $window.location.href = '/login.html';
+        }
+        
+        if (validUnauthPage && $scope.user) {
+            if ($scope.user.type =='vol') {
+                $window.location.href = '/volunteer.html';
+            } else {
+                $window.location.href = '/organization.html';
+            }
+        }
     }
 
     // Login function Begin.
@@ -191,7 +204,7 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
     // Get volunteer events function start
     $scope.getVolunteerEvents = function (uId) {
         //TODO: remove hardcoded value later.
-        uId = 1;
+       // uId = 1;
         console.log('fetching events for volunteer ID: ' + uId);
         var srvURL = 'https://bugle-pl-srv.herokuapp.com/volunteer-events/' + uId;
         console.log('API URL: ' + srvURL)
@@ -215,7 +228,7 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
 
     // Get organization events function start
     $scope.getOrganizationEvents = function (uId) {
-        uId = 2;//TODO: Remove this
+        //uId = 2;//TODO: Remove this
         console.log('fetching events for organization ID: ' + uId);
         var srvURL = 'https://bugle-pl-srv.herokuapp.com/organizations/' + uId;
         console.log('API URL: ' + srvURL)
@@ -312,5 +325,14 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
         $window.location.href = '/orgEvents.html';
     }
     // open org events function end
+
+    // logout function start
+    $scope.logout = function() {
+        localStorageService.set('sessionUser', null);
+        UserService.loggedInUser = null;
+        $scope.user = null;
+        $window.location.href = '/login.html';
+    }
+    // logout function end
 
 }]);

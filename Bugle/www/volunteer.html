@@ -22,12 +22,11 @@
         <div class='home__header center_text'>
             <h2>Welcome {{user.uName}}</h2>
         </div>
-
+        
         <div class='home__content my_container'>
             <h4>
                 Available volunteer Organizations
             </h4>
-            <br><br>
             <ul data-ng-init="getOrganizations()">
                 <li data-ng-repeat="org in organizations" ng-click="openOrgEvents(org)">{{org.uName}}
                 </li>

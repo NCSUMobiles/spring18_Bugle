@@ -11,7 +11,9 @@ libraryDependencies += guice
 
 //project dependencies
 libraryDependencies += javaJdbc
-libraryDependencies += "org.xerial" % "sqlite-jdbc" % "3.20.0"
+//libraryDependencies += "org.xerial" % "sqlite-jdbc" % "3.20.0"
 libraryDependencies += "com.google.code.gson" % "gson" % "2.2.4"
+
+libraryDependencies += "org.postgresql" % "postgresql" % "9.4-1206-jdbc42"
 
 herokuAppName in Compile := "bugle-pl-srv"
