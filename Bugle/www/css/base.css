@@ -61,7 +61,7 @@ li {
   }
   
   .nav_bar a.active {
-    background-color: rgb(164, 235, 167);
+    background-color: #4CAF50;
     color: white;
   }
   
