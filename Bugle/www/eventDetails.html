@@ -8,7 +8,8 @@
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+	<script src="/node_modules/angular-local-storage/src/angular-local-storage.js"></script>
     <link rel="stylesheet" type="text/css" href="css/style.css" />
     <link rel="stylesheet" type="text/css" href="css/base.css" />
     <script type="text/javascript" src="js/app.js"></script>
@@ -21,53 +22,14 @@
     <div class='home active'>
 
         <div class='home__header center_text'>
-            <h1>{{event.name}}EVENT NAME</h1>
+            <h1>{{event.eName}}EVENT NAME</h1>
         </div>
 
         <div class='home__content' style='padding: 20px'>
             <h4>
                 Description:
             </h4>
-            <script>
-            	var app = angular.module("root", []);
-            	app.controller('index', function ($scope, $http) {
             
-            	$scope.shortMessage = false;
-            	$scope.longMessage = "long";
-            
-           		fullDetails = function() {
-           	    	if (confirm("This will display the full details {{event.descriptionFull}}")) {
-           	    		shortMessage = false;
-           	    		longMessage = "long";
-           	    	}
-//           	    	$scope.longMessage = "long";
-//           	    	$scope.shortMessage = false;
-           		}
-           		
-           		shortOnly = function() {
-           	    	if (confirm("This will display the short details again")) {
-           	    		shortMessage = "short";
-           	    		longMessage = false;
-           	    	}
-//           			$scope.shortMessage = "short";
-//           			$scope.longMessage = false;
-           		}
-           		
-           		$scope.shortMessageDir = false;
-            	$scope.longMessageDir = "long";
-            
-           		fullDirections = function() {
-           	    	if (confirm("This will display the full directions {{event.fullDirections}}")) {
-           	    		shortMessageDir = false;
-           	    		longMessageDir = "long";
-           	    	}
-//           	    	$scope.longMessage = "long";
-//           	    	$scope.shortMessage = false;
-           		}
-           		
-            	});
-           	</script>
-           	
            	<div ng-show="longMessage==='long'">
 	            <p>
 	            	This will display the short description. {{event.descriptionShort}}
@@ -85,7 +47,7 @@
 	        	<button onclick="shortOnly()">View Less Information</button>
 	        </div> -->
 	        
-        	<h4><b>{{event.numMembers}}</b> Members - <b>{{event.numOrganizers}}</b> Organizers</h4>
+        	<h4><b>{{event.members}}</b> Members - <b>{{event.numOrganizers}}</b> Organizers</h4>
         	<button>View Members</button>
         	<button>View Organizers</button>
         
@@ -106,7 +68,7 @@
         </div>
         
         <div class='home__footer'>
-            <div class="navbar">
+            <div class="nav_bar">
                 <a href="organization.html" class="active">Events</a>
                 <a href="#news">Volunteers</a>
                 <a href="chat.html">Chat</a>

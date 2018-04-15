@@ -335,4 +335,49 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
     }
     // logout function end
 
+    // view event details function end
+    $scope.viewEventDetails = function(event) {
+        console.log('displaying event details for event: ' + JSON.stringify(event));
+        $window.location.href = '/eventDetails.html';
+    }
+    // view event details function end
+
+
+
+
+    //--Start: Content from Event Details page controller
+    $scope.shortMessage = false;
+    $scope.longMessage = "long";
+
+       fullDetails = function() {
+           if (confirm("This will display the full details {{event.descriptionFull}}")) {
+               shortMessage = false;
+               longMessage = "long";
+           }
+//           	    	$scope.longMessage = "long";
+//           	    	$scope.shortMessage = false;
+       }
+       
+       $scope.shortOnly = function() {
+           if (confirm("This will display the short details again")) {
+               shortMessage = "short";
+               longMessage = false;
+           }
+//           			$scope.shortMessage = "short";
+//           			$scope.longMessage = false;
+       }
+       
+       $scope.shortMessageDir = false;
+    $scope.longMessageDir = "long";
+
+       $scope.fullDirections = function() {
+           if (confirm("This will display the full directions {{event.fullDirections}}")) {
+               shortMessageDir = false;
+               longMessageDir = "long";
+           }
+//           	    	$scope.longMessage = "long";
+//           	    	$scope.shortMessage = false;
+       }
+    //--END: Content from Event Details page controller
+
 }]);

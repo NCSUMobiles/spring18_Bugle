@@ -30,7 +30,7 @@
             </h4>
             
             <ul data-ng-init="getOrganizationEvents(organization.uId)">
-                <li data-ng-repeat="event in events">{{event.eName}}
+                <li data-ng-repeat="event in events" ng-click="viewEventDetails(event)">{{event.eName}}
                 </li>
             </ul>
         </div>
