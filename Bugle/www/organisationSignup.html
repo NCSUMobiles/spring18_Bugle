@@ -4,8 +4,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bugle</title>
+    <title>Bugle: Sign up</title>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="/node_modules/angular-local-storage/src/angular-local-storage.js"></script>
     <script src="//code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="//code.angularjs.org/1.6.0/angular-route.min.js"></script>
     <script src="//code.angularjs.org/1.6.0/angular-cookies.min.js"></script>
@@ -15,6 +16,7 @@
     <script type="text/javascript" src="js/app.js"></script>
 </head>
 
+<<<<<<< HEAD
 <body ng-controller="index">
     <div class="container">
         <div class="col-sm-8 col-sm-offset-2">
@@ -22,10 +24,20 @@
             <!-- ngView: --><div ng-view="" class="ng-scope"><div class="col-md-6 col-md-offset-3 ng-scope">
 <h2>Organization Sign Up</h2>
 <form name="form" ng-submit="register('org')" role="form" class="ng-dirty ng-valid-parse ng-invalid ng-invalid-required">
+=======
+<body ng-controller="index" ng-init="fetchSession()">
+
+    <form name="form" ng-submit="register('org')" role="form" class="ng-dirty ng-valid-parse ng-invalid ng-invalid-required">
+
+>>>>>>> master
         <div class="imgcontainer">
-                <img src="img/logo_128.png" alt="logo" class="logo">
-            </div>
+            <img src="img/logo_64.png" alt="logo" class="logo">
+        </div>
+
+        <div class="container">
+
             <div class="form-group" ng-class="{ 'has-error': form.orgname.$dirty &amp;&amp; form.orgname.$error.required }">
+<<<<<<< HEAD
                 <label for="orgname">Org Name<font size="3" color="red"> *</font></label>
                 <input name="orgname" id="orgname" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="u_name" required="" type="text">
                 <span ng-show="form.orgname.$dirty &amp;&amp; form.orgname.$error.required" class="help-block ng-hide">Org Name is required</span>
@@ -39,13 +51,30 @@
             <div class="form-group" >
                 <label for="mobile">Mobile</label>
                 <input name="mobile" id="mobile" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="mobile"  type="text">
+=======
+                <label for="orgname">Organization Name</label> &nbsp; <span ng-show="form.orgname.$dirty &amp;&amp; form.orgname.$error.required" class="ng-hide fcred">Organization Name is required</span>
+                <input name="orgname" id="orgname" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="orgname" required="" type="text">
             </div>
+
+            <div class="form-group" ng-class="{ 'has-error': form.emailid.$dirty &amp;&amp; form.emailid.$error.required }">
+                <label for="emailid">Email Id</label> &nbsp; <span ng-show="form.emailid.$dirty &amp;&amp; form.emailid.$error.required" class="ng-hide fcred">Email Id is required</span> &nbsp; <span ng-show="form.emailid.$error.email" class="ng-hide fcred">Provided Email Id is invalid</span>
+                <input name="emailid" id="emailid" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="emailid" required="" type="email">
+>>>>>>> master
+            </div>
+
             <div class="form-group" ng-class="{ 'has-error': form.psw.$dirty &amp;&amp; form.psw.$error.required }">
+<<<<<<< HEAD
                 <label for="psw">Password<font size="3" color="red"> *</font></label>
                 <input name="psw" id="psw" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="password" required="" type="password">
                 <span ng-show="form.psw.$dirty &amp;&amp; form.psw.$error.required" class="help-block ng-hide">Password is required</span>
+=======
+                <label for="psw">Password</label> &nbsp; <span ng-show="form.psw.$dirty &amp;&amp; form.psw.$error.required" class="ng-hide fcred">Password is required</span>
+                <input type="password" name="psw" id="psw" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="psw" required="" type="text">
+>>>>>>> master
             </div>
+
             <div class="form-group" ng-class="{ 'has-error': form.cpsw.$dirty &amp;&amp; form.cpsw.$error.required }">
+<<<<<<< HEAD
                 <label for="cpsw">Confirm Password<font size="3" color="red"> *</font></label>
                 <input name="cpsw" id="cpsw" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="cpsw" required="" type="password">
                 <span ng-show="form.cpsw.$dirty &amp;&amp; form.cpsw.$error.required" class="help-block ng-hide">Confirm Password is required</span>
@@ -62,12 +91,20 @@
 </form>
 </div>
 </div>
+=======
+                <label for="cpsw">Confirm Password</label> &nbsp; <span ng-show="form.cpsw.$dirty &amp;&amp; form.cpsw.$error.required" class="ng-hide fcred">Confirm Password is required</span>
+                <input type="password" name="cpsw" id="cpsw" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="cpsw" required="" type="text">
+                
+            </div>
+
+            <button type="submit" ng-disabled="form.$invalid || dataLoading" disabled="disabled">Sign Up</button>
+            <a href="login.html" class="linkbuttonred">Cancel</a>
+
+>>>>>>> master
         </div>
-    </div>
-        
-       
+
     </form>
-            
+
 </body>
 
 </html>

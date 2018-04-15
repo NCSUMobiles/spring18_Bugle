@@ -10,7 +10,7 @@
 
 .home.active {
     display: grid;
-    grid-template-rows: 100px auto 100px;
+    grid-template-rows: 50px auto 50px;
 }
 
 .center_text {
@@ -37,7 +37,7 @@ li {
 
 
 /* The bottom menu bar */
-.navbar {
+.nav_bar {
     overflow: hidden;
     background-color: #333;
     position: fixed;
@@ -45,22 +45,35 @@ li {
     width: 100%;
   }
   
-  .navbar a {
+  .nav_bar a {
     float: left;
     display: block;
     color: #f2f2f2;
     text-align: center;
-    padding: 14px 16px;
+    padding: 10px 10px;
     text-decoration: none;
     font-size: 17px;
   }
   
-  .navbar a:hover {
+  .nav_bar a:hover {
     background: #f1f1f1;
     color: black;
   }
   
-  .navbar a.active {
+  .nav_bar a.active {
     background-color: rgb(164, 235, 167);
     color: white;
+  }
+  
+  .my_container{
+      margin: 0.9rem;
+  }
+
+  .back_button {
+    float: left;
+    border-style: solid;
+    border-radius: 0.7rem;
+    padding: 0.2rem;
+    margin: 0.5rem;
+    text-decoration: none;
   }

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html ng-app="root">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bugle: Event Volunteers</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="/node_modules/angular-local-storage/src/angular-local-storage.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link rel="stylesheet" type="text/css" href="css/base.css" />
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <script type="text/javascript" src="js/app.js"></script>
+</head>
+
+<body ng-controller="index" ng-init="fetchSession()">
+
+    <!-- The Event Volunteers Page -->
+
+    <div class='home active'>
+
+        <div class='home__header center_text'>
+            <h2>Welcome {{user.uName}}</h2>
+        </div>
+
+        <div class='home__content my_container'>
+
+            <!-- Drop down to show the organization's events -->
+            Select an Event to view its volunteers: <select data-ng-init="getOrganizationEvents(user.uId)" ng-model="eventSelected" ng-options="e as e.eName for e in events" ng-change="getEventVolunteers()">
+                <option value="{{e.eId}}"></option>
+            </select>
+            <br><br>
+
+            <!-- Show a drop down for all active events of that organization here from where they can select the event for which they want to show the volunteers. By default show the volunteers of the first active event. -->
+            <div ng-if="eventSelected">
+                <b>Volunteer Applications for {{event.eName}}: </b>
+                <br>
+                <form action="#" method="post">
+                    <input type="hidden" id='e_id' name="e_id" value='{{event.id}}' />
+                    <ul>
+                        <li data-ng-repeat="volunteer in volunteers">
+                            <input name='u_ids' value="{{volunteer.uId}}" type="checkbox"> {{volunteer.uName}}
+                        </li>
+                    </ul>
+                    <br>
+                    <div ng-if="volunteers.length == 0"> No voluteers yet.</div>
+                    <button type="submit" ng-if="volunteers.length > 0" name="approve" formaction="/approve-volunteers" class="btn btn-success">Approve</button>
+                    <button type="submit" ng-if="volunteers.length > 0" name="reject" formaction="/reject-volunteers" class="btn btn-danger pull-right">Reject</button>
+                </form>
+            </div>
+
+        </div>
+        
+        <div class='home__footer'>
+            <div class="nav_bar">
+                <a href="organization.html">Events</a>
+                <a href="eventVolunteers.html" class="active">Volunteers</a>
+                <a href="chat.html">Chat</a>
+                <a href="profile.html">Profile</a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- End Organization Volunteers Page -->
+    
+</body>
+
+</html>
