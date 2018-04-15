@@ -47,14 +47,18 @@ public class DatabaseService {
 		try {
 			con = db.getConnection();
 			// Initialize database here.
-			String createUsers = "CREATE TABLE IF NOT EXISTS users (u_id integer PRIMARY KEY, u_name text NOT NULL, email text NOT NULL, mobile text, dob text, password text NOT NULL, type text NOT NULL, description text, location text, website text)";
-			String createEvents = "CREATE TABLE IF NOT EXISTS events (e_id integer PRIMARY KEY, e_name text NOT NULL, location text, datetime text, description text, members text, u_id integer, status text)";
-			String createApplicants = "CREATE TABLE IF NOT EXISTS applicants (a_id integer PRIMARY KEY, u_id integer NOT NULL, e_id integer NOT NULL, status text)";
-			String createChats = "CREATE TABLE IF NOT EXISTS chats (c_id integer PRIMARY KEY, c_name text NOT NULL, u_ids text, status text)";
+			String createUsers = "CREATE TABLE IF NOT EXISTS users (u_id SERIAL PRIMARY KEY, u_name text NOT NULL, email text NOT NULL, mobile text, dob text, password text NOT NULL, type text NOT NULL, description text, location text, website text)";
+			String createEvents = "CREATE TABLE IF NOT EXISTS events (e_id SERIAL PRIMARY KEY, e_name text NOT NULL, location text, datetime text, description text, members text, u_id integer, status text)";
+			String createApplicants = "CREATE TABLE IF NOT EXISTS applicants (a_id SERIAL PRIMARY KEY, u_id integer NOT NULL, e_id integer NOT NULL, status text)";
+			String createChats = "CREATE TABLE IF NOT EXISTS chats (c_id SERIAL PRIMARY KEY, c_name text NOT NULL, u_ids text, status text)";
 			try (Statement stmt = con.createStatement()) {
+				LOG.debug("Creating users table...");
 				stmt.execute(createUsers);
+				LOG.debug("Creating events table...");
 				stmt.execute(createEvents);
+				LOG.debug("Creating applicants table...");
 				stmt.execute(createApplicants);
+				LOG.debug("Creating chats table...");
 				stmt.execute(createChats);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -81,41 +85,66 @@ public class DatabaseService {
 		List<String> insertStatements = new ArrayList<String>();
 		// users-organizations
 		insertStatements.add(
-				"INSERT INTO users (u_name, email, mobile, password, type, description, location, website) values ('Organization 1','org@org1.com','1236987894','o1pw','org','This is a very big Volunteering organization based in US. For more information visit: xyz.org1.com','Raleigh','xyz.org1.com')");
+				"INSERT INTO users (u_name, email, mobile, password, type, description, location, website) values ('Organization 1','org1@org.com','1236987894','o1','org','This is a very big Volunteering organization based in US. For more information visit: xyz.org1.com','Raleigh','xyz.org1.com')");
 		insertStatements.add(
-				"INSERT INTO users (u_name, email, mobile, password, type, description, location, website) values ('Organization 2','org@org2.com','1236547234','o2pw','org','This is the biggest Volunteering organization based in Atlanta, US. For more information visit: xyz.org2.com','Atlanta','xyz.org2.com')");
+				"INSERT INTO users (u_name, email, mobile, password, type, description, location, website) values ('Organization 2','org2@org.com','1236547234','o2','org','This is the biggest Volunteering organization based in Atlanta, US. For more information visit: xyz.org2.com','Atlanta','xyz.org2.com')");
 		insertStatements.add(
-				"INSERT INTO users (u_name, email, mobile, password, type, description, location, website) values ('Organization 3','org@org3.com','1236547894','o3pw','org','This is the third volunteer organization. We do volunteer work for this and that. For more information visit: xyz.org3.com','Chicago','xyz.org3.com')");
+				"INSERT INTO users (u_name, email, mobile, password, type, description, location, website) values ('Organization 3','org3@org.com','1236547894','o3','org','This is the third volunteer organization. We do volunteer work for this and that. For more information visit: xyz.org3.com','Chicago','xyz.org3.com')");
 		// users-volunteers
 		insertStatements.add(
-				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Default User','usr1@vol.com','1232233421','21.08.93','pwd1','vol')");
+				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Default User','usr1@vol.com','1232233421','21.08.93','v1','vol')");
 		insertStatements.add(
-				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Flower User','usr2@vol.com','1231231233','19.01.90','pwd2','vol')");
+				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Cool User','usr2@vol.com','1231231233','19.01.90','v2','vol')");
 		insertStatements.add(
-				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Google User','usr3@vol.com','1233213458','18.01.95','pwd3','vol')");
+				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Google User','usr3@vol.com','1233213458','18.01.95','v3','vol')");
 		insertStatements.add(
-				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Facebook User','usr4@vol.com','123764543','24.09.85','pwd4','vol')");
+				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Facebook User','usr4@vol.com','123764543','24.09.85','v4','vol')");
 		insertStatements.add(
-				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Twitter User','usr5@vol.com','123987456','30.09.89','pwd5','vol')");
+				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Twitter User','usr5@vol.com','123987456','30.09.89','v5','vol')");
 		insertStatements.add(
-				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Snapchat User','usr62@vol.com','1239873458','11.11.90','pwd6','vol')");
+				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Snapchat User','usr62@vol.com','1239873458','11.11.90','v6','vol')");
 		insertStatements.add(
-				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Alien User','usr7@vol.com','1230978345','16.08.94','pwd7','vol')");
+				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Alien User','usr7@vol.com','1230978345','16.08.94','v7','vol')");
 		// events
 		insertStatements.add(
-				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 1','Raleigh','24.5.18 11:00AM','description of a volunteering event!! come volunteer with us','12',1,'active')");
+				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 1','Raleigh','24.5.18 11:00AM','description of a volunteering event!! come volunteer with us','12',(select u_id from users where u_name='Organization 1' limit 1),'active')");
 		insertStatements.add(
-				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 2','Colorado','19.7.18 01:00PM','description of an exciting volunteering event!! come volunteer with us','22',1,'active')");
+				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 28','Colorado','19.7.18 01:00PM','description of an exciting volunteering event!! come volunteer with us','22',(select u_id from users where u_name='Organization 1' limit 1),'active')");
 		insertStatements.add(
-				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 123','San Jose','11.6.18 10:00AM','description this is a volunteering event!! come volunteer with us in San Jose.','50',1,'active')");
+				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 123','San Jose','11.6.18 10:00AM','description this is a volunteering event!! come volunteer with us in San Jose.','50',(select u_id from users where u_name='Organization 1' limit 1),'active')");
 		insertStatements.add(
-				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 234','New York','16.5.18 03:00PM','description welcome to the volunteering event!! come volunteer with us','10',2,'active')");
+				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 234','New York','16.5.18 03:00PM','description welcome to the volunteering event!! come volunteer with us','10',(select u_id from users where u_name='Organization 2' limit 1),'active')");
 		insertStatements.add(
-				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 23','Atlanta','01.7.18 09:00AM','description volunteering event!! come volunteer with us in Atlanta','5',2,'active')");
+				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 23','Atlanta','01.7.18 09:00AM','description volunteering event!! come volunteer with us in Atlanta','5',(select u_id from users where u_name='Organization 2' limit 1),'active')");
 		insertStatements.add(
-				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 47','Florida','15.5.18 11:00AM','description very interesting volunteering event!! come volunteer with us','7',3,'active')");
+				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 47','Florida','15.5.18 11:00AM','description very interesting volunteering event!! come volunteer with us','7',(select u_id from users where u_name='Organization 3' limit 1),'active')");
 		insertStatements.add(
-				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 74','Chicago','21.4.118 08:00AM','description volunteering event. Big volunteering event need lots of volunteers!! come volunteer with us!','100',3,'active')");
+				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 74','Chicago','21.4.118 08:00AM','description volunteering event. Big volunteering event need lots of volunteers!! come volunteer with us!','100',(select u_id from users where u_name='Organization 3' limit 1),'active')");
+		// applicants
+		insertStatements.add(
+				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Default User' limit 1), (select e_id from events where e_name='Event 1' limit 1), 'active')");
+		insertStatements.add(
+				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Snapchat User' limit 1), (select e_id from events where e_name='Event 28' limit 1), 'active')");
+		insertStatements.add(
+				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Cool User' limit 1), (select e_id from events where e_name='Event 1' limit 1), 'active')");
+		insertStatements.add(
+				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Google User' limit 1), (select e_id from events where e_name='Event 23' limit 1), 'active')");
+		insertStatements.add(
+				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Facebook User' limit 1), (select e_id from events where e_name='Event 234' limit 1), 'active')");
+		insertStatements.add(
+				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Twitter User' limit 1), (select e_id from events where e_name='Event 1' limit 1), 'active')");
+		insertStatements.add(
+				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Default User' limit 1), (select e_id from events where e_name='Event 74' limit 1), 'active')");
+		insertStatements.add(
+				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Alien User' limit 1), (select e_id from events where e_name='Event 1' limit 1), 'active')");
+		insertStatements.add(
+				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Cool User' limit 1), (select e_id from events where e_name='Event 47' limit 1), 'active')");
+		insertStatements.add(
+				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Google User' limit 1), (select e_id from events where e_name='Event 234' limit 1), 'active')");
+		insertStatements.add(
+				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Facebook User' limit 1), (select e_id from events where e_name='Event 74' limit 1), 'active')");
+		insertStatements.add(
+				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Twitter User' limit 1), (select e_id from events where e_name='Event 123' limit 1), 'active')");
 		Connection con = null;
 		try {
 			con = db.getConnection();
@@ -129,6 +158,7 @@ public class DatabaseService {
 					e.printStackTrace();
 				}
 			}
+			LOG.debug("Mock data generated...");
 			return status;
 		} catch (Exception e) {
 			LOG.error("Error while getting DB connection for generating mock data.");
@@ -158,6 +188,7 @@ public class DatabaseService {
 			try (Statement stmt = con.createStatement()) {
 				boolean status = stmt.executeUpdate(resetChats) >= 0 && stmt.executeUpdate(resetApplicants) >= 0
 						&& stmt.executeUpdate(resetEvents) >= 0 && stmt.executeUpdate(resetUsers) >= 0;
+				LOG.debug("Database reset status: " + status);
 				return status;
 			} catch (Exception e) {
 				e.printStackTrace();

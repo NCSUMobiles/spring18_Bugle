@@ -48,6 +48,7 @@ public class HomeController extends Controller {
 	}
 
 	public Result options(String path) {
+		LOG.debug("options request handled for path:" + path);
 		return ok().withHeaders(Strings.CORS, Strings.STAR)
 				.withHeaders("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 				.withHeaders("Access-Control-Allow-Headers",
