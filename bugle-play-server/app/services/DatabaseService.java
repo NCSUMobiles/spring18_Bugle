@@ -621,7 +621,6 @@ public class DatabaseService {
 				e.printStackTrace();
 				return false;
 			}
-
 		} catch (Exception e) {
 			LOG.error("Error while getting DB connection for updating Applicant Status.");
 			e.printStackTrace();
@@ -632,6 +631,37 @@ public class DatabaseService {
 					con.close();
 				} catch (SQLException e) {
 					LOG.error("Error while closing the connection from update Applicant Status method.");
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	public boolean updateUser(int uId, String key, String value) {
+		LOG.debug("Updating User ID: " + uId);
+		Connection con = null;
+		String updateStatement = "UPDATE users set " + key + " = ? WHERE u_id = ?";
+		try {
+			con = db.getConnection();
+			try (PreparedStatement pstmt = con.prepareStatement(updateStatement)) {
+				pstmt.setString(1, value);
+				pstmt.setInt(2, uId);
+				return pstmt.executeUpdate() > 0;
+			} catch (Exception e) {
+				LOG.error("Error while executing query for updating User.");
+				e.printStackTrace();
+				return false;
+			}
+		} catch (Exception e) {
+			LOG.error("Error while getting DB connection for updating User.");
+			e.printStackTrace();
+			return false;
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					LOG.error("Error while closing the connection from update User method.");
 					e.printStackTrace();
 				}
 			}

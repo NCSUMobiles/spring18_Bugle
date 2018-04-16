@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS bugle.users (
+CREATE TABLE IF NOT EXISTS users (
     u_id SERIAL PRIMARY KEY,
 	u_name text NOT NULL,
 	email text NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS bugle.users (
 	website text
 );
 
-CREATE TABLE IF NOT EXISTS bugle.events (
+CREATE TABLE IF NOT EXISTS events (
 	e_id SERIAL PRIMARY KEY,
 	e_name text NOT NULL,
 	location text,
@@ -22,14 +22,14 @@ CREATE TABLE IF NOT EXISTS bugle.events (
 	status text
 );
 
-CREATE TABLE IF NOT EXISTS bugle.applicants (
+CREATE TABLE IF NOT EXISTS applicants (
 	a_id SERIAL PRIMARY KEY,
 	u_id integer NOT NULL,
 	e_id integer NOT NULL,
 	status text
 );
 
-CREATE TABLE IF NOT EXISTS bugle.chats (
+CREATE TABLE IF NOT EXISTS chats (
 	c_id SERIAL PRIMARY KEY,
 	c_name text NOT NULL,
 	u_ids text,

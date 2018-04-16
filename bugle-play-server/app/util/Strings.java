@@ -6,6 +6,7 @@ package util;
  */
 public class Strings {
 
+	public static final String SPACE = " ";
 	public static final String COMMA = ",";
 	public static final String STATUS = "status";
 	public static final String SUCCESS = "success";
@@ -26,6 +27,14 @@ public class Strings {
 	public static final String STATUS_ACTIVE = "active";
 	public static final String STATUS_CLOSED = "closed";
 
+	public static final String USERS_UID = "u_id";
+	public static final String USERS_MOBILE = "mobile";
+	public static final String USERS_DOB = "dob";
+	public static final String USERS_PASSWORD = "password";
+	public static final String USERS_DESCRIPTION = "description";
+	public static final String USERS_WEBSITE = "website";
+	
 	public static final String BUGLE_DB_KEY = "bugle-secret-%%123";
 	public static final String INCORRECT_KEY = "Incorrect Key!";
+	
 }
