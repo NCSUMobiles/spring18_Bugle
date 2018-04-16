@@ -108,7 +108,7 @@ public class HomeController extends Controller {
 				return ok(createSuccessResponse(Strings.MESSAGE, "Event Created")).withHeader(Strings.CORS,
 						Strings.STAR);
 			} else {
-				return ok(createErrorResponse(Strings.FAIL)).withHeader(Strings.CORS, Strings.STAR);
+				return ok(createErrorResponse("Failed to create Event")).withHeader(Strings.CORS, Strings.STAR);
 			}
 		}
 	}
@@ -126,15 +126,17 @@ public class HomeController extends Controller {
 		if (json == null) {
 			return badRequest("Expecting Json data for login.").withHeader(Strings.CORS, Strings.STAR);
 		} else {
-			String email = json.findPath("email").textValue();
+			String email = json.findPath("email").textValue().toLowerCase();
 			String password = json.findPath("password").textValue();
 
 			// validate from DB and return response.
 			Users loginUser = databaseService.validateLogin(email, password);
 			if (loginUser != null) {
+				LOG.debug("Login Successful.");
 				return ok(createSuccessResponse(Strings.USER, new Gson().toJson(loginUser))).withHeader(Strings.CORS,
 						Strings.STAR);
 			} else {
+				LOG.debug("Incorrect user credentials.");
 				return ok(createErrorResponse(Strings.LOGIN_FAIL)).withHeader(Strings.CORS, Strings.STAR);
 			}
 		}
@@ -164,7 +166,7 @@ public class HomeController extends Controller {
 		} else {
 
 			String name = json.findPath("u_name").textValue();
-			String email = json.findPath("email").textValue();
+			String email = json.findPath("email").textValue().toLowerCase();
 			String mobile = json.findPath("mobile").textValue();
 			String dob = json.findPath("dob").textValue();
 			String password = json.findPath("password").textValue();
@@ -180,7 +182,7 @@ public class HomeController extends Controller {
 				return ok(createSuccessResponse(Strings.USER, new Gson().toJson(user))).withHeader(Strings.CORS,
 						Strings.STAR);
 			} else {
-				return ok(createErrorResponse(Strings.FAIL)).withHeader(Strings.CORS, Strings.STAR);
+				return ok(createErrorResponse("Failed to Create User")).withHeader(Strings.CORS, Strings.STAR);
 			}
 		}
 	}
@@ -204,7 +206,8 @@ public class HomeController extends Controller {
 	public Result getEventVolunteers(String eId) {
 		LOG.debug("getEventVolunteers method called.");
 		List<Users> volunteers = databaseService.getEventApplicants(Integer.valueOf(eId));
-		return ok(createSuccessResponse("volunteers", new Gson().toJson(volunteers))).withHeader(Strings.CORS, Strings.STAR);
+		return ok(createSuccessResponse("volunteers", new Gson().toJson(volunteers))).withHeader(Strings.CORS,
+				Strings.STAR);
 	}
 
 	/**
@@ -236,7 +239,7 @@ public class HomeController extends Controller {
 				return ok(createSuccessResponse(Strings.MESSAGE, "Applied successfully.")).withHeader(Strings.CORS,
 						Strings.STAR);
 			} else {
-				return ok(createErrorResponse(Strings.FAIL)).withHeader(Strings.CORS, Strings.STAR);
+				return ok(createErrorResponse("Could not apply to event.")).withHeader(Strings.CORS, Strings.STAR);
 			}
 		}
 	}
@@ -280,7 +283,7 @@ public class HomeController extends Controller {
 				return ok(createSuccessResponse(Strings.MESSAGE, "Approved Volunteers succesfully"))
 						.withHeader(Strings.CORS, Strings.STAR);
 			} else {
-				return ok(createErrorResponse(Strings.FAIL)).withHeader(Strings.CORS, Strings.STAR);
+				return ok(createErrorResponse("Could not approve Volunteers")).withHeader(Strings.CORS, Strings.STAR);
 			}
 		}
 	}
@@ -324,7 +327,7 @@ public class HomeController extends Controller {
 				return ok(createSuccessResponse(Strings.MESSAGE, "Rejected Volunteers Succesfully"))
 						.withHeader(Strings.CORS, Strings.STAR);
 			} else {
-				return ok(createErrorResponse(Strings.FAIL)).withHeader(Strings.CORS, Strings.STAR);
+				return ok(createErrorResponse("Could not reject volunteers")).withHeader(Strings.CORS, Strings.STAR);
 			}
 		}
 	}
@@ -376,6 +379,78 @@ public class HomeController extends Controller {
 				}
 			} else {
 				return ok(createErrorResponse(Strings.INCORRECT_KEY)).withHeader(Strings.CORS, Strings.STAR);
+			}
+		}
+	}
+
+	/**
+	 * This method edits the value of the specified column name in the User table in
+	 * database.
+	 * 
+	 * @return
+	 */
+	public Result editUser() {
+		LOG.debug("editUser method called.");
+		JsonNode json = request().body().asJson();
+		if (json == null) {
+			return badRequest("Expecting Json data for Editing User.").withHeader(Strings.CORS, Strings.STAR);
+		} else {
+			int uId = json.findPath(Strings.USERS_UID).intValue();
+			String mobile = json.findPath(Strings.USERS_MOBILE).textValue();
+			String dob = json.findPath(Strings.USERS_DOB).textValue();
+			String password = json.findPath(Strings.USERS_PASSWORD).textValue();
+			String description = json.findPath(Strings.USERS_DESCRIPTION).textValue();
+			String website = json.findPath(Strings.USERS_WEBSITE).textValue();
+
+			if (mobile != null) {
+				if (databaseService.updateUser(uId, Strings.USERS_MOBILE, mobile)) {
+					LOG.debug("Update Mobile for user #: " + uId);
+					return ok(createSuccessResponse(Strings.MESSAGE, "User mobile updated Successfully"))
+							.withHeader(Strings.CORS, Strings.STAR);
+				} else {
+					return ok(createErrorResponse("Unable to update mobile for user.")).withHeader(Strings.CORS,
+							Strings.STAR);
+				}
+			} else if (dob != null) {
+				if (databaseService.updateUser(uId, Strings.USERS_DOB, mobile)) {
+					LOG.debug("Update date of birth for user #: " + uId);
+					return ok(createSuccessResponse(Strings.MESSAGE, "User date of birth updated Successfully"))
+							.withHeader(Strings.CORS, Strings.STAR);
+				} else {
+					return ok(createErrorResponse("Unable to update date of birth for user.")).withHeader(Strings.CORS,
+							Strings.STAR);
+				}
+			} else if (password != null) {
+				if (databaseService.updateUser(uId, Strings.USERS_PASSWORD, mobile)) {
+					LOG.debug("Update password for user #: " + uId);
+					return ok(createSuccessResponse(Strings.MESSAGE, "User password updated Successfully"))
+							.withHeader(Strings.CORS, Strings.STAR);
+				} else {
+					return ok(createErrorResponse("Unable to update password for user.")).withHeader(Strings.CORS,
+							Strings.STAR);
+				}
+			} else if (description != null) {
+				if (databaseService.updateUser(uId, Strings.USERS_DESCRIPTION, mobile)) {
+					LOG.debug("Update description for user #: " + uId);
+					return ok(createSuccessResponse(Strings.MESSAGE, "User description updated Successfully"))
+							.withHeader(Strings.CORS, Strings.STAR);
+				} else {
+					return ok(createErrorResponse("Unable to update description for user.")).withHeader(Strings.CORS,
+							Strings.STAR);
+				}
+			} else if (website != null) {
+				if (databaseService.updateUser(uId, Strings.USERS_WEBSITE, mobile)) {
+					LOG.debug("Update website for user #: " + uId);
+					return ok(createSuccessResponse(Strings.MESSAGE, "User website updated Successfully"))
+							.withHeader(Strings.CORS, Strings.STAR);
+				} else {
+					return ok(createErrorResponse("Unable to update website for user.")).withHeader(Strings.CORS,
+							Strings.STAR);
+				}
+			} else {
+				LOG.debug("None of the supported update fields present in the JSON request.");
+				return ok(createErrorResponse("None of the supported update fields present in the JSON request."))
+						.withHeader(Strings.CORS, Strings.STAR);
 			}
 		}
 	}

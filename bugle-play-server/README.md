@@ -31,6 +31,7 @@
 | POST | /reject-volunteers         | Reject a list of volunteers for an event | [reject-volunteers.json](sample-json/request/reject-volunteers.json) |
 | POST | /mock-db                   | inserts mock values in the DB (Caution! needs key)  | [mock-db.json](sample-json/request/mock-db.json) |
 | POST | /reset-db                  | deletes all records from all tables in the DB (Caution! needs key)  | [reset-db.json](sample-json/request/reset-db.json) |
+| POST | /edit-user                 | edits the specified field in the user table in the DB  | [edit-user.json](sample-json/request/edit-user.json) |
 
 #### API Response
 
@@ -53,3 +54,4 @@
 | POST /reject-volunteers    | [RejectVolunteers Response](sample-json/response/reject-volunteers.json) |
 | POST /mock-db              | [MockDB Response](sample-json/response/mock-db.json) |
 | POST /reset-db             | [ResetDB Response](sample-json/response/reset-db.json) |
+| POST /edit-user            | [EditUser Response](sample-json/response/edit-user.json) |
