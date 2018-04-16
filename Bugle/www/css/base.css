@@ -77,3 +77,24 @@ li {
     margin: 0.5rem;
     text-decoration: none;
   }
+
+.btn-green {
+    background-color: #4CAF50 !important;
+    border: none !important;
+    padding: 10px 20px !important;
+}
+
+.linkbuttonred {
+    background-color: rgb(247, 71, 71);
+    color: white;
+    display: block;
+    text-align: center;
+    font-weight: bold;
+    padding: 10px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 0.6rem;
+    cursor: pointer;
+    width: 100%;
+    text-decoration: none;
+}
