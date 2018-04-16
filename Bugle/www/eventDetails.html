@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bugle</title>
+    <title>Bugle: Event Details</title>
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -22,7 +22,9 @@
     <div class='home active'>
 
         <div class='home__header center_text'>
-            <h1>{{event.eName}}EVENT NAME</h1>
+				<a ng-if="prevPage.includes('orgEvents.html')" href="orgEvents.html" class="back_button">Back</a>
+				<a ng-if="prevPage.includes('volunteerEvents.html')" href="volunteerEvents.html" class="back_button">Back</a>
+            <h1>{{event.eName}}</h1>
         </div>
 
         <div class='home__content' style='padding: 20px'>
@@ -32,9 +34,9 @@
             
            	<div ng-show="longMessage==='long'">
 	            <p>
-	            	This will display the short description. {{event.descriptionShort}}
+	            	{{event.description}}
 	            </p>
-	            <button onclick="fullDetails()">Read Full Description</button>
+	            <a onclick="fullDetails()">Read Full Description</a>
 	        </div>
 <!-- 	        <div ng-show="shortMessage==='short'">
 	        	<p>
@@ -47,32 +49,29 @@
 	        	<button onclick="shortOnly()">View Less Information</button>
 	        </div> -->
 	        
-        	<h4><b>{{event.members}}</b> Members - <b>{{event.numOrganizers}}</b> Organizers</h4>
+        	<h4><b>{{event.members}}</b> Members</h4>
         	<button>View Members</button>
         	<button>View Organizers</button>
         
-        	<h4>Time: {{event.time}}</h4>
+        	<h4>Time: {{event.datetime}}</h4>
         	<h4>Location: {{event.location}}</h4>
 	        
 	        <div ng-show="longMessageDir==='long'">
-	            <p>
-	            	This will display the short description. {{event.directionsShort}}
-	            </p>
-	            <button onclick="fullDirections()">Read More</button>
 	            <button>Navigate on Google Maps</button>
 	        </div>
-	        
-	        <br><br>
+	        <br>
 	        <button>Join Event</button>
             
         </div>
         
         <div class='home__footer'>
             <div class="nav_bar">
-                <a href="organization.html" class="active">Events</a>
-                <a href="#news">Volunteers</a>
-                <a href="chat.html">Chat</a>
-                <a href="profile.html">Profile</a>
+					<a href="organization.html" ng-if="user.type == 'org'">Events</a>
+					<a href="volunteer.html" ng-if="user.type == 'vol'" ng-class="{'active': prevPage.includes('orgEvents.html')}">Organizations</a>
+					<a href="volunteerEvents.html" ng-if="user.type == 'vol'" ng-class="{'active': prevPage.includes('volunteerEvents.html')}">Applied</a>
+					<a href="eventVolunteers.html" ng-if="user.type == 'org'">Volunteers</a>
+					<a href="chat.html">Chat</a>
+					<a href="profile.html">Profile</a>
             </div>
         </div>
 
