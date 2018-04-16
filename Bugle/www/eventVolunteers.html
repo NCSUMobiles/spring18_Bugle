@@ -24,7 +24,7 @@
         </div>
 
         <div class='home__content my_container'>
-
+            <br>
             <!-- Drop down to show the organization's events -->
             Select an Event to view its volunteers: <select data-ng-init="getOrganizationEvents(user.uId)" ng-model="eventSelected" ng-options="e as e.eName for e in events" ng-change="getEventVolunteers()">
                 <option value="{{e.eId}}"></option>
@@ -44,8 +44,8 @@
                     </ul>
                     <br>
                     <div ng-if="volunteers.length == 0"> No voluteers yet.</div>
-                    <button type="submit" ng-if="volunteers.length > 0" name="approve" formaction="/approve-volunteers" class="btn btn-success">Approve</button>
-                    <button type="submit" ng-if="volunteers.length > 0" name="reject" formaction="/reject-volunteers" class="btn btn-danger pull-right">Reject</button>
+                    <button type="submit" ng-if="volunteers.length > 0" name="approve" formaction="/approve-volunteers" class="btn btn-success pull-right">Approve</button>
+                    <button type="submit" ng-if="volunteers.length > 0" name="reject" formaction="/reject-volunteers" class="btn btn-danger">Reject</button>
                 </form>
             </div>
 
