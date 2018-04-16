@@ -14,6 +14,7 @@ app.service('UserService', function () {
     var organizations = '';
     var currentEvent = '';
     var currentVolunteers = '';
+    var prevPage = '';
 
     return {
         getLoggedInUser: function () {
@@ -45,6 +46,12 @@ app.service('UserService', function () {
         },
         setCurrentVolunteers: function (v) {
             currentVolunteers = v;
+        },
+        getPrevPage: function () {
+            return prevPage;
+        },
+        setPrevPage: function (p) {
+            prevPage = p;
         }
     }
 });
@@ -53,12 +60,14 @@ app.service('UserService', function () {
 app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStorageService', function ($scope, $http, $window, UserService, localStorageService) {
 
     $scope.title = 'Bugle Beta App';
-    
+
     // Actual User data will be fetched from the session - remove this hardcoding after session is implemented.
     UserService.loggedInUser = {
         "uId": 4, "uName": "Default User", "email": "usr1@vol.com", "mobile": "1232233421", "dob": "21.08.93", "password": "pwd1", "type": "vol"
     };
     // userID = 1-3 for organizations and userID 4-7 for volunteers.    
+
+    $scope.prevPage = {};
 
     $scope.user = UserService.loggedInUser;
 
@@ -72,28 +81,29 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
     $scope.event = {};
 
     $scope.organization = {};
-    
+
     $scope.eventSelected = false;
 
     // The actual list will com from the Database via the API
     $scope.volunteers = [];
 
-    $scope.fetchSession = function() {
+    $scope.fetchSession = function () {
         $scope.user = localStorageService.get('sessionUser');
         $scope.organizations = localStorageService.get('organizations');
         $scope.organization = localStorageService.get('organization');
         $scope.events = localStorageService.get('events');
         $scope.event = localStorageService.get('event');
         $scope.volunteers = localStorageService.get('volunteers');
-        
+        $scope.prevPage = localStorageService.get('prevPage');
+
         var validUnauthPage = $window.location.href.includes('/login.html') || $window.location.href.includes('/organisationSignup.html') || $window.location.href.includes('/volunteerSignup.html');
 
         if (!validUnauthPage && !$scope.user) {
             $window.location.href = '/login.html';
         }
-        
+
         if (validUnauthPage && $scope.user) {
-            if ($scope.user.type =='vol') {
+            if ($scope.user.type == 'vol') {
                 $window.location.href = '/volunteer.html';
             } else {
                 $window.location.href = '/organization.html';
@@ -181,7 +191,7 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
     //Register function end.
 
     // Get organizations function start
-    $scope.getOrganizations = function() {
+    $scope.getOrganizations = function () {
         console.log('fetching organizations from server');
         $http({
             method: 'GET',
@@ -204,7 +214,7 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
     // Get volunteer events function start
     $scope.getVolunteerEvents = function (uId) {
         //TODO: remove hardcoded value later.
-       // uId = 1;
+        // uId = 1;
         console.log('fetching events for volunteer ID: ' + uId);
         var srvURL = 'https://bugle-pl-srv.herokuapp.com/volunteer-events/' + uId;
         console.log('API URL: ' + srvURL)
@@ -251,7 +261,7 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
     // Get organization events function end
 
     // org selected function start
-    $scope.getEventVolunteers = function() {
+    $scope.getEventVolunteers = function () {
         console.log('Fetching Events Volunteers for the selected Event: ' + JSON.stringify($scope.eventSelected));
         updateScopeEvent($scope.eventSelected);
         console.log('updating session event to: ' + JSON.stringify($scope.eventSelected));
@@ -316,7 +326,13 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
         $scope.volunteers = v;
     }
     // Update Scope Volunteers function end
-    
+
+    var updateScopePrevPage = function(p) {
+        console.log('updating previous page to: ' + p);
+        UserService.prevPage = p;
+        $scope.prevPage = p;
+    }
+
     // open org events function start
     $scope.openOrgEvents = function (org) {
         console.log('updating session organization to: ' + JSON.stringify(org));
@@ -327,7 +343,7 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
     // open org events function end
 
     // logout function start
-    $scope.logout = function() {
+    $scope.logout = function () {
         localStorageService.set('sessionUser', null);
         UserService.loggedInUser = null;
         $scope.user = null;
@@ -336,8 +352,15 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
     // logout function end
 
     // view event details function end
-    $scope.viewEventDetails = function(event) {
+    $scope.viewEventDetails = function (event) {
         console.log('displaying event details for event: ' + JSON.stringify(event));
+        updateScopeEvent(event);
+        console.log('updating session event to: ' + JSON.stringify(event));
+        localStorageService.set('event', null);
+        localStorageService.set('event', event);
+        updateScopePrevPage($window.location.href);
+        localStorageService.set('prevPage', null);
+        localStorageService.set('prevPage', $window.location.href);
         $window.location.href = '/eventDetails.html';
     }
     // view event details function end
@@ -349,35 +372,35 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
     $scope.shortMessage = false;
     $scope.longMessage = "long";
 
-       fullDetails = function() {
-           if (confirm("This will display the full details {{event.descriptionFull}}")) {
-               shortMessage = false;
-               longMessage = "long";
-           }
-//           	    	$scope.longMessage = "long";
-//           	    	$scope.shortMessage = false;
-       }
-       
-       $scope.shortOnly = function() {
-           if (confirm("This will display the short details again")) {
-               shortMessage = "short";
-               longMessage = false;
-           }
-//           			$scope.shortMessage = "short";
-//           			$scope.longMessage = false;
-       }
-       
-       $scope.shortMessageDir = false;
+    fullDetails = function () {
+        if (confirm("This will display the full details {{event.descriptionFull}}")) {
+            shortMessage = false;
+            longMessage = "long";
+        }
+        //           	    	$scope.longMessage = "long";
+        //           	    	$scope.shortMessage = false;
+    }
+
+    $scope.shortOnly = function () {
+        if (confirm("This will display the short details again")) {
+            shortMessage = "short";
+            longMessage = false;
+        }
+        //           			$scope.shortMessage = "short";
+        //           			$scope.longMessage = false;
+    }
+
+    $scope.shortMessageDir = false;
     $scope.longMessageDir = "long";
 
-       $scope.fullDirections = function() {
-           if (confirm("This will display the full directions {{event.fullDirections}}")) {
-               shortMessageDir = false;
-               longMessageDir = "long";
-           }
-//           	    	$scope.longMessage = "long";
-//           	    	$scope.shortMessage = false;
-       }
+    $scope.fullDirections = function () {
+        if (confirm("This will display the full directions {{event.fullDirections}}")) {
+            shortMessageDir = false;
+            longMessageDir = "long";
+        }
+        //           	    	$scope.longMessage = "long";
+        //           	    	$scope.shortMessage = false;
+    }
     //--END: Content from Event Details page controller
 
 }]);
