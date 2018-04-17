@@ -113,6 +113,7 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
 
     // Login function Begin.
     $scope.login = function () {
+        $scope.dataLoading = true;
         console.log('login called');
 
         var loginURL = 'https://bugle-pl-srv.herokuapp.com/login';
@@ -143,6 +144,8 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
             }
         }, function failLogin(response) {
             console.log('ERROR: ' + JSON.stringify(response));
+        }).finally(function () {
+            $scope.dataLoading = false;
         });
     }
     // Login function End.
