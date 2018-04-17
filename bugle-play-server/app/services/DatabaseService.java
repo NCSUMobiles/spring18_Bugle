@@ -637,15 +637,20 @@ public class DatabaseService {
 		}
 	}
 
-	public boolean updateUser(int uId, String key, String value) {
-		LOG.debug("Updating User ID: " + uId);
+	public boolean updateUser(Users user) {
+		LOG.debug("Updating User ID: " + user.getuId());
 		Connection con = null;
-		String updateStatement = "UPDATE users set " + key + " = ? WHERE u_id = ?";
+		String updateStatement = "UPDATE users set mobile = ? , dob = ? , password = ? , description = ? , website = ? , location = ? WHERE u_id = ?";
 		try {
 			con = db.getConnection();
 			try (PreparedStatement pstmt = con.prepareStatement(updateStatement)) {
-				pstmt.setString(1, value);
-				pstmt.setInt(2, uId);
+				pstmt.setString(1, user.getMobile());
+				pstmt.setString(2, user.getDob());
+				pstmt.setString(3, user.getPassword());
+				pstmt.setString(4, user.getDescription());
+				pstmt.setString(5, user.getWebsite());
+				pstmt.setString(6, user.getLocation());
+				pstmt.setInt(7, user.getuId());
 				return pstmt.executeUpdate() > 0;
 			} catch (Exception e) {
 				LOG.error("Error while executing query for updating User.");

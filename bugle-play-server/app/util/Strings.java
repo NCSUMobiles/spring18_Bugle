@@ -27,12 +27,16 @@ public class Strings {
 	public static final String STATUS_ACTIVE = "active";
 	public static final String STATUS_CLOSED = "closed";
 
-	public static final String USERS_UID = "u_id";
-	public static final String USERS_MOBILE = "mobile";
-	public static final String USERS_DOB = "dob";
-	public static final String USERS_PASSWORD = "password";
-	public static final String USERS_DESCRIPTION = "description";
-	public static final String USERS_WEBSITE = "website";
+	public static final String USERS_UID = "USERS_UID";
+	public static final String USERS_MOBILE = "USERS_MOBILE";
+	public static final String USERS_DOB = "USERS_DOB";
+	public static final String USERS_PASSWORD = "USERS_PASSWORD";
+	public static final String USERS_DESCRIPTION = "USERS_DESCRIPTION";
+	public static final String USERS_WEBSITE = "USERS_WEBSITE";
+	public static final String USERS_LOCATION = "USERS_LOCATION";
+	public static final String USERS_TYPE = "USERS_TYPE";
+	public static final String USERS_EMAIL = "USERS_EMAIL";
+	public static final String USERS_UNAME = "USERS_UNAME";
 	
 	public static final String BUGLE_DB_KEY = "bugle-secret-%%123";
 	public static final String INCORRECT_KEY = "Incorrect Key!";
