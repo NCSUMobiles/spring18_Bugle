@@ -403,4 +403,60 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
     }
     //--END: Content from Event Details page controller
 
+    $scope.updateField = false;
+
+    // function to enable users to modify Profile details
+    $scope.modify = function(){
+        $scope.updateField = true;
+    };
+
+    // update user Profile details function
+    $scope.update = function(user){
+
+        $scope.dataLoading = true;
+        console.log('update user called for user ' + user.uName);
+
+        var updateUserURL = 'https://bugle-pl-srv.herokuapp.com/edit-user'; //edit-user
+        var updateUserInfo = {
+            'USERS_UID': $scope.user.uId,
+            'USERS_UNAME': $scope.user.uName,
+            'USERS_EMAIL': $scope.user.email,
+            'USERS_TYPE': $scope.user.type,
+            'USERS_MOBILE': $scope.user.mobile,
+            'USERS_DOB': $scope.user.dob,
+            'USERS_PASSWORD': $scope.user.password,
+            'USERS_DESCRIPTION': $scope.user.description,
+            'USERS_WEBSITE': $scope.user.website,
+            'USERS_LOCATION': $scope.user.location
+        };
+
+        $http({
+            url: updateUserURL,
+            method: 'POST',
+            data: updateUserInfo,
+            headers: { 'Content-Type': 'application/json' }
+        }).then(function (response) {
+            console.log('SUCCESS: ' + JSON.stringify(response));
+            //var user = response.config.data;
+            var user = JSON.parse(response.data.user);
+            //var user = response.data.user;
+            updateScopeUser(user);
+            console.log('updated records for user: ' + user);
+            localStorageService.set('sessionUser', null);
+            localStorageService.set('sessionUser', user);
+            $scope.updateField = false;
+            $window.location.href = '/profile.html';
+        }, function (response) {
+            console.log('ERROR: ' + JSON.stringify(response));
+        }).finally(function () {
+            $scope.dataLoading = false;
+        });
+    };
+
+    // cancel Profile update function
+    $scope.cancelUpdate = function(){
+        $scope.updateField = false;
+        $window.location.href = '/profile.html';
+    };
+
 }]);
