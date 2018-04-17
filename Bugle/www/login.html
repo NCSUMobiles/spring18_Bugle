@@ -2,6 +2,8 @@
 <html ng-app="root">
 
 <head>
+    <meta content="img/logo_128.png" itemprop="image">
+    <link href="img/logo_128.png" rel="icon">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bugle: Login</title>
@@ -32,10 +34,8 @@
             </label>
             <input type="password" placeholder="Enter Password" name="pwd" ng-model="password" required>
 
-            <button type="submit">Login</button>
-            <label>
-                <input type="checkbox" checked="checked" name="remember"> Remember me
-            </label>
+            <button type="submit" ng-disabled="dataLoading">Login</button>
+            
         </div>
 
         <div class='container'>
