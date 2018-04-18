@@ -28,14 +28,15 @@
         </div>
 
         <div class='home__content my_container'>
+            <br>
+            <a class="btn btn-success pull-right" href="createEvent.html">Create Event</a>
             <h4>
                 Your Events
-            <a class="btn btn-success pull-right" href="createEvent.html">Create Event</a>
             </h4>
-            <br>
+            
             <ul data-ng-init="getOrganizationEvents(user.uId)">
                 <!--TODO: should we redirect it to a edit event page instead?-->
-                <li data-ng-repeat="event in events"><a href="eventVolunteers.html">{{event.eName}}</a></li>
+                <li data-ng-repeat="event in events" class="btn-shadow"><a class="plainlink" href="eventVolunteers.html">{{event.eName}}</a></li>
             </ul>
         </div>
 
