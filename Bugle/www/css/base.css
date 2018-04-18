@@ -81,12 +81,25 @@ li {
     margin-left: 0.8rem;
     margin-right: -1.8rem;
     text-decoration: none;
+    box-shadow: 0px 8px 6px -6px black !important;
   }
 
 .btn-green {
     background-color: #4CAF50 !important;
     border: none !important;
     padding: 10px 20px !important;
+    box-shadow: 0px 8px 6px -6px black !important;
+}
+
+.btn-shadow {
+    box-shadow: 0px 8px 6px -6px black !important;
+}
+
+.btn-small-blue {
+    background-color: rgb(193, 222, 248) !important;
+    box-shadow: 0px 8px 6px -6px black !important;
+    border: none !important;
+    padding: 1px 5px !important;
 }
 
 .linkbuttonred {
@@ -107,4 +120,26 @@ li {
 .plainlink {
     text-decoration: none;
     color: black;
+}
+
+.tbl-ev-details {
+    border: none;
+}
+
+td.ev-details {
+    padding: 1rem;
+}
+
+td.ev-details-rt {
+    padding: 1rem;
+    padding-left: 3rem;
+}
+
+div.wrapper {
+    width: 100%;
+    text-align: center;
+}
+
+.btn-center {
+    margin: 0 auto;
 }

@@ -122,12 +122,10 @@
                 
           
            <br>
-           <button type="button" class="btn btn-info" ng-hide="updateField" ng-click="modify()">Modify</button>
-           <button type="button" class="btn btn-success" ng-show="updateField" ng-disabled="dataLoading" ng-click="update(user)">Update</button>
-           <button type="button" class="btn btn-danger" ng-show="updateField" ng-disabled="dataLoading" ng-click="cancelUpdate(user)">Cancel</button>
-
-            <br><br><br>
-            <button type="button" class="btn btn-warning" ng-click="logout()">Logout</button>
+           <button type="button" class="btn btn-info btn-shadow" ng-hide="updateField" ng-click="modify()">Modify</button>
+           <button type="button" class="btn btn-success btn-shadow" ng-show="updateField" ng-disabled="dataLoading" ng-click="update(user)">Update</button>
+           <button type="button" class="btn btn-danger btn-shadow" ng-show="updateField" ng-disabled="dataLoading" ng-click="cancelUpdate(user)">Cancel</button>
+           <button type="button" class="btn btn-warning btn-shadow pull-right" ng-click="logout()">Logout</button>
         </div>
 
         <div class='home__footer'>
