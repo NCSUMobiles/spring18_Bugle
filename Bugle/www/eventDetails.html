@@ -12,6 +12,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 	<script src="/node_modules/angular-local-storage/src/angular-local-storage.js"></script>
+	<script src="/node_modules/read-more/js/directives/readmore.js"></script>
     <link rel="stylesheet" type="text/css" href="css/style.css" />
     <link rel="stylesheet" type="text/css" href="css/base.css" />
     <script type="text/javascript" src="js/app.js"></script>
@@ -20,49 +21,27 @@
 <body ng-controller="index" ng-init="fetchSession()">
 
     <!-- The Organization Home Page -->
-
+	
     <div class='home active'>
-
+	
         <div class='home__header center_text'>
-				<a ng-if="prevPage.includes('orgEvents.html')" href="orgEvents.html" class="back_button">Back</a>
-				<a ng-if="prevPage.includes('volunteerEvents.html')" href="volunteerEvents.html" class="back_button">Back</a>
-            <h1>{{event.eName}}</h1>
+			<a ng-if="prevPage.includes('orgEvents.html')" href="orgEvents.html" class="back_button">Back</a>
+			<a ng-if="prevPage.includes('volunteerEvents.html')" href="volunteerEvents.html" class="back_button">Back</a>
+            <h3><b>{{event.eName}}</b></h3>
         </div>
 
         <div class='home__content' style='padding: 20px'>
-            <h4>
-                Description:
-            </h4>
-            
-           	<div ng-show="longMessage==='long'">
-	            <p>
-	            	{{event.description}}
-	            </p>
-	            <a onclick="fullDetails()">Read Full Description</a>
-	        </div>
-<!-- 	        <div ng-show="shortMessage==='short'">
-	        	<p>
-	        		This will display the really long description.\n
-	        		There will be elaborate details.\n
-	        		There will be a large amount of information.\n
-	        		People will be able to view all of this information if they want.\n
-	        		Or they can press the button below to go back to the short description.\n
-	        	</p>
-	        	<button onclick="shortOnly()">View Less Information</button>
-	        </div> -->
+            <p><b>Event Description:</b></p>
+			<p read-more ng-model="event.description" words="false" length="50"></p>	        
 	        
-        	<h4><b>{{event.members}}</b> Members</h4>
-        	<button>View Members</button>
-        	<button>View Organizers</button>
+			<p><b>Members: </b>{{event.members}} <button>View Members</button></p>
+			<p><b>Organizer: </b>{{organization.uName}} <button>View Organizer</button></p>
         
-        	<h4>Time: {{event.datetime}}</h4>
-        	<h4>Location: {{event.location}}</h4>
-	        
-	        <div ng-show="longMessageDir==='long'">
-	            <button>Navigate on Google Maps</button>
-	        </div>
+        	<p><b>Time: </b> {{event.datetime}}</p>
+        	<p><b>Location: </b> {{event.location}} <button>Navigate</button></p>
+
 	        <br>
-	        <button>Join Event</button>
+	        <button class="btn btn-green">Join Event</button>
             
         </div>
         
@@ -77,9 +56,9 @@
             </div>
         </div>
 
-    </div>
-
-    <!-- End Organization Home Page -->
+	</div>
+	
+	<!-- End Organization Home Page -->
     
 </body>
 

@@ -1,4 +1,4 @@
-var app = angular.module('root', ['LocalStorageModule']);
+var app = angular.module('root', ['LocalStorageModule', 'readMore']);
 
 app.config(function (localStorageServiceProvider) {
     localStorageServiceProvider
@@ -12,6 +12,7 @@ app.service('UserService', function () {
     var loggedInUser = '';
     var currentEvents = '';
     var organizations = '';
+    var organization = '';
     var currentEvent = '';
     var currentVolunteers = '';
     var prevPage = '';
@@ -34,6 +35,12 @@ app.service('UserService', function () {
         },
         setOrganizations: function (orgs) {
             organizations = orgs;
+        },
+        getOrganization: function () {
+            return organization;
+        },
+        setOrganizations: function (org) {
+            organization = org;
         },
         getCurrentEvent: function () {
             return currentEvent;
@@ -330,17 +337,28 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
     }
     // Update Scope Volunteers function end
 
+    // Update Scope PrevPage function Start
     var updateScopePrevPage = function(p) {
         console.log('updating previous page to: ' + p);
         UserService.prevPage = p;
         $scope.prevPage = p;
     }
+    // Update Scope PrevPage function Start
+
+    // Update Scope Organization function Start
+    var updateScopeOrganization = function (org) {
+        console.log('updating Service organizations to: ' + org);
+        UserService.organization = org;
+        $scope.organization = org;
+    }
+    // Update Scope Organization function Start
 
     // open org events function start
     $scope.openOrgEvents = function (org) {
         console.log('updating session organization to: ' + JSON.stringify(org));
         localStorageService.set('organization', null);
         localStorageService.set('organization', org);
+        updateScopeOrganization(org);
         $window.location.href = '/orgEvents.html';
     }
     // open org events function end
@@ -357,6 +375,7 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
     // view event details function end
     $scope.viewEventDetails = function (event) {
         console.log('displaying event details for event: ' + JSON.stringify(event));
+        console.log('Current scope organization is: ' + JSON.stringify($scope.organization));
         updateScopeEvent(event);
         console.log('updating session event to: ' + JSON.stringify(event));
         localStorageService.set('event', null);
@@ -367,8 +386,6 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
         $window.location.href = '/eventDetails.html';
     }
     // view event details function end
-
-
 
 
     //--Start: Content from Event Details page controller

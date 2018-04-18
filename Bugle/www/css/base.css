@@ -74,7 +74,9 @@ li {
     border-style: solid;
     border-radius: 0.7rem;
     padding: 0.2rem;
-    margin: 0.5rem;
+    margin-top: 2.5rem;
+    margin-left: 0.8rem;
+    margin-right: -1.8rem;
     text-decoration: none;
   }
 
