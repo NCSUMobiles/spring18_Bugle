@@ -11,8 +11,10 @@
     <script src="/node_modules/angular-local-storage/src/angular-local-storage.js"></script>
     <script src="/node_modules/read-more/js/directives/readmore.js"></script>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js"></script>
     <link rel="stylesheet" type="text/css" href="css/style.css" />
     <link rel="stylesheet" type="text/css" href="css/base.css" />
+    <link rel="stylesheet" type="text/css" href="css/chat.css" />
     <script type="text/javascript" src="js/app.js"></script>    
 </head>
 
@@ -27,39 +29,13 @@
         </div>
 
         <div class='home__content my_container'>
-            <div>
-                <div class="chat-container">
-        
-                    <!-- =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= -->
-                    <!-- Chat Messages -->
-                    <!-- =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= -->
-                    <div class="chat-messages">
-                        <div class="chat-header">
-                            Chat Group for event {{event.eName}}
-                        </div>
-                        <div ng-repeat="message in messages">
-        
-                            <div class="sent-message" ng-class="{me: message.user.name == me.name}">
-                                <span class="username">{{ message.user.name }}:</span>
-                                {{ message.data }}
-                            </div>
-        
-                            <div class="clear"></div>
-        
-                        </div>
-                    </div>
-        
-                    <!-- =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= -->
-                    <!-- User Input -->
-                    <!-- =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= -->
-                    <form ng-submit="send()" class="chat-input">
-                        <input type="text" ng-model="textbox" autofocus>
-                        <input type="submit" class="send-icon" value="SEND">
-                        <input type="submit" value=" "
-                            class="sent-indicator {{ status }}">
-                    </form>
-        
+            <div id="my-chat">
+                <div id="chat-window">
+                    <div id="output"></div>
                 </div>
+                <input id="handle" type="text" placeholder="Handle"/>
+                <input id="message" type="text" placeholder="Message"/>
+                <button id="send">Send</button>
             </div>
         </div>
 
@@ -75,9 +51,8 @@
         </div>
 
     </div>
-
+    <script src="js/chat.js"></script>
     <!-- End Chat Page -->
-    
 </body>
 
 </html>
