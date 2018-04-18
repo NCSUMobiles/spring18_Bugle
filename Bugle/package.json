@@ -12,7 +12,8 @@
   "dependencies": {
     "angular-local-storage": "^0.7.1",
     "angular-route": "^1.6.9",
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "read-more": "0.0.0"
   },
   "engines": {
     "node": "8.9.4"
