@@ -54,6 +54,7 @@ a.linkbutton {
     border: none;
     border-radius: 0.6rem;
     cursor: pointer;
+    box-shadow: 0px 8px 6px -6px black;
     width: 100%;
 }
 
@@ -69,7 +70,12 @@ a.linkbutton {
     border-radius: 0.6rem;
     cursor: pointer;
     width: 100%;
+    box-shadow: 0px 8px 6px -6px black;
     text-decoration: none;
+}
+
+.btn-shadow {
+    box-shadow: 0px 8px 6px -6px black !important;
 }
 
 .imgcontainer {
