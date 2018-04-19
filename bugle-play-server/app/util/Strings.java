@@ -38,6 +38,14 @@ public class Strings {
 	public static final String USERS_EMAIL = "USERS_EMAIL";
 	public static final String USERS_UNAME = "USERS_UNAME";
 	
+	public static final String EVENT_EID = "EVENT_EID";
+	public static final String EVENT_ENAME = "EVENT_ENAME";
+	public static final String EVENT_LOCATION = "EVENT_LOCATION";
+	public static final String EVENT_DATETIME = "EVENT_DATETIME";
+	public static final String EVENT_DESCRIPTION = "EVENT_DESCRIPTION";
+	public static final String EVENT_MEMBERS = "EVENT_MEMBERS";
+	public static final String EVENT_STATUS = "EVENT_STATUS";
+	
 	public static final String BUGLE_DB_KEY = "bugle-secret-%%123";
 	public static final String INCORRECT_KEY = "Incorrect Key!";
 	

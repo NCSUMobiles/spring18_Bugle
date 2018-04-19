@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS events (
 	datetime text,
 	description text,
 	members text,
-	u_id integer, 
+	u_id integer, //userId of the organizer who created this event. 
 	status text
 );
 
