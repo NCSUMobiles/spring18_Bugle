@@ -673,4 +673,40 @@ public class DatabaseService {
 		}
 	}
 
+	public boolean updateEvent(Events event) {
+		LOG.debug("Updating Event ID: " + event.getuId());
+		Connection con = null;
+		String updateStatement = "UPDATE events set e_name = ? , location = ? , datetime = ? , description = ? , members = ? , status = ? WHERE e_id = ?";
+		try {
+			con = db.getConnection();
+			try (PreparedStatement pstmt = con.prepareStatement(updateStatement)) {
+				pstmt.setString(1, event.geteName());
+				pstmt.setString(2, event.getLocation());
+				pstmt.setString(3, event.getDatetime());
+				pstmt.setString(4, event.getDescription());
+				pstmt.setString(5, event.getMembers());
+				pstmt.setString(6, event.getStatus());
+				pstmt.setInt(7, event.geteId());
+				return pstmt.executeUpdate() > 0;
+			} catch (Exception e) {
+				LOG.error("Error while executing query for updating Event.");
+				e.printStackTrace();
+				return false;
+			}
+		} catch (Exception e) {
+			LOG.error("Error while getting DB connection for updating Event.");
+			e.printStackTrace();
+			return false;
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					LOG.error("Error while closing the connection from update Event method.");
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
 }

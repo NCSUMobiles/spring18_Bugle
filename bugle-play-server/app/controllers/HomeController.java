@@ -261,7 +261,7 @@ public class HomeController extends Controller {
 		LOG.debug("approveVolunteers method called.");
 		JsonNode json = request().body().asJson();
 		if (json == null) {
-			return badRequest("Expecting Json data for Volnteers.").withHeader(Strings.CORS, Strings.STAR);
+			return badRequest("Expecting Json data for Volunteers.").withHeader(Strings.CORS, Strings.STAR);
 		} else {
 
 			int eId = json.findPath("e_Id").intValue();
@@ -270,7 +270,7 @@ public class HomeController extends Controller {
 			List<Integer> uIds = new ArrayList<Integer>();
 
 			if (uIdsJson == null || uIdsJson.length() == 0) {
-				return ok(createErrorResponse("No Vlounteers to Approve!")).withHeader(Strings.CORS, Strings.STAR);
+				return ok(createErrorResponse("No Volunteers to Approve!")).withHeader(Strings.CORS, Strings.STAR);
 			} else {
 				String tokens[] = uIdsJson.split(Strings.COMMA);
 				for (String token : tokens) {
@@ -418,14 +418,51 @@ public class HomeController extends Controller {
 			user.setLocation(location);
 			user.setDob(dob);
 
+			LOG.debug("Updating user ID: " + uId);
+			
 			if (databaseService.updateUser(user)) {
-				LOG.debug("Updating user ID: " + uId);
+				LOG.debug("Updated user ID: " + uId);
 				return ok(createSuccessResponse(Strings.USER, new Gson().toJson(user))).withHeader(Strings.CORS,
 						Strings.STAR);
 			} else {
 				return ok(createErrorResponse("Unable to update user details.")).withHeader(Strings.CORS, Strings.STAR);
 			}
 
+		}
+	}
+
+	public Result editEvent() {
+		LOG.debug("editEvent method called.");
+		JsonNode json = request().body().asJson();
+		if (json == null) {
+			return badRequest("Expecting Json data for Editing User.").withHeader(Strings.CORS, Strings.STAR);
+		} else {
+			int eId = json.findPath(Strings.EVENT_EID).intValue();
+			String eName = json.findPath(Strings.EVENT_ENAME).textValue();
+			String location = json.findPath(Strings.EVENT_LOCATION).textValue();
+			String datetime = json.findPath(Strings.EVENT_DATETIME).textValue();
+			String description = json.findPath(Strings.EVENT_DESCRIPTION).textValue();
+			String members = json.findPath(Strings.EVENT_MEMBERS).textValue();
+			String status = json.findPath(Strings.EVENT_STATUS).textValue();
+
+			Events event = new Events();
+			event.seteId(eId);
+			event.seteName(eName);
+			event.setLocation(location);
+			event.setDatetime(datetime);
+			event.setDescription(description);
+			event.setMembers(members);
+			event.setStatus(status);
+
+			LOG.debug("Updating event ID: " + eId);
+			
+			if (databaseService.updateEvent(event)) {
+				LOG.debug("Updated event ID: " + eId);
+				return ok(createSuccessResponse(Strings.EVENT, new Gson().toJson(event))).withHeader(Strings.CORS,
+						Strings.STAR);
+			} else {
+				return ok(createErrorResponse("Unable to update event details.")).withHeader(Strings.CORS, Strings.STAR);
+			}
 		}
 	}
 
