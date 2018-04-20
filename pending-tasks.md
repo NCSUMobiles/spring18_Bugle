@@ -11,4 +11,5 @@
 - [ ] API Calls for Approve/Reject volunteers.
 - [x] Profile Page.
 - [ ] Chat.
-- [x] Logout button
+- [x] Logout button.
+- [ ] Validation on all Forms.
