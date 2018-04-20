@@ -2,26 +2,30 @@
 <html ng-app="root">
 
 <head>
+    <meta content="img/logo_128.png" itemprop="image">
+    <link href="img/logo_128.png" rel="icon">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bugle: Login</title>
+    <!-- Angular Material style sheet -->
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-animate.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-aria.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-messages.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
     <script src="/node_modules/angular-local-storage/src/angular-local-storage.js"></script>
+    <script src="/node_modules/read-more/js/directives/readmore.js"></script>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/style.css" />
     <link rel="stylesheet" type="text/css" href="css/login.css" />
     <script type="text/javascript" src="js/app.js"></script>
 </head>
 
-<<<<<<< HEAD
-<body ng-controller="index">
-    <form ng-submit="login()">
-=======
 <body ng-controller="index" ng-init="fetchSession()">
 
     <form ng-submit="login()">
 
->>>>>>> master
         <div class="imgcontainer">
             <img src="img/logo_128.png" alt="logo" class="logo">
         </div>
@@ -37,26 +41,13 @@
             </label>
             <input type="password" placeholder="Enter Password" name="pwd" ng-model="password" required>
 
-<<<<<<< HEAD
-
-            <button type="submit">Login</button>
-            <span ng-model="greeting">{{greeting}}</span>
-=======
-            <button type="submit">Login</button>
->>>>>>> master
-            <label>
-                <input type="checkbox" checked="checked" name="remember"> Remember me
-            </label>
+            <button type="submit" class="btn-shadow" ng-disabled="dataLoading">Login</button>
+            
         </div>
 
         <div class='container'>
-<<<<<<< HEAD
-            <a href="volunteerSignup.html" class="signup">Volunteer Sign Up</a>
-            <a href="organisationSignup.html" class="signup">Organization Sign Up</a>
-=======
             <a href="volunteerSignup.html" class="linkbutton">Volunteer Sign Up</a>
             <a href="organisationSignup.html" class="linkbutton">Organization Sign Up</a>
->>>>>>> master
         </div>
 
         <div class="container">

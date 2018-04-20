@@ -1,23 +1,21 @@
-var app = angular.module('root', ['LocalStorageModule']);
+var app = angular.module('root', ['LocalStorageModule', 'readMore', 'ngMaterial', 'ngMessages']);
 
-<<<<<<< HEAD
-app.controller('index', ['$scope', '$http', '$window', function ($scope, $http, $window) {
-=======
 app.config(function (localStorageServiceProvider) {
     localStorageServiceProvider
         .setPrefix('bugleApp')
         .setStorageType('sessionStorage')
         .setNotify(true, true);
 });
->>>>>>> master
 
 
 app.service('UserService', function () {
     var loggedInUser = '';
     var currentEvents = '';
     var organizations = '';
+    var organization = '';
     var currentEvent = '';
     var currentVolunteers = '';
+    var prevPage = '';
 
     return {
         getLoggedInUser: function () {
@@ -38,6 +36,12 @@ app.service('UserService', function () {
         setOrganizations: function (orgs) {
             organizations = orgs;
         },
+        getOrganization: function () {
+            return organization;
+        },
+        setOrganizations: function (org) {
+            organization = org;
+        },
         getCurrentEvent: function () {
             return currentEvent;
         },
@@ -49,20 +53,28 @@ app.service('UserService', function () {
         },
         setCurrentVolunteers: function (v) {
             currentVolunteers = v;
+        },
+        getPrevPage: function () {
+            return prevPage;
+        },
+        setPrevPage: function (p) {
+            prevPage = p;
         }
     }
 });
 
 
-app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStorageService', function ($scope, $http, $window, UserService, localStorageService) {
+app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService', 'localStorageService', function ($scope, $http, $window, $mdToast, UserService, localStorageService) {
 
     $scope.title = 'Bugle Beta App';
-    
+
     // Actual User data will be fetched from the session - remove this hardcoding after session is implemented.
     UserService.loggedInUser = {
         "uId": 4, "uName": "Default User", "email": "usr1@vol.com", "mobile": "1232233421", "dob": "21.08.93", "password": "pwd1", "type": "vol"
     };
     // userID = 1-3 for organizations and userID 4-7 for volunteers.    
+
+    $scope.prevPage = {};
 
     $scope.user = UserService.loggedInUser;
 
@@ -76,40 +88,46 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
     $scope.event = {};
 
     $scope.organization = {};
-    
+
     $scope.eventSelected = false;
 
     // The actual list will com from the Database via the API
     $scope.volunteers = [];
 
-<<<<<<< HEAD
-=======
-    $scope.fetchSession = function() {
+    // boolean flag set to true if the current event is applied to by the user.
+    $scope.isEventApplied = false;
+
+    $scope.fetchSession = function () {
         $scope.user = localStorageService.get('sessionUser');
         $scope.organizations = localStorageService.get('organizations');
         $scope.organization = localStorageService.get('organization');
         $scope.events = localStorageService.get('events');
         $scope.event = localStorageService.get('event');
         $scope.volunteers = localStorageService.get('volunteers');
-        
+        $scope.prevPage = localStorageService.get('prevPage');
+
         var validUnauthPage = $window.location.href.includes('/login.html') || $window.location.href.includes('/organisationSignup.html') || $window.location.href.includes('/volunteerSignup.html');
 
         if (!validUnauthPage && !$scope.user) {
             $window.location.href = '/login.html';
         }
-        
+
         if (validUnauthPage && $scope.user) {
-            if ($scope.user.type =='vol') {
+            if ($scope.user.type == 'vol') {
                 $window.location.href = '/volunteer.html';
             } else {
                 $window.location.href = '/organization.html';
             }
         }
+
+        //TODO: check how to implement this logic
+        $scope.isEventApplied = false;
+
     }
 
->>>>>>> master
     // Login function Begin.
     $scope.login = function () {
+        $scope.dataLoading = true;
         console.log('login called');
 
         var loginURL = 'https://bugle-pl-srv.herokuapp.com/login';
@@ -140,11 +158,11 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
             }
         }, function failLogin(response) {
             console.log('ERROR: ' + JSON.stringify(response));
+        }).finally(function () {
+            $scope.dataLoading = false;
         });
     }
     // Login function End.
-<<<<<<< HEAD
-=======
 
 
     // Register function Begin
@@ -190,7 +208,7 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
     //Register function end.
 
     // Get organizations function start
-    $scope.getOrganizations = function() {
+    $scope.getOrganizations = function () {
         console.log('fetching organizations from server');
         $http({
             method: 'GET',
@@ -213,7 +231,7 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
     // Get volunteer events function start
     $scope.getVolunteerEvents = function (uId) {
         //TODO: remove hardcoded value later.
-       // uId = 1;
+        // uId = 1;
         console.log('fetching events for volunteer ID: ' + uId);
         var srvURL = 'https://bugle-pl-srv.herokuapp.com/volunteer-events/' + uId;
         console.log('API URL: ' + srvURL)
@@ -260,7 +278,7 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
     // Get organization events function end
 
     // org selected function start
-    $scope.getEventVolunteers = function() {
+    $scope.getEventVolunteers = function () {
         console.log('Fetching Events Volunteers for the selected Event: ' + JSON.stringify($scope.eventSelected));
         updateScopeEvent($scope.eventSelected);
         console.log('updating session event to: ' + JSON.stringify($scope.eventSelected));
@@ -309,7 +327,6 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
         $scope.events = ev;
     }
     // Update Scope Events function end
->>>>>>> master
 
     // Update Scope Event function Start
     var updateScopeEvent = function (e) {
@@ -319,36 +336,6 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
     }
     // Update Scope Event function end
 
-<<<<<<< HEAD
-    // Register Vol function Begin
-    $scope.register = function (type) {
-        console.log('registerVol called');
-        var signupURL = 'https://bugle-pl-srv.herokuapp.com/signup';
-        var signupInfo = {
-            'u_name': $scope.u_name,
-            'email': $scope.email,
-            'mobile': $scope.mobile,
-            'dob': $scope.dob,
-            'password': $scope.password,
-            'type': type,
-            'description': $scope.description
-        };
-
-        $http({
-            url: signupURL,
-            method: 'POST',
-            data: signupInfo,
-            headers: { 'Content-Type': 'application/json' }
-        }).then(function (response) {
-            console.log('SUCCESS: ' + JSON.stringify(response));
-            $scope.greeting = response.data.status;
-            $window.location.href = '/volunteer.html';
-        }, function (response) {
-            console.log('ERROR: ' + JSON.stringify(response));
-        });
-    }
-    //Register Vol function end.
-=======
     // Update Scope Volunteers function Start
     var updateScopeVolunteers = function (v) {
         console.log('updating Service volunteers to: ' + v)
@@ -356,24 +343,188 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
         $scope.volunteers = v;
     }
     // Update Scope Volunteers function end
-    
+
+    // Update Scope PrevPage function Start
+    var updateScopePrevPage = function (p) {
+        console.log('updating previous page to: ' + p);
+        UserService.prevPage = p;
+        $scope.prevPage = p;
+    }
+    // Update Scope PrevPage function Start
+
+    // Update Scope Organization function Start
+    var updateScopeOrganization = function (org) {
+        console.log('updating Service organizations to: ' + org);
+        UserService.organization = org;
+        $scope.organization = org;
+    }
+    // Update Scope Organization function Start
+
     // open org events function start
     $scope.openOrgEvents = function (org) {
         console.log('updating session organization to: ' + JSON.stringify(org));
         localStorageService.set('organization', null);
         localStorageService.set('organization', org);
+        updateScopeOrganization(org);
         $window.location.href = '/orgEvents.html';
     }
     // open org events function end
 
     // logout function start
-    $scope.logout = function() {
+    $scope.logout = function () {
         localStorageService.set('sessionUser', null);
         UserService.loggedInUser = null;
         $scope.user = null;
         $window.location.href = '/login.html';
     }
     // logout function end
->>>>>>> master
+
+    // view event details function end
+    $scope.viewEventDetails = function (event) {
+        console.log('displaying event details for event: ' + JSON.stringify(event));
+        console.log('Current scope organization is: ' + JSON.stringify($scope.organization));
+        updateScopeEvent(event);
+        console.log('updating session event to: ' + JSON.stringify(event));
+        localStorageService.set('event', null);
+        localStorageService.set('event', event);
+        updateScopePrevPage($window.location.href);
+        localStorageService.set('prevPage', null);
+        localStorageService.set('prevPage', $window.location.href);
+        $window.location.href = '/eventDetails.html';
+    }
+    // view event details function end
+
+
+    //--Start: Content from Event Details page controller
+    $scope.shortMessage = false;
+    $scope.longMessage = "long";
+
+    fullDetails = function () {
+        if (confirm("This will display the full details {{event.descriptionFull}}")) {
+            shortMessage = false;
+            longMessage = "long";
+        }
+        //           	    	$scope.longMessage = "long";
+        //           	    	$scope.shortMessage = false;
+    }
+
+    $scope.shortOnly = function () {
+        if (confirm("This will display the short details again")) {
+            shortMessage = "short";
+            longMessage = false;
+        }
+        //           			$scope.shortMessage = "short";
+        //           			$scope.longMessage = false;
+    }
+
+    $scope.shortMessageDir = false;
+    $scope.longMessageDir = "long";
+
+    $scope.fullDirections = function () {
+        if (confirm("This will display the full directions {{event.fullDirections}}")) {
+            shortMessageDir = false;
+            longMessageDir = "long";
+        }
+        //           	    	$scope.longMessage = "long";
+        //           	    	$scope.shortMessage = false;
+    }
+    //--END: Content from Event Details page controller
+
+    $scope.updateField = false;
+
+    // function to enable users to modify Profile details start
+    $scope.modify = function () {
+        $scope.updateField = true;
+    };
+    // function to enable users to modify Profile details end
+
+    // function for a volunteer to apply for a event start.
+    $scope.applyEvent = function (event) {
+        console.log('applying For event: ' + JSON.stringify(event) + ', by volunteer: ' + JSON.stringify($scope.user));
+
+        var eventApplication = {
+            'e_Id': event.eId,
+            'u_Id': $scope.user.uId
+        };
+
+        console.log('application: ' + JSON.stringify(eventApplication));
+
+        $http({
+            method: 'POST',
+            url: 'https://bugle-pl-srv.herokuapp.com/apply-event',
+            data: eventApplication,
+            headers: { 'Content-Type': 'application/json' }
+        }).then(function (response) {
+            console.log('response: ' + JSON.stringify(response));
+            if (response.status != 'error') {
+                var message = JSON.stringify(response.data.message);
+                console.log('SUCCESS: ' + JSON.stringify(message));
+                showToast('Applied to Event!');
+            } else {
+                console.log('ERROR: ' + JSON.stringify(response.data.message));
+                showToast('Sorry, Could not apply for event!');
+            }
+        }, function (response) {
+            console.log('ERROR: ' + JSON.stringify(response));
+        });
+    };
+    // function for a volunteer to apply for a event end.
+
+    var showToast = function (message) {
+        $mdToast.show(
+            $mdToast.simple()
+                .textContent(message)
+                .hideDelay(3000)
+        );
+    }
+
+    // update user Profile details function
+    $scope.update = function (user) {
+
+        $scope.dataLoading = true;
+        console.log('update user called for user ' + user.uName);
+
+        var updateUserURL = 'https://bugle-pl-srv.herokuapp.com/edit-user'; //edit-user
+        var updateUserInfo = {
+            'USERS_UID': $scope.user.uId,
+            'USERS_UNAME': $scope.user.uName,
+            'USERS_EMAIL': $scope.user.email,
+            'USERS_TYPE': $scope.user.type,
+            'USERS_MOBILE': $scope.user.mobile,
+            'USERS_DOB': $scope.user.dob,
+            'USERS_PASSWORD': $scope.user.password,
+            'USERS_DESCRIPTION': $scope.user.description,
+            'USERS_WEBSITE': $scope.user.website,
+            'USERS_LOCATION': $scope.user.location
+        };
+
+        $http({
+            url: updateUserURL,
+            method: 'POST',
+            data: updateUserInfo,
+            headers: { 'Content-Type': 'application/json' }
+        }).then(function (response) {
+            console.log('SUCCESS: ' + JSON.stringify(response));
+            //var user = response.config.data;
+            var user = JSON.parse(response.data.user);
+            //var user = response.data.user;
+            updateScopeUser(user);
+            console.log('updated records for user: ' + user);
+            localStorageService.set('sessionUser', null);
+            localStorageService.set('sessionUser', user);
+            $scope.updateField = false;
+            $window.location.href = '/profile.html';
+        }, function (response) {
+            console.log('ERROR: ' + JSON.stringify(response));
+        }).finally(function () {
+            $scope.dataLoading = false;
+        });
+    };
+
+    // cancel Profile update function
+    $scope.cancelUpdate = function () {
+        $scope.updateField = false;
+        $window.location.href = '/profile.html';
+    };
 
 }]);
