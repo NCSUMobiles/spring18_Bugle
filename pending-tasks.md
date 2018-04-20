@@ -5,10 +5,10 @@
 - [ ] Checking for failure responses from the API.
 - [x] Cancel button on create event page.
 - [ ] Create Event API call.
-- [ ] Apply for events by volunteers + API Call.
+- [x] Apply for events by volunteers + API Call.
 - [x] Event Details Page.
 - [ ] Edit Event Page.
 - [ ] API Calls for Approve/Reject volunteers.
-- [ ] Profile Page.
+- [x] Profile Page.
 - [ ] Chat.
 - [x] Logout button
