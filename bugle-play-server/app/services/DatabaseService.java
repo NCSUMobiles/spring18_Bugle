@@ -107,19 +107,19 @@ public class DatabaseService {
 				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Alien User','usr7@vol.com','1230978345','16.08.94','v7','vol')");
 		// events
 		insertStatements.add(
-				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 1','Raleigh','24.5.18 11:00AM','description of a volunteering event!! come volunteer with us','12',(select u_id from users where u_name='Organization 1' limit 1),'active')");
+				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 1','Raleigh','24.5.2018 11:00AM','description of a volunteering event!! come volunteer with us','12',(select u_id from users where u_name='Organization 1' limit 1),'active')");
 		insertStatements.add(
-				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 28','Colorado','19.7.18 01:00PM','description of an exciting volunteering event!! come volunteer with us','22',(select u_id from users where u_name='Organization 1' limit 1),'active')");
+				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 28','Colorado','19.7.2018 01:00PM','description of an exciting volunteering event!! come volunteer with us','22',(select u_id from users where u_name='Organization 1' limit 1),'active')");
 		insertStatements.add(
-				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 123','San Jose','11.6.18 10:00AM','description this is a volunteering event!! come volunteer with us in San Jose.','50',(select u_id from users where u_name='Organization 1' limit 1),'active')");
+				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 123','San Jose','11.6.2018 10:00AM','description this is a volunteering event!! come volunteer with us in San Jose.','50',(select u_id from users where u_name='Organization 1' limit 1),'active')");
 		insertStatements.add(
-				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 234','New York','16.5.18 03:00PM','description welcome to the volunteering event!! come volunteer with us','10',(select u_id from users where u_name='Organization 2' limit 1),'active')");
+				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 234','New York','16.5.2018 03:00PM','description welcome to the volunteering event!! come volunteer with us','10',(select u_id from users where u_name='Organization 2' limit 1),'active')");
 		insertStatements.add(
-				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 23','Atlanta','01.7.18 09:00AM','description volunteering event!! come volunteer with us in Atlanta','5',(select u_id from users where u_name='Organization 2' limit 1),'active')");
+				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 23','Atlanta','01.7.2018 09:00AM','description volunteering event!! come volunteer with us in Atlanta','5',(select u_id from users where u_name='Organization 2' limit 1),'active')");
 		insertStatements.add(
-				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 47','Florida','15.5.18 11:00AM','description very interesting volunteering event!! come volunteer with us','7',(select u_id from users where u_name='Organization 3' limit 1),'active')");
+				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 47','Florida','15.5.2018 11:00AM','description very interesting volunteering event!! come volunteer with us','7',(select u_id from users where u_name='Organization 3' limit 1),'active')");
 		insertStatements.add(
-				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 74','Chicago','21.4.118 08:00AM','description volunteering event. Big volunteering event need lots of volunteers!! come volunteer with us!','100',(select u_id from users where u_name='Organization 3' limit 1),'active')");
+				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 74','Chicago','21.4.2018 08:00AM','description volunteering event. Big volunteering event need lots of volunteers!! come volunteer with us!','100',(select u_id from users where u_name='Organization 3' limit 1),'active')");
 		// applicants
 		insertStatements.add(
 				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Default User' limit 1), (select e_id from events where e_name='Event 1' limit 1), 'active')");
@@ -621,7 +621,6 @@ public class DatabaseService {
 				e.printStackTrace();
 				return false;
 			}
-
 		} catch (Exception e) {
 			LOG.error("Error while getting DB connection for updating Applicant Status.");
 			e.printStackTrace();
@@ -632,6 +631,78 @@ public class DatabaseService {
 					con.close();
 				} catch (SQLException e) {
 					LOG.error("Error while closing the connection from update Applicant Status method.");
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	public boolean updateUser(Users user) {
+		LOG.debug("Updating User ID: " + user.getuId());
+		Connection con = null;
+		String updateStatement = "UPDATE users set mobile = ? , dob = ? , password = ? , description = ? , website = ? , location = ? WHERE u_id = ?";
+		try {
+			con = db.getConnection();
+			try (PreparedStatement pstmt = con.prepareStatement(updateStatement)) {
+				pstmt.setString(1, user.getMobile());
+				pstmt.setString(2, user.getDob());
+				pstmt.setString(3, user.getPassword());
+				pstmt.setString(4, user.getDescription());
+				pstmt.setString(5, user.getWebsite());
+				pstmt.setString(6, user.getLocation());
+				pstmt.setInt(7, user.getuId());
+				return pstmt.executeUpdate() > 0;
+			} catch (Exception e) {
+				LOG.error("Error while executing query for updating User.");
+				e.printStackTrace();
+				return false;
+			}
+		} catch (Exception e) {
+			LOG.error("Error while getting DB connection for updating User.");
+			e.printStackTrace();
+			return false;
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					LOG.error("Error while closing the connection from update User method.");
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	public boolean updateEvent(Events event) {
+		LOG.debug("Updating Event ID: " + event.getuId());
+		Connection con = null;
+		String updateStatement = "UPDATE events set e_name = ? , location = ? , datetime = ? , description = ? , members = ? , status = ? WHERE e_id = ?";
+		try {
+			con = db.getConnection();
+			try (PreparedStatement pstmt = con.prepareStatement(updateStatement)) {
+				pstmt.setString(1, event.geteName());
+				pstmt.setString(2, event.getLocation());
+				pstmt.setString(3, event.getDatetime());
+				pstmt.setString(4, event.getDescription());
+				pstmt.setString(5, event.getMembers());
+				pstmt.setString(6, event.getStatus());
+				pstmt.setInt(7, event.geteId());
+				return pstmt.executeUpdate() > 0;
+			} catch (Exception e) {
+				LOG.error("Error while executing query for updating Event.");
+				e.printStackTrace();
+				return false;
+			}
+		} catch (Exception e) {
+			LOG.error("Error while getting DB connection for updating Event.");
+			e.printStackTrace();
+			return false;
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					LOG.error("Error while closing the connection from update Event method.");
 					e.printStackTrace();
 				}
 			}

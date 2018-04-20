@@ -108,7 +108,7 @@ public class HomeController extends Controller {
 				return ok(createSuccessResponse(Strings.MESSAGE, "Event Created")).withHeader(Strings.CORS,
 						Strings.STAR);
 			} else {
-				return ok(createErrorResponse(Strings.FAIL)).withHeader(Strings.CORS, Strings.STAR);
+				return ok(createErrorResponse("Failed to create Event")).withHeader(Strings.CORS, Strings.STAR);
 			}
 		}
 	}
@@ -126,15 +126,17 @@ public class HomeController extends Controller {
 		if (json == null) {
 			return badRequest("Expecting Json data for login.").withHeader(Strings.CORS, Strings.STAR);
 		} else {
-			String email = json.findPath("email").textValue();
+			String email = json.findPath("email").textValue().toLowerCase();
 			String password = json.findPath("password").textValue();
 
 			// validate from DB and return response.
 			Users loginUser = databaseService.validateLogin(email, password);
 			if (loginUser != null) {
+				LOG.debug("Login Successful.");
 				return ok(createSuccessResponse(Strings.USER, new Gson().toJson(loginUser))).withHeader(Strings.CORS,
 						Strings.STAR);
 			} else {
+				LOG.debug("Incorrect user credentials.");
 				return ok(createErrorResponse(Strings.LOGIN_FAIL)).withHeader(Strings.CORS, Strings.STAR);
 			}
 		}
@@ -164,7 +166,7 @@ public class HomeController extends Controller {
 		} else {
 
 			String name = json.findPath("u_name").textValue();
-			String email = json.findPath("email").textValue();
+			String email = json.findPath("email").textValue().toLowerCase();
 			String mobile = json.findPath("mobile").textValue();
 			String dob = json.findPath("dob").textValue();
 			String password = json.findPath("password").textValue();
@@ -180,7 +182,7 @@ public class HomeController extends Controller {
 				return ok(createSuccessResponse(Strings.USER, new Gson().toJson(user))).withHeader(Strings.CORS,
 						Strings.STAR);
 			} else {
-				return ok(createErrorResponse(Strings.FAIL)).withHeader(Strings.CORS, Strings.STAR);
+				return ok(createErrorResponse("Failed to Create User")).withHeader(Strings.CORS, Strings.STAR);
 			}
 		}
 	}
@@ -204,7 +206,8 @@ public class HomeController extends Controller {
 	public Result getEventVolunteers(String eId) {
 		LOG.debug("getEventVolunteers method called.");
 		List<Users> volunteers = databaseService.getEventApplicants(Integer.valueOf(eId));
-		return ok(createSuccessResponse("volunteers", new Gson().toJson(volunteers))).withHeader(Strings.CORS, Strings.STAR);
+		return ok(createSuccessResponse("volunteers", new Gson().toJson(volunteers))).withHeader(Strings.CORS,
+				Strings.STAR);
 	}
 
 	/**
@@ -236,7 +239,7 @@ public class HomeController extends Controller {
 				return ok(createSuccessResponse(Strings.MESSAGE, "Applied successfully.")).withHeader(Strings.CORS,
 						Strings.STAR);
 			} else {
-				return ok(createErrorResponse(Strings.FAIL)).withHeader(Strings.CORS, Strings.STAR);
+				return ok(createErrorResponse("Could not apply to event.")).withHeader(Strings.CORS, Strings.STAR);
 			}
 		}
 	}
@@ -258,7 +261,7 @@ public class HomeController extends Controller {
 		LOG.debug("approveVolunteers method called.");
 		JsonNode json = request().body().asJson();
 		if (json == null) {
-			return badRequest("Expecting Json data for Volnteers.").withHeader(Strings.CORS, Strings.STAR);
+			return badRequest("Expecting Json data for Volunteers.").withHeader(Strings.CORS, Strings.STAR);
 		} else {
 
 			int eId = json.findPath("e_Id").intValue();
@@ -267,7 +270,7 @@ public class HomeController extends Controller {
 			List<Integer> uIds = new ArrayList<Integer>();
 
 			if (uIdsJson == null || uIdsJson.length() == 0) {
-				return ok(createErrorResponse("No Vlounteers to Approve!")).withHeader(Strings.CORS, Strings.STAR);
+				return ok(createErrorResponse("No Volunteers to Approve!")).withHeader(Strings.CORS, Strings.STAR);
 			} else {
 				String tokens[] = uIdsJson.split(Strings.COMMA);
 				for (String token : tokens) {
@@ -280,7 +283,7 @@ public class HomeController extends Controller {
 				return ok(createSuccessResponse(Strings.MESSAGE, "Approved Volunteers succesfully"))
 						.withHeader(Strings.CORS, Strings.STAR);
 			} else {
-				return ok(createErrorResponse(Strings.FAIL)).withHeader(Strings.CORS, Strings.STAR);
+				return ok(createErrorResponse("Could not approve Volunteers")).withHeader(Strings.CORS, Strings.STAR);
 			}
 		}
 	}
@@ -324,7 +327,7 @@ public class HomeController extends Controller {
 				return ok(createSuccessResponse(Strings.MESSAGE, "Rejected Volunteers Succesfully"))
 						.withHeader(Strings.CORS, Strings.STAR);
 			} else {
-				return ok(createErrorResponse(Strings.FAIL)).withHeader(Strings.CORS, Strings.STAR);
+				return ok(createErrorResponse("Could not reject volunteers")).withHeader(Strings.CORS, Strings.STAR);
 			}
 		}
 	}
@@ -376,6 +379,89 @@ public class HomeController extends Controller {
 				}
 			} else {
 				return ok(createErrorResponse(Strings.INCORRECT_KEY)).withHeader(Strings.CORS, Strings.STAR);
+			}
+		}
+	}
+
+	/**
+	 * This method edits the value of the specified column name in the User table in
+	 * database.
+	 * 
+	 * @return
+	 */
+	public Result editUser() {
+		LOG.debug("editUser method called.");
+		JsonNode json = request().body().asJson();
+		if (json == null) {
+			return badRequest("Expecting Json data for Editing User.").withHeader(Strings.CORS, Strings.STAR);
+		} else {
+			int uId = json.findPath(Strings.USERS_UID).intValue();
+			String uName = json.findPath(Strings.USERS_UNAME).textValue();
+			String email = json.findPath(Strings.USERS_EMAIL).textValue();
+			String type = json.findPath(Strings.USERS_TYPE).textValue();
+			String mobile = json.findPath(Strings.USERS_MOBILE).textValue();
+			String dob = json.findPath(Strings.USERS_DOB).textValue();
+			String password = json.findPath(Strings.USERS_PASSWORD).textValue();
+			String description = json.findPath(Strings.USERS_DESCRIPTION).textValue();
+			String website = json.findPath(Strings.USERS_WEBSITE).textValue();
+			String location = json.findPath(Strings.USERS_LOCATION).textValue();
+
+			Users user = new Users();
+			user.setuId(uId);
+			user.setuName(uName);
+			user.setEmail(email);
+			user.setType(type);
+			user.setMobile(mobile);
+			user.setPassword(password);
+			user.setDescription(description);
+			user.setWebsite(website);
+			user.setLocation(location);
+			user.setDob(dob);
+
+			LOG.debug("Updating user ID: " + uId);
+			
+			if (databaseService.updateUser(user)) {
+				LOG.debug("Updated user ID: " + uId);
+				return ok(createSuccessResponse(Strings.USER, new Gson().toJson(user))).withHeader(Strings.CORS,
+						Strings.STAR);
+			} else {
+				return ok(createErrorResponse("Unable to update user details.")).withHeader(Strings.CORS, Strings.STAR);
+			}
+
+		}
+	}
+
+	public Result editEvent() {
+		LOG.debug("editEvent method called.");
+		JsonNode json = request().body().asJson();
+		if (json == null) {
+			return badRequest("Expecting Json data for Editing User.").withHeader(Strings.CORS, Strings.STAR);
+		} else {
+			int eId = json.findPath(Strings.EVENT_EID).intValue();
+			String eName = json.findPath(Strings.EVENT_ENAME).textValue();
+			String location = json.findPath(Strings.EVENT_LOCATION).textValue();
+			String datetime = json.findPath(Strings.EVENT_DATETIME).textValue();
+			String description = json.findPath(Strings.EVENT_DESCRIPTION).textValue();
+			String members = json.findPath(Strings.EVENT_MEMBERS).textValue();
+			String status = json.findPath(Strings.EVENT_STATUS).textValue();
+
+			Events event = new Events();
+			event.seteId(eId);
+			event.seteName(eName);
+			event.setLocation(location);
+			event.setDatetime(datetime);
+			event.setDescription(description);
+			event.setMembers(members);
+			event.setStatus(status);
+
+			LOG.debug("Updating event ID: " + eId);
+			
+			if (databaseService.updateEvent(event)) {
+				LOG.debug("Updated event ID: " + eId);
+				return ok(createSuccessResponse(Strings.EVENT, new Gson().toJson(event))).withHeader(Strings.CORS,
+						Strings.STAR);
+			} else {
+				return ok(createErrorResponse("Unable to update event details.")).withHeader(Strings.CORS, Strings.STAR);
 			}
 		}
 	}

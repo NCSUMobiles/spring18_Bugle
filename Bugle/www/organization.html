@@ -2,11 +2,20 @@
 <html ng-app="root">
 
 <head>
+    <meta content="img/logo_128.png" itemprop="image">
+    <link href="img/logo_128.png" rel="icon">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bugle: Home</title>
+    <!-- Angular Material style sheet -->
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-animate.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-aria.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-messages.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
     <script src="/node_modules/angular-local-storage/src/angular-local-storage.js"></script>
+    <script src="/node_modules/read-more/js/directives/readmore.js"></script>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/style.css" />
     <link rel="stylesheet" type="text/css" href="css/base.css" />
@@ -21,18 +30,19 @@
     <div class='home active'>
 
         <div class='home__header center_text'>
-            <h2>Welcome {{user.uName}}</h2>
+            <h3><b>{{user.uName}}</b></h3>
         </div>
 
         <div class='home__content my_container'>
+            <br>
+            <a class="btn btn-success btn-shadow pull-right" href="createEvent.html">Create Event</a>
             <h4>
                 Your Events
-            <a class="btn btn-success pull-right" href="createEvent.html">Create Event</a>
             </h4>
-            <br>
+            
             <ul data-ng-init="getOrganizationEvents(user.uId)">
                 <!--TODO: should we redirect it to a edit event page instead?-->
-                <li data-ng-repeat="event in events"><a href="eventVolunteers.html">{{event.eName}}</a></li>
+                <li data-ng-repeat="event in events" class="btn-shadow"><a class="plainlink" href="eventVolunteers.html">{{event.eName}}</a></li>
             </ul>
         </div>
 

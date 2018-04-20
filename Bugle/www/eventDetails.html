@@ -2,121 +2,99 @@
 <html ng-app="root">
 
 <head>
+	<meta content="img/logo_128.png" itemprop="image">
+	<link href="img/logo_128.png" rel="icon">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bugle</title>
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <title>Bugle: Event Details</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- Angular Material style sheet -->
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-animate.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-aria.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-messages.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
+	<script src="/node_modules/angular-local-storage/src/angular-local-storage.js"></script>
+	<script src="/node_modules/read-more/js/directives/readmore.js"></script>
     <link rel="stylesheet" type="text/css" href="css/style.css" />
     <link rel="stylesheet" type="text/css" href="css/base.css" />
     <script type="text/javascript" src="js/app.js"></script>
 </head>
 
-<body ng-controller="index">
+<body ng-controller="index" ng-init="fetchSession()">
 
     <!-- The Organization Home Page -->
-
+	
     <div class='home active'>
-
+	
         <div class='home__header center_text'>
-            <h1>{{event.name}}EVENT NAME</h1>
+			<a ng-if="prevPage.includes('orgEvents.html')" href="orgEvents.html" class="back_button">Back</a>
+			<a ng-if="prevPage.includes('volunteerEvents.html')" href="volunteerEvents.html" class="back_button">Back</a>
+            <h3><b>{{event.eName}}</b></h3>
         </div>
 
         <div class='home__content' style='padding: 20px'>
-            <h4>
-                Description:
-            </h4>
-            <script>
-            	var app = angular.module("root", []);
-            	app.controller('index', function ($scope, $http) {
-            
-            	$scope.shortMessage = false;
-            	$scope.longMessage = "long";
-            
-           		fullDetails = function() {
-           	    	if (confirm("This will display the full details {{event.descriptionFull}}")) {
-           	    		shortMessage = false;
-           	    		longMessage = "long";
-           	    	}
-//           	    	$scope.longMessage = "long";
-//           	    	$scope.shortMessage = false;
-           		}
-           		
-           		shortOnly = function() {
-           	    	if (confirm("This will display the short details again")) {
-           	    		shortMessage = "short";
-           	    		longMessage = false;
-           	    	}
-//           			$scope.shortMessage = "short";
-//           			$scope.longMessage = false;
-           		}
-           		
-           		$scope.shortMessageDir = false;
-            	$scope.longMessageDir = "long";
-            
-           		fullDirections = function() {
-           	    	if (confirm("This will display the full directions {{event.fullDirections}}")) {
-           	    		shortMessageDir = false;
-           	    		longMessageDir = "long";
-           	    	}
-//           	    	$scope.longMessage = "long";
-//           	    	$scope.shortMessage = false;
-           		}
-           		
-            	});
-           	</script>
-           	
-           	<div ng-show="longMessage==='long'">
-	            <p>
-	            	This will display the short description. {{event.descriptionShort}}
-	            </p>
-	            <button onclick="fullDetails()">Read Full Description</button>
-	        </div>
-<!-- 	        <div ng-show="shortMessage==='short'">
-	        	<p>
-	        		This will display the really long description.\n
-	        		There will be elaborate details.\n
-	        		There will be a large amount of information.\n
-	        		People will be able to view all of this information if they want.\n
-	        		Or they can press the button below to go back to the short description.\n
-	        	</p>
-	        	<button onclick="shortOnly()">View Less Information</button>
-	        </div> -->
-	        
-        	<h4><b>{{event.numMembers}}</b> Members - <b>{{event.numOrganizers}}</b> Organizers</h4>
-        	<button>View Members</button>
-        	<button>View Organizers</button>
-        
-        	<h4>Time: {{event.time}}</h4>
-        	<h4>Location: {{event.location}}</h4>
-	        
-	        <div ng-show="longMessageDir==='long'">
-	            <p>
-	            	This will display the short description. {{event.directionsShort}}
-	            </p>
-	            <button onclick="fullDirections()">Read More</button>
-	            <button>Navigate on Google Maps</button>
-	        </div>
-	        
-	        <br><br>
-	        <button>Join Event</button>
+            <p><b>Event Description:</b></p>
+			<p read-more ng-model="event.description" words="false" length="50"></p>	        
+	        <table class="tbl-ev-details">
+				<tr>
+					<td class="ev-details">
+						<b>Members: </b>{{event.members}}
+					</td>
+					<td class="ev-details-rt">
+						<button class="btn btn-small-blue">View Members</button>
+					</td>
+				</tr>
+				<tr>
+					<td class="ev-details">
+						<b>Organizer: </b> {{organization.uName}}
+					</td>
+					<td class="ev-details-rt">
+						<button class="btn btn-small-blue">View Organizer</button>
+					</td>
+				</tr>
+				<tr>
+					<td class="ev-details">
+						<b>Location: </b> {{event.location}}
+					</td>
+					<td class="ev-details-rt">
+						<button class="btn btn-small-blue">Navigate</button>
+					</td>
+				</tr>
+				<tr>
+					<td class="ev-details">
+						<b>Time: </b> {{event.datetime}}
+					</td>
+					<td class="ev-details-rt"></td>
+				</tr>
+			</table>
+
+			<br>
+			<div class="wrapper">
+				<button class="btn btn-green btn-center" ng-click="applyEvent(event)" ng-show="true">Join Event</button>
+				<button class="btn btn-green btn-center" ng-click="leaveEvent(event)" ng-hide="true">Leave Event</button>
+				<button class="btn btn-green btn-center" ng-click="openChat(event)" ng-hide="true">Open Chat</button>
+			</div>
             
         </div>
         
         <div class='home__footer'>
-            <div class="navbar">
-                <a href="organization.html" class="active">Events</a>
-                <a href="#news">Volunteers</a>
-                <a href="chat.html">Chat</a>
-                <a href="profile.html">Profile</a>
+            <div class="nav_bar">
+					<a href="organization.html" ng-if="user.type == 'org'">Events</a>
+					<a href="volunteer.html" ng-if="user.type == 'vol'" ng-class="{'active': prevPage.includes('orgEvents.html')}">Organizations</a>
+					<a href="volunteerEvents.html" ng-if="user.type == 'vol'" ng-class="{'active': prevPage.includes('volunteerEvents.html')}">Applied</a>
+					<a href="eventVolunteers.html" ng-if="user.type == 'org'">Volunteers</a>
+					<a href="chat.html">Chat</a>
+					<a href="profile.html">Profile</a>
             </div>
         </div>
 
-    </div>
-
-    <!-- End Organization Home Page -->
+	</div>
+	
+	<!-- End Organization Home Page -->
     
 </body>
 

@@ -53,3 +53,9 @@ POST     /mock-db   						 		   controllers.HomeController.mockDB
 
 # deletes all the entries from the database
 POST     /reset-db							 		   controllers.HomeController.resetDB
+
+# edits the user in the users table.
+POST     /edit-user							 		   controllers.HomeController.editUser
+
+# edits the event in the events table.
+POST     /edit-event						 		   controllers.HomeController.editEvent
