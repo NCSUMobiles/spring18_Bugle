@@ -7,7 +7,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bugle: Chat</title>
+    <!-- Angular Material style sheet -->
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-animate.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-aria.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-messages.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
     <script src="/node_modules/angular-local-storage/src/angular-local-storage.js"></script>
     <script src="/node_modules/read-more/js/directives/readmore.js"></script>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
@@ -25,7 +31,7 @@
     <div class='home active'>
 
         <div class='home__header center_text'>
-            <h3>{{user.uName}}</h3>
+            <h3><b>{{user.uName}}</b></h3>
         </div>
 
         <div class='home__content my_container'>
@@ -33,7 +39,7 @@
                 <div id="chat-window">
                     <div id="output"></div>
                 </div>
-                <input id="handle" type="text" placeholder="Handle"/>
+                <input id="handle" ng-show="false" type="text" ng-value="user.uName"/>
                 <input id="message" type="text" placeholder="Message"/>
                 <button id="send">Send</button>
             </div>

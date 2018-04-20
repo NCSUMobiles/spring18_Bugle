@@ -1,13 +1,14 @@
 #my-chat{
-    max-width: 600px;
+    max-width: 100%;
     margin: 30px auto;
     border: 1px solid #ddd;
     box-shadow: 1px 3px 5px rgba(0,0,0,0.05);
     border-radius: 2px;
+    height: 70%;
 }
 
 #chat-window{
-    height: 400px;
+    height: 100%;
     overflow: auto;
     background: #f9f9f9;
 }
@@ -26,11 +27,12 @@ input{
 }
 
 button{
-    background: #575ed8;
+    background: #4CAF50;
     color: #fff;
-    font-size: 18px;
+    font-size: 1.8rem;
     border: 0;
     padding: 12px 0;
     width: 100%;
     border-radius: 0 0 2px 2px;
+    box-shadow: 0px 8px 6px -6px black !important;
 }

@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "angular-local-storage": "^0.7.1",
+    "angular-material": "^1.1.8",
     "angular-route": "^1.6.9",
     "express": "^4.16.3",
     "read-more": "0.0.0",
