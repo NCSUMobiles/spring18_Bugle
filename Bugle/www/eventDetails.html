@@ -4,40 +4,42 @@
 <head>
 	<meta content="img/logo_128.png" itemprop="image">
 	<link href="img/logo_128.png" rel="icon">
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Bugle: Event Details</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bugle: Event Details</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- Angular Material style sheet -->
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-animate.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-aria.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-messages.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
 	<script src="/node_modules/angular-local-storage/src/angular-local-storage.js"></script>
 	<script src="/node_modules/read-more/js/directives/readmore.js"></script>
-	<link rel="stylesheet" type="text/css" href="css/style.css" />
-	<link rel="stylesheet" type="text/css" href="css/base.css" />
-	<script type="text/javascript" src="js/app.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link rel="stylesheet" type="text/css" href="css/base.css" />
+    <script type="text/javascript" src="js/app.js"></script>
 </head>
 
 <body ng-controller="index" ng-init="fetchSession()">
 
-	<!-- The Organization Home Page -->
-
-	<div class='home active'>
-
-		<div class='home__header center_text'>
+    <!-- The Organization Home Page -->
+	
+    <div class='home active'>
+	
+        <div class='home__header center_text'>
 			<a ng-if="prevPage.includes('orgEvents.html')" href="orgEvents.html" class="back_button">Back</a>
 			<a ng-if="prevPage.includes('volunteerEvents.html')" href="volunteerEvents.html" class="back_button">Back</a>
-			<h3>
-				<b>{{event.eName}}</b>
-			</h3>
-		</div>
+            <h3><b>{{event.eName}}</b></h3>
+        </div>
 
-		<div class='home__content' style='padding: 20px'>
-			<p>
-				<b>Event Description:</b>
-			</p>
-			<p read-more ng-model="event.description" words="false" length="50"></p>
-			<table class="tbl-ev-details">
+        <div class='home__content' style='padding: 20px'>
+            <p><b>Event Description:</b></p>
+			<p read-more ng-model="event.description" words="false" length="50"></p>	        
+	        <table class="tbl-ev-details">
 				<tr>
 					<td class="ev-details">
 						<b>Members: </b>{{event.members}}
@@ -72,26 +74,28 @@
 
 			<br>
 			<div class="wrapper">
-				<button class="btn btn-green btn-center">Join Event</button>
+				<button class="btn btn-green btn-center" ng-click="applyEvent(event)" ng-show="true">Join Event</button>
+				<button class="btn btn-green btn-center" ng-click="leaveEvent(event)" ng-hide="true">Leave Event</button>
+				<button class="btn btn-green btn-center" ng-click="openChat(event)" ng-hide="true">Open Chat</button>
 			</div>
-
-		</div>
-
-		<div class='home__footer'>
-			<div class="nav_bar">
-				<a href="organization.html" ng-if="user.type == 'org'">Events</a>
-				<a href="volunteer.html" ng-if="user.type == 'vol'" ng-class="{'active': prevPage.includes('orgEvents.html')}">Organizations</a>
-				<a href="volunteerEvents.html" ng-if="user.type == 'vol'" ng-class="{'active': prevPage.includes('volunteerEvents.html')}">Applied</a>
-				<a href="eventVolunteers.html" ng-if="user.type == 'org'">Volunteers</a>
-				<a href="chat.html">Chat</a>
-				<a href="profile.html">Profile</a>
-			</div>
-		</div>
+            
+        </div>
+        
+        <div class='home__footer'>
+            <div class="nav_bar">
+					<a href="organization.html" ng-if="user.type == 'org'">Events</a>
+					<a href="volunteer.html" ng-if="user.type == 'vol'" ng-class="{'active': prevPage.includes('orgEvents.html')}">Organizations</a>
+					<a href="volunteerEvents.html" ng-if="user.type == 'vol'" ng-class="{'active': prevPage.includes('volunteerEvents.html')}">Applied</a>
+					<a href="eventVolunteers.html" ng-if="user.type == 'org'">Volunteers</a>
+					<a href="chat.html">Chat</a>
+					<a href="profile.html">Profile</a>
+            </div>
+        </div>
 
 	</div>
-
+	
 	<!-- End Organization Home Page -->
-
+    
 </body>
 
 </html>

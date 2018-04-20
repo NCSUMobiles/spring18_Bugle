@@ -1,4 +1,4 @@
-var app = angular.module('root', ['LocalStorageModule', 'readMore']);
+var app = angular.module('root', ['LocalStorageModule', 'readMore', 'ngMaterial', 'ngMessages']);
 
 app.config(function (localStorageServiceProvider) {
     localStorageServiceProvider
@@ -64,7 +64,7 @@ app.service('UserService', function () {
 });
 
 
-app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStorageService', function ($scope, $http, $window, UserService, localStorageService) {
+app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService', 'localStorageService', function ($scope, $http, $window, $mdToast, UserService, localStorageService) {
 
     $scope.title = 'Bugle Beta App';
 
@@ -94,6 +94,9 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
     // The actual list will com from the Database via the API
     $scope.volunteers = [];
 
+    // boolean flag set to true if the current event is applied to by the user.
+    $scope.isEventApplied = false;
+
     $scope.fetchSession = function () {
         $scope.user = localStorageService.get('sessionUser');
         $scope.organizations = localStorageService.get('organizations');
@@ -116,6 +119,10 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
                 $window.location.href = '/organization.html';
             }
         }
+
+        //TODO: check how to implement this logic
+        $scope.isEventApplied = false;
+
     }
 
     // Login function Begin.
@@ -338,7 +345,7 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
     // Update Scope Volunteers function end
 
     // Update Scope PrevPage function Start
-    var updateScopePrevPage = function(p) {
+    var updateScopePrevPage = function (p) {
         console.log('updating previous page to: ' + p);
         UserService.prevPage = p;
         $scope.prevPage = p;
@@ -425,13 +432,54 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
 
     $scope.updateField = false;
 
-    // function to enable users to modify Profile details
-    $scope.modify = function(){
+    // function to enable users to modify Profile details start
+    $scope.modify = function () {
         $scope.updateField = true;
     };
+    // function to enable users to modify Profile details end
+
+    // function for a volunteer to apply for a event start.
+    $scope.applyEvent = function (event) {
+        console.log('applying For event: ' + JSON.stringify(event) + ', by volunteer: ' + JSON.stringify($scope.user));
+
+        var eventApplication = {
+            'e_Id': event.eId,
+            'u_Id': $scope.user.uId
+        };
+
+        console.log('application: ' + JSON.stringify(eventApplication));
+
+        $http({
+            method: 'POST',
+            url: 'https://bugle-pl-srv.herokuapp.com/apply-event',
+            data: eventApplication,
+            headers: { 'Content-Type': 'application/json' }
+        }).then(function (response) {
+            console.log('response: ' + JSON.stringify(response));
+            if (response.status != 'error') {
+                var message = JSON.stringify(response.data.message);
+                console.log('SUCCESS: ' + JSON.stringify(message));
+                showToast('Applied to Event!');
+            } else {
+                console.log('ERROR: ' + JSON.stringify(response.data.message));
+                showToast('Sorry, Could not apply for event!');
+            }
+        }, function (response) {
+            console.log('ERROR: ' + JSON.stringify(response));
+        });
+    };
+    // function for a volunteer to apply for a event end.
+
+    var showToast = function (message) {
+        $mdToast.show(
+            $mdToast.simple()
+                .textContent(message)
+                .hideDelay(3000)
+        );
+    }
 
     // update user Profile details function
-    $scope.update = function(user){
+    $scope.update = function (user) {
 
         $scope.dataLoading = true;
         console.log('update user called for user ' + user.uName);
@@ -474,7 +522,7 @@ app.controller('index', ['$scope', '$http', '$window', 'UserService', 'localStor
     };
 
     // cancel Profile update function
-    $scope.cancelUpdate = function(){
+    $scope.cancelUpdate = function () {
         $scope.updateField = false;
         $window.location.href = '/profile.html';
     };
