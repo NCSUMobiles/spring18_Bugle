@@ -6,7 +6,7 @@
     <link href="img/logo_128.png" rel="icon">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bugle: Home</title>
+    <title>Bugle: Chats</title>
     <!-- Angular Material style sheet -->
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
@@ -17,77 +17,61 @@
     <script src="/node_modules/angular-local-storage/src/angular-local-storage.js"></script>
     <script src="/node_modules/read-more/js/directives/readmore.js"></script>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg"
-        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js"></script>
     <link rel="stylesheet" type="text/css" href="css/style.css" />
     <link rel="stylesheet" type="text/css" href="css/base.css" />
-    <script type="text/javascript" src="js/app.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/chat.css" />
+    <script type="text/javascript" src="js/app.js"></script>    
 </head>
 
 <body ng-controller="index" ng-init="fetchSession()">
 
-    <!-- The Volunteer Home Page -->
+    <!-- The Chat Page -->
 
     <div class='home active'>
 
         <!-- <div class='home__header center_text'>
-            <h3>
-                <b>{{user.uName}}</b>
-            </h3>
+            <h3><b>Your Chats</b></h3>
         </div> -->
 
         <md-toolbar>
             <div class="md-toolbar-tools">
-                <md-button class="md-icon-button" aria-label="Go Back" disabled>
-                    <i class="fas fa-angle-left"></i>
-                </md-button>
-
-                <!-- <md-truncate class="center_text" style="position: absolute; left: 90px; right: 170px; top: 13px; bottom: 13px;">{{user.uName}}</md-truncate> -->
-
-                <span flex>Organizations</span>
-                <!-- <md-button class="md-raised" aria-label="Learn More">
+              <md-button class="md-icon-button" aria-label="Go Back" disabled>
+                <i class="fas fa-angle-left"></i>
+              </md-button>
+      
+              <!-- <md-truncate class="center_text" style="position: absolute; left: 90px; right: 170px; top: 13px; bottom: 13px;">{{user.uName}}</md-truncate> -->
+      
+              <span  flex>Your Chats</span>
+              <!-- <md-button class="md-raised" aria-label="Learn More">
                 Learn More
               </md-button>
               <md-button class="md-fab md-mini" aria-label="Favorite">
                 <md-icon md-svg-icon="img/icons/favorite.svg"></md-icon>
               </md-button> -->
             </div>
-        </md-toolbar>
-
+          </md-toolbar>
 
         <div class='home__content my_container'>
-            <h4>
-                Available volunteer Organizations
-            </h4>
-            <!-- <ul data-ng-init="getOrganizations()">
-                <li data-ng-repeat="org in organizations" ng-click="openOrgEvents(org)">{{org.uName}}
-                </li>
-            </ul> -->
-            <md-list flex ng-init="getOrganizations()">
-                <md-list-item class="md-1-line" ng-repeat="org in organizations" ng-click="openOrgEvents(org)">
-                    <md-card flex>
-                        <md-card-title>
-                            <md-card-title-text>{{org.uName}}</md-card-title-text>
-                        </md-card-title>
-                    </md-card>
-                    <!-- <div class="md-list-item-text" layout="column"></div> -->
-                </md-list-item>
-            </md-list>
+            Chat Groups: <a href="chat.html">View Chat</a>
         </div>
 
         <div class='home__footer'>
-            <div class="nav_bar">
-                <a href="volunteer.html" class="active">Organizations</a>
-                <a href="volunteerEvents.html">Applied</a>
-                <a href="chat.html">Chat</a>
+            <div class="nav_bar"> <!-- use ng-if to check the type of user and display this menu accordingly -->
+                <a href="organization.html" ng-if="user.type == 'org'">Events</a>
+                <a href="volunteer.html" ng-if="user.type == 'vol'">Organizations</a>
+                <a href="volunteerEvents.html" ng-if="user.type == 'vol'">Applied</a>
+                <a href="eventVolunteers.html" ng-if="user.type == 'org'">Volunteers</a>
+                <a href="chat.html" class="active">Chat</a>
                 <a href="profile.html">Profile</a>
             </div>
         </div>
 
     </div>
-
-    <!-- End Volunteer Home Page -->
-
+    <script src="js/chat.js"></script>
+    <!-- End Chat Page -->
+    
 </body>
 
 </html>

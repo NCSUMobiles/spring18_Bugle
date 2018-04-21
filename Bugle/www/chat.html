@@ -17,6 +17,7 @@
     <script src="/node_modules/angular-local-storage/src/angular-local-storage.js"></script>
     <script src="/node_modules/read-more/js/directives/readmore.js"></script>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js"></script>
     <link rel="stylesheet" type="text/css" href="css/style.css" />
     <link rel="stylesheet" type="text/css" href="css/base.css" />
@@ -30,9 +31,27 @@
 
     <div class='home active'>
 
-        <div class='home__header center_text'>
-            <h3><b>{{user.uName}}</b></h3>
-        </div>
+        <!-- <div class='home__header center_text'>
+            <h3><b>{{event.eName}} - Chat</b></h3>
+        </div> -->
+
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+              <md-button class="md-icon-button" aria-label="Go Back" ng-click="gotoPage('chatGroups')">
+                <i class="fas fa-angle-left"></i>
+              </md-button>
+      
+              <!-- <md-truncate class="center_text" style="position: absolute; left: 90px; right: 170px; top: 13px; bottom: 13px;">{{user.uName}}</md-truncate> -->
+      
+              <span  flex>{{event.eName}}: Chat</span>
+              <!-- <md-button class="md-raised" aria-label="Learn More">
+                Learn More
+              </md-button>
+              <md-button class="md-fab md-mini" aria-label="Favorite">
+                <md-icon md-svg-icon="img/icons/favorite.svg"></md-icon>
+              </md-button> -->
+            </div>
+          </md-toolbar>
 
         <div class='home__content my_container'>
             <div id="my-chat">
@@ -41,7 +60,7 @@
                 </div>
                 <input id="handle" ng-show="false" type="text" ng-value="user.uName"/>
                 <input id="message" type="text" placeholder="Message"/>
-                <button id="send">Send</button>
+                <button class="send_button" id="send">Send</button>
             </div>
         </div>
 

@@ -527,4 +527,14 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         $window.location.href = '/profile.html';
     };
 
+    //function to redirect to a page on button click
+    $scope.gotoPage = function (page) {
+        $window.location.href = '/' + page + '.html';
+    };
+
+    $scope.createEvent = function() {
+        console.log('creating event!');
+        
+    }
+
 }]);

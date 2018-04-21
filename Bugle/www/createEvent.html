@@ -19,6 +19,8 @@
     <link rel="stylesheet" type="text/css" href="css/style.css" />
     <link rel="stylesheet" type="text/css" href="css/base.css" />
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg"
+        crossorigin="anonymous">
     <script type="text/javascript" src="js/app.js"></script>
 </head>
 
@@ -28,40 +30,64 @@
 
     <div class='home active'>
 
-        <div class='home__header center_text'>
+        <!-- <div class='home__header center_text'>
             <h3><b>{{user.uName}}</b></h3>
-        </div>
+        </div> -->
 
-        <div  class='home__content my_container'>
-                <h4>
-                   Create a Event
-                </h4>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <md-button class="md-icon-button" aria-label="Go Back" ng-click="gotoPage('organization')">
+                    <i class="fas fa-angle-left"></i>
+                </md-button>
 
-                <div class="form-group" >
-                    <form action="/event" method="post">
+                <!-- <md-truncate class="center_text" style="position: absolute; left: 90px; right: 170px; top: 13px; bottom: 13px;">{{user.uName}}</md-truncate> -->
+
+                <span flex>Create Event</span>
+                <!-- <md-button class="md-raised" aria-label="Learn More">
+                Learn More
+              </md-button>
+              <md-button class="md-fab md-mini" aria-label="Favorite">
+                <md-icon md-svg-icon="img/icons/favorite.svg"></md-icon>
+              </md-button> -->
+            </div>
+        </md-toolbar>
+
+        <div class='home__content my_container'>
+            <br>
+            <div layout="column">
+                <!-- <form action="/event" method="post"> -->
+                    <md-input-container>
                         <label for="e_name">Event Name</label>
-                        <input class="form-control" type="text" id='e_name' name="e_name"/>
-                        
-                         <label for="location">Location</label>
-                        <input class="form-control" type="text" id='location' name="location"/>
-                        
-                         <label for="datetime">Time</label>
-                        <input class="form-control" type="datetime-local" id='datetime' name="datetime"/>
-                        
-                         <label for="description">Description</label>
-                        <input class="form-control" type="text" id='description' name="description"/>
-                                                
-                         <label for="members">Members</label>
-                        <input class="form-control" type="number" step="1" min="1" id='members' name="members"/>
-                                                
+                        <input ng-model="eName" type="text" flex>
+                    </md-input-container>
 
-                        <input class="form-control" type="hidden" id='u_id' name="u_id" value="{{user.id}}"/>
-                        <input class="form-control" type="hidden" id='status' name="status" value="active"/>
-                        <br>
-                        <button type="submit" class="btn btn-primary btn-block btn-green">Create</button>
-                        <a href="organization.html" class="linkbuttonred btn-shadow">Cancel</a>
-                    </form>
-                </div>
+                    <md-input-container>
+                        <label for="location">Location</label>
+                        <input ng-model="location" type="text" flex>
+                    </md-input-container>
+
+                    <md-input-container>
+                        <label for="datetime">Time</label>
+                        <input ng-model="datetime" type="datetime-local" flex>
+                    </md-input-container>
+
+                    <md-input-container>
+                        <label for="description">Description</label>
+                        <input ng-model="description" type="text" flex>
+                    </md-input-container>
+
+                    <md-input-container>
+                        <label for="members">Members</label>
+                        <input ng-model="members" min=1 type="number" flex>
+                    </md-input-container>
+
+                    <input class="form-control" type="hidden" id='u_id' name="u_id" value="{{user.id}}" />
+                    <input class="form-control" type="hidden" id='status' name="status" value="active" />
+                    <br>
+                <!-- </form> -->
+            </div>
+            <md-button type="submit" class="md-raised md-primary pull-right" ng-click="createEvent()">Create</md-button>
+            <md-button ng-click="gotoPage('organization')" class="md-raised md-warn">Cancel</a>
         </div>
 
         <div class='home__footer'>
@@ -76,7 +102,7 @@
     </div>
 
     <!-- End Create Event Page -->
-    
+
 </body>
 
 </html>
