@@ -4,98 +4,137 @@
 <head>
 	<meta content="img/logo_128.png" itemprop="image">
 	<link href="img/logo_128.png" rel="icon">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bugle: Event Details</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Bugle: Event Details</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <!-- Angular Material style sheet -->
-    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-animate.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-aria.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-messages.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<!-- Angular Material style sheet -->
+	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-animate.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-aria.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-messages.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg"
+	 crossorigin="anonymous">
 	<script src="/node_modules/angular-local-storage/src/angular-local-storage.js"></script>
 	<script src="/node_modules/read-more/js/directives/readmore.js"></script>
-    <link rel="stylesheet" type="text/css" href="css/style.css" />
-    <link rel="stylesheet" type="text/css" href="css/base.css" />
-    <script type="text/javascript" src="js/app.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
+	<link rel="stylesheet" type="text/css" href="css/base.css" />
+	<script type="text/javascript" src="js/app.js"></script>
 </head>
 
 <body ng-controller="index" ng-init="fetchSession()">
 
-    <!-- The Organization Home Page -->
-	
-    <div class='home active'>
-	
-        <div class='home__header center_text'>
+	<!-- The Organization Home Page -->
+
+	<div class='home active'>
+
+		<!-- <div class='home__header center_text'>
 			<a ng-if="prevPage.includes('orgEvents.html')" href="orgEvents.html" class="back_button">Back</a>
 			<a ng-if="prevPage.includes('volunteerEvents.html')" href="volunteerEvents.html" class="back_button">Back</a>
             <h3><b>{{event.eName}}</b></h3>
-        </div>
+		</div> -->
 
-        <div class='home__content' style='padding: 20px'>
-            <p><b>Event Description:</b></p>
-			<p read-more ng-model="event.description" words="false" length="50"></p>	        
-	        <table class="tbl-ev-details">
-				<tr>
-					<td class="ev-details">
-						<b>Members: </b>{{event.members}}
-					</td>
-					<td class="ev-details-rt">
-						<button class="btn btn-small-blue">View Members</button>
-					</td>
-				</tr>
-				<tr>
-					<td class="ev-details">
-						<b>Organizer: </b> {{organization.uName}}
-					</td>
-					<td class="ev-details-rt">
-						<button class="btn btn-small-blue">View Organizer</button>
-					</td>
-				</tr>
-				<tr>
-					<td class="ev-details">
-						<b>Location: </b> {{event.location}}
-					</td>
-					<td class="ev-details-rt">
-						<button class="btn btn-small-blue">Navigate</button>
-					</td>
-				</tr>
-				<tr>
-					<td class="ev-details">
-						<b>Time: </b> {{event.datetime}}
-					</td>
-					<td class="ev-details-rt"></td>
-				</tr>
-			</table>
+		<md-toolbar>
+			<div class="md-toolbar-tools">
+				<md-button ng-if="prevPage.includes('orgEvents.html')" class="md-icon-button" aria-label="Go Back" ng-click="gotoPage('orgEvents')">
+					<i class="fas fa-angle-left"></i>
+				</md-button>
+				<md-button ng-if="prevPage.includes('volunteerEvents.html')" class="md-icon-button" aria-label="Go Back" ng-click="gotoPage('volunteerEvents')">
+					<i class="fas fa-angle-left"></i>
+				</md-button>
+				<!-- <md-truncate class="center_text" style="position: absolute; left: 90px; right: 170px; top: 13px; bottom: 13px;">{{user.uName}}</md-truncate> -->
 
+				<span flex>{{event.eName}}: Details</span>
+				<!-- <md-button class="md-raised" aria-label="Learn More">
+                Learn More
+              </md-button>
+              <md-button class="md-fab md-mini" aria-label="Favorite">
+                <md-icon md-svg-icon="img/icons/favorite.svg"></md-icon>
+              </md-button> -->
+			</div>
+		</md-toolbar>
+
+		<div class='home__content' style='padding: 20px'>
+			<p>
+				<b>Event Description:</b>
+			</p>
+			<p read-more ng-model="event.description" words="false" length="50"></p>
+
+			<md-list flex>
+				<md-list-item class="md-1-line">
+					<md-card flex>
+						<md-card-title>
+							<md-card-title-text>
+								<span class="md-headline">Organizer</span>
+								<span class="md-subhead">{{organization.uName}}</span>
+							</md-card-title-text>
+							<md-card-actions layout="column" layout-align="center end">
+								<md-button class="md-raised md-primary pull-right">View</md-button>
+							</md-card-actions>
+						</md-card-title>
+					</md-card>
+				</md-list-item>
+				<md-list-item class="md-1-line">
+					<md-card flex>
+						<md-card-title>
+							<md-card-title-text>
+								<span class="md-headline">Location</span>
+								<span class="md-subhead">{{event.location}}</span>
+							</md-card-title-text>
+							<md-card-actions layout="row" layout-align="end center">
+								<md-button class="md-raised md-primary pull-right">Navigate</md-button>
+							</md-card-actions>
+						</md-card-title>
+					</md-card>
+				</md-list-item>
+				<md-list-item class="md-1-line">
+					<md-card flex>
+						<md-card-title>
+							<md-card-title-text>
+								<span class="md-headline">Members</span>
+								<span class="md-subhead">{{event.members}}</span>
+							</md-card-title-text>
+						</md-card-title>
+					</md-card>
+				</md-list-item>
+				<md-list-item class="md-1-line">
+					<md-card flex>
+						<md-card-title>
+							<md-card-title-text>
+								<span class="md-headline">Time</span>
+								<span class="md-subhead">{{event.datetime}}</span>
+							</md-card-title-text>
+						</md-card-title>
+					</md-card>
+				</md-list-item>
+			</md-list>
 			<br>
 			<div class="wrapper">
-				<button class="btn btn-green btn-center" ng-click="applyEvent(event)" ng-show="true">Join Event</button>
-				<button class="btn btn-green btn-center" ng-click="leaveEvent(event)" ng-hide="true">Leave Event</button>
-				<button class="btn btn-green btn-center" ng-click="openChat(event)" ng-hide="true">Open Chat</button>
+				<md-button class="md-raised md-primary" ng-click="applyEvent(event)" ng-show="true">Join Event</md-button>
+				<md-button class="md-raised md-warn" ng-click="leaveEvent(event)" ng-hide="true">Leave Event</md-button>
+				<md-button class="md-raised md-primary" ng-click="openChat(event)" ng-hide="true">Open Chat</md-button>
 			</div>
-            
-        </div>
-        
-        <div class='home__footer'>
-            <div class="nav_bar">
-					<a href="organization.html" ng-if="user.type == 'org'">Events</a>
-					<a href="volunteer.html" ng-if="user.type == 'vol'" ng-class="{'active': prevPage.includes('orgEvents.html')}">Organizations</a>
-					<a href="volunteerEvents.html" ng-if="user.type == 'vol'" ng-class="{'active': prevPage.includes('volunteerEvents.html')}">Applied</a>
-					<a href="eventVolunteers.html" ng-if="user.type == 'org'">Volunteers</a>
-					<a href="chat.html">Chat</a>
-					<a href="profile.html">Profile</a>
-            </div>
-        </div>
+		</div>
+
+		<div class='home__footer'>
+			<div class="nav_bar">
+				<a href="organization.html" ng-if="user.type == 'org'">Events</a>
+				<a href="volunteer.html" ng-if="user.type == 'vol'" ng-class="{'active': prevPage.includes('orgEvents.html')}">Organizations</a>
+				<a href="volunteerEvents.html" ng-if="user.type == 'vol'" ng-class="{'active': prevPage.includes('volunteerEvents.html')}">Applied</a>
+				<a href="eventVolunteers.html" ng-if="user.type == 'org'">Volunteers</a>
+				<a href="chat.html">Chat</a>
+				<a href="profile.html">Profile</a>
+			</div>
+		</div>
 
 	</div>
-	
+
 	<!-- End Organization Home Page -->
-    
+
 </body>
 
 </html>

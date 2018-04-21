@@ -17,6 +17,7 @@
     <script src="/node_modules/angular-local-storage/src/angular-local-storage.js"></script>
     <script src="/node_modules/read-more/js/directives/readmore.js"></script>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="css/style.css" />
     <link rel="stylesheet" type="text/css" href="css/base.css" />
     <script type="text/javascript" src="js/app.js"></script>
@@ -28,15 +29,43 @@
 
     <div class='home active'>
 
-        <div class='home__header center_text'>
+        <!-- <div class='home__header center_text'>
             <h3><b>{{user.uName}}</b></h3>
-        </div>
+        </div> -->
+
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+              <md-button class="md-icon-button" aria-label="Go Back" disabled>
+                <i class="fas fa-angle-left"></i>
+              </md-button>
+      
+              <!-- <md-truncate class="center_text" style="position: absolute; left: 90px; right: 170px; top: 13px; bottom: 13px;">{{user.uName}}</md-truncate> -->
+      
+              <span  flex>Your Events</span>
+              <!-- <md-button class="md-raised" aria-label="Learn More">
+                Learn More
+              </md-button>
+              <md-button class="md-fab md-mini" aria-label="Favorite">
+                <md-icon md-svg-icon="img/icons/favorite.svg"></md-icon>
+              </md-button> -->
+            </div>
+          </md-toolbar>
 
         <div class='home__content my_container'>
             <h4>Events You have applied to</h4>
-            <ul data-ng-init="getVolunteerEvents(user.uId)">
+            <!-- <ul data-ng-init="getVolunteerEvents(user.uId)">
                 <li data-ng-repeat="event in events" ng-click="viewEventDetails(event)">{{event.eName}}</li>
-            </ul>
+            </ul> -->
+            <md-list flex ng-init="getVolunteerEvents(user.uId)">
+                <md-list-item class="md-1-line" ng-repeat="event in events" ng-click="viewEventDetails(event)">
+                    <md-card flex>
+                        <md-card-title>
+                            <md-card-title-text>{{event.eName}}</md-card-title-text>
+                        </md-card-title>
+                    </md-card>
+                    <!-- <div class="md-list-item-text" layout="column"></div> -->
+                </md-list-item>
+            </md-list>
         </div>
 
         <div class='home__footer'>

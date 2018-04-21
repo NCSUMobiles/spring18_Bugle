@@ -42,10 +42,12 @@ li {
 /* The bottom menu bar */
 .nav_bar {
     overflow: hidden;
-    background-color: #333;
+    background-color: rgb(134, 134, 134);
     position: fixed;
     bottom: 0;
     width: 100%;
+    display: flex;
+    justify-content: space-around;
   }
   
   .nav_bar a {
@@ -64,7 +66,7 @@ li {
   }
   
   .nav_bar a.active {
-    background-color: #4CAF50;
+    background-color: rgb(78, 76, 175);
     color: white;
   }
   

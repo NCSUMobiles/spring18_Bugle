@@ -19,6 +19,8 @@
     <link rel="stylesheet" type="text/css" href="css/style.css" />
     <link rel="stylesheet" type="text/css" href="css/base.css" />
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg"
+        crossorigin="anonymous">
     <script type="text/javascript" src="js/app.js"></script>
 </head>
 
@@ -28,17 +30,42 @@
 
     <div class='home active'>
 
-        <div class='home__header center_text'>
-            <h3><b>{{user.uName}}</b></h3>
-        </div>
+        <!-- <div class='home__header center_text'>
+            <h3>
+                <b>Event Volunteers</b>
+            </h3>
+        </div> -->
+
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <md-button class="md-icon-button" aria-label="Go Back" disabled>
+                    <i class="fas fa-angle-left"></i>
+                </md-button>
+
+                <!-- <md-truncate class="center_text" style="position: absolute; left: 90px; right: 170px; top: 13px; bottom: 13px;">{{user.uName}}</md-truncate> -->
+
+                <span flex>Event Volunteer</span>
+                <!-- <md-button class="md-raised" aria-label="Learn More">
+                Learn More
+              </md-button>
+              <md-button class="md-fab md-mini" aria-label="Favorite">
+                <md-icon md-svg-icon="img/icons/favorite.svg"></md-icon>
+              </md-button> -->
+            </div>
+        </md-toolbar>
 
         <div class='home__content my_container'>
             <br>
             <!-- Drop down to show the organization's events -->
-            Select an Event to view its volunteers: <select data-ng-init="getOrganizationEvents(user.uId)" ng-model="eventSelected" ng-options="e as e.eName for e in events" ng-change="getEventVolunteers()">
-                <option value="{{e.eId}}"></option>
-            </select>
-            <br><br>
+            <!-- <select data-ng-init="getOrganizationEvents(user.uId)" ng-model="eventSelected" ng-options="e as e.eName for e in events" ng-change="getEventVolunteers()">
+                <option value="" disabled selected>Select an Event</option>
+            </select> -->
+            <md-select placeholder="Select an Event" ng-model="eventSelected" ng-init="getOrganizationEvents(user.uId)" style="min-width: 200px;"
+                ng-change="getEventVolunteers()">
+                <md-option ng-value="e" ng-repeat="e in events">{{e.eName}}</md-option>
+            </md-select>
+            <br>
+            <br>
 
             <!-- Show a drop down for all active events of that organization here from where they can select the event for which they want to show the volunteers. By default show the volunteers of the first active event. -->
             <div ng-if="eventSelected">
@@ -51,15 +78,20 @@
                             <input name='u_ids' value="{{volunteer.uId}}" type="checkbox"> {{volunteer.uName}}
                         </li>
                     </ul>
+                    <!-- <div class="demo-select-all-checkboxes" flex ng-repeat="volunteer in volunteers">
+                        <md-checkbox ng-checked="exists(volunteer, volunteers)" ng-click="toggle(volunteer, volunteers)">
+                            {{volunteer.uName}}
+                        </md-checkbox>
+                    </div> -->
                     <br>
                     <div ng-if="volunteers.length == 0"> No voluteers yet.</div>
-                    <button type="submit" ng-if="volunteers.length > 0" name="approve" formaction="/approve-volunteers" class="btn btn-success btn-shadow pull-right">Approve</button>
-                    <button type="submit" ng-if="volunteers.length > 0" name="reject" formaction="/reject-volunteers" class="btn btn-danger btn-shadow">Reject</button>
+                    <md-button type="submit" ng-if="volunteers.length > 0" name="approve" formaction="/approve-volunteers" class="md-raised md-primary pull-right">Approve</md-button>
+                    <md-button type="submit" ng-if="volunteers.length > 0" name="reject" formaction="/reject-volunteers" class="md-raised md-warn">Reject</md-button>
                 </form>
             </div>
 
         </div>
-        
+
         <div class='home__footer'>
             <div class="nav_bar">
                 <a href="organization.html">Events</a>
@@ -67,12 +99,13 @@
                 <a href="chat.html">Chat</a>
                 <a href="profile.html">Profile</a>
             </div>
+
         </div>
 
     </div>
 
     <!-- End Organization Volunteers Page -->
-    
+
 </body>
 
 </html>
