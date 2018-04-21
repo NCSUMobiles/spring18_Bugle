@@ -22,7 +22,7 @@
     <link rel="stylesheet" type="text/css" href="css/style.css" />
     <link rel="stylesheet" type="text/css" href="css/login.css" />
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg"
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg">
     <script type="text/javascript" src="js/app.js"></script>
 </head>
 
@@ -36,29 +36,29 @@
 
         <div class="container">
 
-            <div class="form-group" ng-class="{ 'has-error': form.orgname.$dirty &amp;&amp; form.orgname.$error.required }">
-                <label for="orgname">Organization Name</label> &nbsp; <span ng-show="form.orgname.$dirty &amp;&amp; form.orgname.$error.required" class="ng-hide fcred">Organization Name is required</span>
-                <input name="orgname" id="orgname" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="orgname" required="" type="text">
-            </div>
+            <md-input-container class="md-icon-float md-block">
+                    <label>Organization Name</label>
+                    <input ng-model="u_name" type="text" required>
+            </md-input-container>
 
-            <div class="form-group" ng-class="{ 'has-error': form.emailid.$dirty &amp;&amp; form.emailid.$error.required }">
-                <label for="emailid">Email Id</label> &nbsp; <span ng-show="form.emailid.$dirty &amp;&amp; form.emailid.$error.required" class="ng-hide fcred">Email Id is required</span> &nbsp; <span ng-show="form.emailid.$error.email" class="ng-hide fcred">Provided Email Id is invalid</span>
-                <input name="emailid" id="emailid" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="emailid" required="" type="email">
-            </div>
+            <md-input-container class="md-icon-float md-block">
+                    <label>Email</label>
+                    <input ng-model="email" type="email" required>
+            </md-input-container>
 
-            <div class="form-group" ng-class="{ 'has-error': form.psw.$dirty &amp;&amp; form.psw.$error.required }">
-                <label for="psw">Password</label> &nbsp; <span ng-show="form.psw.$dirty &amp;&amp; form.psw.$error.required" class="ng-hide fcred">Password is required</span>
-                <input type="password" name="psw" id="psw" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="psw" required="" type="text">
-            </div>
+            <md-input-container class="md-icon-float md-block">
+                    <label>Password</label>
+                    <input ng-model="password" type="password" required>
+            </md-input-container>
 
-            <div class="form-group" ng-class="{ 'has-error': form.cpsw.$dirty &amp;&amp; form.cpsw.$error.required }">
-                <label for="cpsw">Confirm Password</label> &nbsp; <span ng-show="form.cpsw.$dirty &amp;&amp; form.cpsw.$error.required" class="ng-hide fcred">Confirm Password is required</span>
-                <input type="password" name="cpsw" id="cpsw" class="form-control ng-not-empty ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" ng-model="cpsw" required="" type="text">
-                
-            </div>
+            <md-input-container class="md-icon-float md-block">
+                    <label>Confirm Password</label>
+                    <input ng-model="cpsw" type="password" required>
+            </md-input-container>
 
-            <button type="submit" class="btn-shadow" ng-disabled="form.$invalid || dataLoading" disabled="disabled">Sign Up</button>
-            <a href="login.html" class="linkbuttonred">Cancel</a>
+            <button type="submit" class="btn-shadow" ng-disabled="form.$invalid || dataLoading">Sign Up</button>
+            <md-progress-circular class="center_text" md-mode="indeterminate" ng-show="dataLoading"></md-progress-circular>
+            <a href="login.html" class="linkbuttonred" ng-disabled="dataLoading">Cancel</a>
 
         </div>
 
