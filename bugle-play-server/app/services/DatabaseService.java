@@ -122,29 +122,29 @@ public class DatabaseService {
 				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 74','Chicago','21.4.2018 08:00AM','description volunteering event. Big volunteering event need lots of volunteers!! come volunteer with us!','100',(select u_id from users where u_name='Organization 3' limit 1),'active')");
 		// applicants
 		insertStatements.add(
-				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Default User' limit 1), (select e_id from events where e_name='Event 1' limit 1), 'active')");
+				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Default User' limit 1), (select e_id from events where e_name='Event 1' limit 1), 'applied')");
 		insertStatements.add(
-				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Snapchat User' limit 1), (select e_id from events where e_name='Event 28' limit 1), 'active')");
+				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Snapchat User' limit 1), (select e_id from events where e_name='Event 28' limit 1), 'applied')");
 		insertStatements.add(
-				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Cool User' limit 1), (select e_id from events where e_name='Event 1' limit 1), 'active')");
+				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Cool User' limit 1), (select e_id from events where e_name='Event 1' limit 1), 'applied')");
 		insertStatements.add(
-				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Google User' limit 1), (select e_id from events where e_name='Event 23' limit 1), 'active')");
+				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Google User' limit 1), (select e_id from events where e_name='Event 23' limit 1), 'applied')");
 		insertStatements.add(
-				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Facebook User' limit 1), (select e_id from events where e_name='Event 234' limit 1), 'active')");
+				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Facebook User' limit 1), (select e_id from events where e_name='Event 234' limit 1), 'applied')");
 		insertStatements.add(
-				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Twitter User' limit 1), (select e_id from events where e_name='Event 1' limit 1), 'active')");
+				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Twitter User' limit 1), (select e_id from events where e_name='Event 1' limit 1), 'applied')");
 		insertStatements.add(
-				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Default User' limit 1), (select e_id from events where e_name='Event 74' limit 1), 'active')");
+				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Default User' limit 1), (select e_id from events where e_name='Event 74' limit 1), 'applied')");
 		insertStatements.add(
-				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Alien User' limit 1), (select e_id from events where e_name='Event 1' limit 1), 'active')");
+				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Alien User' limit 1), (select e_id from events where e_name='Event 1' limit 1), 'applied')");
 		insertStatements.add(
-				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Cool User' limit 1), (select e_id from events where e_name='Event 47' limit 1), 'active')");
+				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Cool User' limit 1), (select e_id from events where e_name='Event 47' limit 1), 'applied')");
 		insertStatements.add(
-				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Google User' limit 1), (select e_id from events where e_name='Event 234' limit 1), 'active')");
+				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Google User' limit 1), (select e_id from events where e_name='Event 234' limit 1), 'applied')");
 		insertStatements.add(
-				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Facebook User' limit 1), (select e_id from events where e_name='Event 74' limit 1), 'active')");
+				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Facebook User' limit 1), (select e_id from events where e_name='Event 74' limit 1), 'applied')");
 		insertStatements.add(
-				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Twitter User' limit 1), (select e_id from events where e_name='Event 123' limit 1), 'active')");
+				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Twitter User' limit 1), (select e_id from events where e_name='Event 123' limit 1), 'applied')");
 		Connection con = null;
 		try {
 			con = db.getConnection();
