@@ -3,34 +3,14 @@ body {
 }
 
 form {
-    border: 3px solid #f1f1f1;
-    height: 100%;
-}
-
-input[type=text], input[type=password] {
-    width: 100%;
-    padding: 10px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    border-radius: 0.6rem;
-    box-sizing: border-box;
-}
-
-input[type=date]{
-    width: 100%;
-    padding: .5px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    border-radius: 0.6rem;
-    box-sizing: border-box;
+    border: none;
+    height: 60%;
 }
 
 button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 14px 20px;
+    background-color: rgba(76, 175, 80, 0.89);
+    color: white !important;
+    padding: 10px 20px;
     margin: 8px 0;
     border: none;
     border-radius: 0.6rem;
@@ -42,8 +22,12 @@ button:disabled {
     opacity: 0.3;
 }
 
+button.btn-shadow {
+    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.26);
+}
+
 a.linkbutton {
-    background-color: rgb(223, 157, 83);
+    background-color: rgba(223, 157, 83, 0.92);
     color: white;
     text-decoration: none;
     display: block;
@@ -54,12 +38,12 @@ a.linkbutton {
     border: none;
     border-radius: 0.6rem;
     cursor: pointer;
-    box-shadow: 0px 8px 6px -6px black;
+    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.26);
     width: 100%;
 }
 
 .linkbuttonred {
-    background-color: rgb(247, 71, 71);
+    background-color: rgba(247, 71, 71, 0.89);
     color: white;
     display: block;
     text-align: center;
@@ -70,12 +54,8 @@ a.linkbutton {
     border-radius: 0.6rem;
     cursor: pointer;
     width: 100%;
-    box-shadow: 0px 8px 6px -6px black;
+    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.26);
     text-decoration: none;
-}
-
-.btn-shadow {
-    box-shadow: 0px 8px 6px -6px black !important;
 }
 
 .imgcontainer {
