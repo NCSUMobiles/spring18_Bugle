@@ -25,7 +25,7 @@
     <script type="text/javascript" src="js/app.js"></script>    
 </head>
 
-<body ng-controller="index" ng-init="fetchSession()">
+<body ng-controller="index" ng-init="fetchSession()" onload="initialize()">
 
     <!-- The Chat Page -->
 
@@ -61,6 +61,7 @@
                 <input id="handle" ng-show="false" type="text" ng-value="user.uName"/>
                 <input id="message" type="text" placeholder="Message"/>
                 <button class="send_button" id="send">Send</button>
+                <button id="getdb">Check db</button>
             </div>
         </div>
 
