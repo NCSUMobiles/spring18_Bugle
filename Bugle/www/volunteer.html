@@ -63,11 +63,15 @@
                 </li>
             </ul> -->
             <md-list flex ng-init="getOrganizations()">
-                <md-list-item class="md-1-line" ng-repeat="org in organizations" ng-click="openOrgEvents(org)">
+                <md-list-item class="md-1-line" ng-repeat="org in organizations" >
                     <md-card flex>
                         <md-card-title>
                             <md-card-title-text>{{org.uName}}</md-card-title-text>
                         </md-card-title>
+                        <md-card-actions layout="row" layout-align="end end">
+                                <md-button style="text-transform: none;" class="md-raised md-accent" ng-click="showDetails(org)">More Info</md-button>
+                                <md-button style="text-transform: none;" class="md-raised md-accent" ng-click="openOrgEvents(org)">Events</md-button>
+                            </md-card-actions>
                     </md-card>
                     <!-- <div class="md-list-item-text" layout="column"></div> -->
                 </md-list-item>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html ng-app="root">
+
+<head>
+    <meta content="img/logo_128.png" itemprop="image">
+    <link href="img/logo_128.png" rel="icon">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bugle: Organization Details</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- Angular Material style sheet -->
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-animate.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-aria.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-messages.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg"
+        crossorigin="anonymous">
+    <script src="/node_modules/angular-local-storage/src/angular-local-storage.js"></script>
+    <script src="/node_modules/read-more/js/directives/readmore.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link rel="stylesheet" type="text/css" href="css/base.css" />
+    <script type="text/javascript" src="js/app.js"></script>
+</head>
+
+<body ng-controller="index" ng-init="fetchSession()">
+
+    <!-- The Organization Home Page -->
+
+    <!-- <div class='home active'> -->
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <md-button class="md-icon-button" aria-label="Go Back" ng-click="gotoPage('volunteer')">
+                <i class="fas fa-angle-left"></i>
+            </md-button>
+            <span flex>{{organization.uName}}: Details</span>
+        </div>
+    </md-toolbar>
+
+    <div class='home__content' style='padding: 20px'>
+        <md-list flex>
+            <md-list-item class="secondary-button-padding">
+                <p>
+                    <b>Name</b>: </p>
+                <md-button class="md-secondary" disabled>{{organization.uName}}</md-button>
+            </md-list-item>
+            <md-divider></md-divider>
+            <md-list-item ng-if="organization.email" class="secondary-button-padding">
+                <p>
+                    <b>Email ID</b>: </p>
+                <md-button class="md-secondary" disabled>{{organization.email}}</md-button>
+            </md-list-item>
+            <md-divider></md-divider>
+            <md-list-item ng-if="organization.mobile" class="secondary-button-padding">
+                <p>
+                    <b>Contact</b>: </p>
+                <md-button class="md-secondary" disabled>{{organization.mobile}}</md-button>
+            </md-list-item>
+            <md-divider></md-divider>
+            <md-list-item ng-if="organization.website" class="secondary-button-padding">
+                <p>
+                    <b>Website</b>: </p>
+                <md-button class="md-secondary" disabled>{{organization.website}}</md-button>
+            </md-list-item>
+            <md-divider></md-divider>
+            <md-list-item ng-if="organization.description" class="secondary-button-padding">
+                <p>
+                    <b>Bio</b>
+                </p>
+                <textarea style="text-align: right; color: gray; padding-top: 1rem; border: none; background: white; height: 14rem;" disabled>{{organization.description}}</textarea>
+            </md-list-item>
+        </md-list>
+    </div>
+
+    <div class='home__footer'>
+        <div class="nav_bar">
+            <a href="organization.html" ng-if="user.type == 'org'">Events</a>
+            <a href="volunteer.html" ng-if="user.type == 'vol'" ng-class="{'active': prevPage.includes('orgEvents.html')}">Organizations</a>
+            <a href="volunteerEvents.html" ng-if="user.type == 'vol'" ng-class="{'active': prevPage.includes('volunteerEvents.html')}">Applied</a>
+            <a href="eventVolunteers.html" ng-if="user.type == 'org'">Volunteers</a>
+            <a href="chats.html">Chats</a>
+            <a href="profile.html">Profile</a>
+        </div>
+    </div>
+
+    <!-- </div> -->
+
+    <!-- End Organization Home Page -->
+
+</body>
+
+</html>
