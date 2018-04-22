@@ -146,9 +146,17 @@ public class DatabaseService {
 				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Facebook User' limit 1), (select e_id from events where e_name='Event 74' limit 1), 'applied')");
 		insertStatements.add(
 				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Twitter User' limit 1), (select e_id from events where e_name='Event 123' limit 1), 'applied')");
-		// chats
+		// chats - organizers
+		insertStatements.add("INSERT INTO chats (c_name, u_id, e_id, status) values ((('Event 1')::text || ': Chat'), (SELECT u_id from events where e_name='Event 1' order by u_id LIMIT 1), (SELECT e_id from events where e_name='Event 1' LIMIT 1), 'active')");
+		insertStatements.add("INSERT INTO chats (c_name, u_id, e_id, status) values ((('Event 28')::text || ': Chat'), (SELECT u_id from events where e_name='Event 28' order by u_id LIMIT 1), (SELECT e_id from events where e_name='Event 28' LIMIT 1), 'active')");
+		insertStatements.add("INSERT INTO chats (c_name, u_id, e_id, status) values ((('Event 123')::text || ': Chat'), (SELECT u_id from events where e_name='Event 123' order by u_id LIMIT 1), (SELECT e_id from events where e_name='Event 123' LIMIT 1), 'active')");
+		insertStatements.add("INSERT INTO chats (c_name, u_id, e_id, status) values ((('Event 234')::text || ': Chat'), (SELECT u_id from events where e_name='Event 234' order by u_id LIMIT 1), (SELECT e_id from events where e_name='Event 234' LIMIT 1), 'active')");
+		insertStatements.add("INSERT INTO chats (c_name, u_id, e_id, status) values ((('Event 23')::text || ': Chat'), (SELECT u_id from events where e_name='Event 23' order by u_id LIMIT 1), (SELECT e_id from events where e_name='Event 23' LIMIT 1), 'active')");
+		insertStatements.add("INSERT INTO chats (c_name, u_id, e_id, status) values ((('Event 47')::text || ': Chat'), (SELECT u_id from events where e_name='Event 47' order by u_id LIMIT 1), (SELECT e_id from events where e_name='Event 47' LIMIT 1), 'active')");
+		insertStatements.add("INSERT INTO chats (c_name, u_id, e_id, status) values ((('Event 74')::text || ': Chat'), (SELECT u_id from events where e_name='Event 74' order by u_id LIMIT 1), (SELECT e_id from events where e_name='Event 74' LIMIT 1), 'active')");
+		// chats - approved volunteers
 		insertStatements.add(
-				"INSERT INTO chats (c_name, u_id, e_id, status) values ((('Event 1')::text || ': Chat'), (SELECT u_id from applicants where e_id in (SELECT e_id from events where e_name='Event 1' LIMIT 1) order by u_id LIMIT 1), (SELECT e_id from events where e_name='Event 1' LIMIT 1), 'active');");
+				"INSERT INTO chats (c_name, u_id, e_id, status) values ((('Event 1')::text || ': Chat'), (SELECT u_id from applicants where e_id in (SELECT e_id from events where e_name='Event 1' LIMIT 1) order by u_id LIMIT 1), (SELECT e_id from events where e_name='Event 1' LIMIT 1), 'active')");
 		Connection con = null;
 		try {
 			con = db.getConnection();
