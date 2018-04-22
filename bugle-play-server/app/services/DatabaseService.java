@@ -601,10 +601,12 @@ public class DatabaseService {
 					LOG.info("Status Updation failed for uID: " + uId);
 				}
 			}
-			// chan check here if executionStatus was true or false?
-			return true;
+			if (executionStatus) {
+				return true;
+			} else {
+				return false;
+			}
 		}
-		return false;
 	}
 
 	/**
