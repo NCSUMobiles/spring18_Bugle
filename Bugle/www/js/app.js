@@ -10,7 +10,7 @@ app.config(function (localStorageServiceProvider) {
 app.config(function ($mdThemingProvider) {
     $mdThemingProvider.theme('default')
         .primaryPalette('green')
-        .accentPalette('light-blue');
+        .accentPalette('indigo');
 });
 
 
@@ -502,6 +502,38 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
     };
     // function for a volunteer to apply for a event end.
 
+     // function for a volunteer to leave an event start.
+     $scope.leaveEvent = function (event) {
+        console.log('applying For event: ' + JSON.stringify(event) + ', by volunteer: ' + JSON.stringify($scope.user));
+
+        var Leavingevent = {
+            'e_Id': event.eId,
+            'u_Id': $scope.user.uId
+        };
+
+        console.log('Leaving event: ' + JSON.stringify(Leavingevent));
+
+        $http({
+            method: 'POST',
+            url: 'https://bugle-pl-srv.herokuapp.com/leave-event',
+            data: Leavingevent,
+            headers: { 'Content-Type': 'application/json' }
+        }).then(function (response) {
+            console.log('response: ' + JSON.stringify(response));
+            if (response.status != 'error') {
+                var message = JSON.stringify(response.data.message);
+                console.log('SUCCESS: ' + JSON.stringify(message));
+                showToast('Left Event!');
+            } else {
+                console.log('ERROR: ' + JSON.stringify(response.data.message));
+                showToast('Sorry, Could not leave event!');
+            }
+        }, function (response) {
+            console.log('ERROR: ' + JSON.stringify(response));
+        });
+    };
+    // function for a volunteer to leaven an event end.
+
     var showToast = function (message) {
         $mdToast.show(
             $mdToast.simple()
@@ -643,6 +675,14 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         localStorageService.set('chat', null);
         localStorageService.set('chat', ch);
         $window.location.href = '/chat.html';
-    }
+    };
+
+    $scope.showDetails = function(org) {
+        console.log('updating session organization to: ' + JSON.stringify(org));
+        localStorageService.set('organization', null);
+        localStorageService.set('organization', org);
+        updateScopeOrganization(org);
+        $window.location.href = '/organizationDetails.html';
+    };
 
 }]);

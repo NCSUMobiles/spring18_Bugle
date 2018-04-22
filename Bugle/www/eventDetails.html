@@ -64,58 +64,27 @@
 			<p read-more ng-model="event.description" words="false" length="50"></p>
 
 			<md-list flex>
-				<md-list-item class="md-1-line">
-					<md-card flex>
-						<md-card-title>
-							<md-card-title-text>
-								<span class="md-headline">Organizer</span>
-								<span class="md-subhead">{{organization.uName}}</span>
-							</md-card-title-text>
-							<md-card-actions layout="column" layout-align="center end">
-								<md-button class="md-raised md-accent pull-right">View</md-button>
-							</md-card-actions>
-						</md-card-title>
-					</md-card>
+				<md-list-item class="secondary-button-padding">
+					<p><b>Organizer</b>: {{organization.uName}}</p>
 				</md-list-item>
-				<md-list-item class="md-1-line">
-					<md-card flex>
-						<md-card-title>
-							<md-card-title-text>
-								<span class="md-headline">Location</span>
-								<span class="md-subhead">{{event.location}}</span>
-							</md-card-title-text>
-							<md-card-actions layout="row" layout-align="end center">
-								<md-button class="md-raised md-accent pull-right">Navigate</md-button>
-							</md-card-actions>
-						</md-card-title>
-					</md-card>
+				<md-divider></md-divider>
+				<md-list-item class="secondary-button-padding">
+					<p><b>Location</b>: &nbsp;&nbsp;&nbsp;{{event.location}}</p>
+					<md-button class="md-raised md-accent" ng-click="doSecondaryAction($event)">Navigate</md-button>
 				</md-list-item>
-				<md-list-item class="md-1-line">
-					<md-card flex>
-						<md-card-title>
-							<md-card-title-text>
-								<span class="md-headline">Members</span>
-								<span class="md-subhead">{{event.members}}</span>
-							</md-card-title-text>
-						</md-card-title>
-					</md-card>
+				<md-divider></md-divider>
+				<md-list-item class="secondary-button-padding">
+					<p><b>Members</b>: &nbsp;{{event.members}}</p>
 				</md-list-item>
-				<md-list-item class="md-1-line">
-					<md-card flex>
-						<md-card-title>
-							<md-card-title-text>
-								<span class="md-headline">Time</span>
-								<span class="md-subhead">{{event.datetime}}</span>
-							</md-card-title-text>
-						</md-card-title>
-					</md-card>
+				<md-divider></md-divider>
+				<md-list-item class="secondary-button-padding">
+					<p><b>Time</b>: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{event.datetime}}</p>
 				</md-list-item>
 			</md-list>
 			<br>
 			<div class="wrapper">
-				<md-button class="md-raised md-primary" ng-click="applyEvent(event)" ng-show="true">Join Event</md-button>
-				<md-button class="md-raised md-warn" ng-click="leaveEvent(event)" ng-hide="true">Leave Event</md-button>
-				<md-button class="md-raised md-primary" ng-click="openChat(event)" ng-hide="true">Open Chat</md-button>
+				<md-button class="md-raised md-primary" ng-click="applyEvent(event)" ng-show="!prevPage.includes('volunteerEvents.html')">Join Event</md-button>
+				<md-button class="md-raised md-warn" ng-click="leaveEvent(event)" ng-show="prevPage.includes('volunteerEvents.html')">Leave Event</md-button>
 			</div>
 		</div>
 
