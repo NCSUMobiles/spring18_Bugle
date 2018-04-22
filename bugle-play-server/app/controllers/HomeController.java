@@ -13,6 +13,7 @@ import com.google.gson.Gson;
 import models.Applicants;
 import models.Chats;
 import models.Events;
+import models.Messages;
 import models.Users;
 import play.Logger;
 import play.Logger.ALogger;
@@ -424,7 +425,7 @@ public class HomeController extends Controller {
 			user.setDob(dob);
 
 			LOG.debug("Updating user ID: " + uId);
-			
+
 			if (databaseService.updateUser(user)) {
 				LOG.debug("Updated user ID: " + uId);
 				return ok(createSuccessResponse(Strings.USER, new Gson().toJson(user))).withHeader(Strings.CORS,
@@ -460,21 +461,153 @@ public class HomeController extends Controller {
 			event.setStatus(status);
 
 			LOG.debug("Updating event ID: " + eId);
-			
+
 			if (databaseService.updateEvent(event)) {
 				LOG.debug("Updated event ID: " + eId);
 				return ok(createSuccessResponse(Strings.EVENT, new Gson().toJson(event))).withHeader(Strings.CORS,
 						Strings.STAR);
 			} else {
-				return ok(createErrorResponse("Unable to update event details.")).withHeader(Strings.CORS, Strings.STAR);
+				return ok(createErrorResponse("Unable to update event details.")).withHeader(Strings.CORS,
+						Strings.STAR);
 			}
 		}
 	}
-	
+
+	/**
+	 * This method gets the chats from the database for the user with the given user
+	 * id.
+	 * 
+	 * @param vId
+	 *            the user ID
+	 * @return
+	 */
 	public Result getChats(String vId) {
 		LOG.debug("getEvents method called.");
 		List<Chats> chats = databaseService.getChats(Integer.valueOf(vId));
 		return ok(createSuccessResponse("chats", new Gson().toJson(chats))).withHeader(Strings.CORS, Strings.STAR);
+	}
+
+	/**
+	 * This method retrieves a message from the database for the given message id.
+	 * 
+	 * @param mId
+	 *            the message ID
+	 * @return
+	 */
+	public Result getMessage(String mId) {
+		LOG.debug("getMessage method called.");
+		Messages message = databaseService.getMessage(Integer.valueOf(mId));
+		return ok(createSuccessResponse(Strings.MESSAGE, new Gson().toJson(message))).withHeader(Strings.CORS,
+				Strings.STAR);
+	}
+
+	/**
+	 * This method saves the message to the database
+	 * 
+	 * @return the saved message
+	 */
+	public Result saveMessage() {
+		LOG.debug("saveMessage method called.");
+		JsonNode json = request().body().asJson();
+		if (json == null) {
+			return badRequest("Expecting Json data for saving Message.").withHeader(Strings.CORS, Strings.STAR);
+		} else {
+			int cId = json.findPath("cId").intValue();
+			int eId = json.findPath("eId").intValue();
+			String msg = json.findPath("message").textValue();
+
+			Messages message = new Messages();
+			message.setcId(cId);
+			message.seteId(eId);
+			message.setMsg(msg);
+			message.setStatus(Strings.STATUS_ACTIVE);
+
+			LOG.debug("Saving message for Chat: " + cId);
+
+			if (databaseService.saveMessage(message)) {
+				LOG.debug("Saved message for Chat: " + cId);
+				// TODO: this message will not have message ID. If that is needed then we need
+				// to do another DB call to read the message ID for this chatID and eventID.
+				return ok(createSuccessResponse(Strings.MESSAGE, new Gson().toJson(message))).withHeader(Strings.CORS,
+						Strings.STAR);
+			} else {
+				return ok(createErrorResponse("Unable to save Message.")).withHeader(Strings.CORS, Strings.STAR);
+			}
+		}
+	}
+
+	/**
+	 * This message returns the details of the user for the given user id.
+	 * 
+	 * @param uId
+	 *            the user ID.
+	 * @return
+	 */
+	public Result getUser(String uId) {
+		LOG.debug("getUser method called.");
+		Users user = databaseService.getUser(Integer.valueOf(uId));
+		return ok(createSuccessResponse("user", new Gson().toJson(user))).withHeader(Strings.CORS, Strings.STAR);
+	}
+
+	/**
+	 * Validate details for event details
+	 * 
+	 * @return json
+	 */
+	public Result validateDetails() {
+		LOG.debug("validateDetails method called.");
+		JsonNode json = request().body().asJson();
+		if (json == null) {
+			return badRequest("Expecting Json data for saving Message.").withHeader(Strings.CORS, Strings.STAR);
+		} else {
+			int oId = json.findPath("orgID").intValue();
+			int uId = json.findPath("userID").intValue();
+			int eId = json.findPath("eventID").intValue();
+
+			try {
+				Users orgUser = databaseService.getUser(oId);
+
+				String appliedStatus = databaseService.getApplicantStatus(uId, eId);
+
+				ObjectNode result = Json.newObject();
+				result.put(Strings.STATUS, Strings.SUCCESS);
+				result.put("orgName", orgUser.getuName());
+				result.put("appliedStatus", appliedStatus);
+				return ok(result).withHeader(Strings.CORS, Strings.STAR);
+
+			} catch (Exception e) {
+				LOG.error("Error while validating Details for: ORGANIZATION ID: " + oId + ", USER ID: " + uId
+						+ ", EVENT ID: " + eId);
+				e.printStackTrace();
+				return ok(createErrorResponse("Unable to validate Event Details!")).withHeader(Strings.CORS,
+						Strings.STAR);
+			}
+		}
+	}
+
+	/**
+	 * leave event for an applicant as specified by JSON.
+	 * 
+	 * @return
+	 */
+	public Result leaveEvent() {
+		LOG.debug("leaveEvent method called.");
+		JsonNode json = request().body().asJson();
+		if (json == null) {
+			return badRequest("Expecting Json data for withdrawing Applicant.").withHeader(Strings.CORS, Strings.STAR);
+		} else {
+
+			int uId = json.findPath("u_Id").intValue();
+			int eId = json.findPath("e_Id").intValue();
+
+			// save to DB and return response.
+			if (databaseService.deleteApplicant(uId, eId)) {
+				return ok(createSuccessResponse(Strings.MESSAGE, "Left Event successfully.")).withHeader(Strings.CORS,
+						Strings.STAR);
+			} else {
+				return ok(createErrorResponse("Could not leave event.")).withHeader(Strings.CORS, Strings.STAR);
+			}
+		}
 	}
 
 	/**

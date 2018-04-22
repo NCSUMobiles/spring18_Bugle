@@ -62,3 +62,18 @@ POST     /edit-event						 		   controllers.HomeController.editEvent
 
 # gets the chats for an applicant.
 GET     /chats/:vId							 		   controllers.HomeController.getChats(vId: String)
+
+# gets the messages for an message ID.
+GET     /msgs/:mId							 		   controllers.HomeController.getMessage(mId: String)
+
+# saves the chat messages.
+POST    /msgs								 		   controllers.HomeController.saveMessage
+
+# gets the user details.
+GET    /get-user/:uId						 		   controllers.HomeController.getUser(uId: String)
+
+# does the validations for event details page.
+POST   /details-val						 			   controllers.HomeController.validateDetails
+
+# Leave an event by a volunteer.
+POST   /leave-event						 			   controllers.HomeController.leaveEvent
