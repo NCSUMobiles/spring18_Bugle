@@ -17,7 +17,8 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-aria.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-messages.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
-	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg"
+	 crossorigin="anonymous">
 	<script src="/node_modules/angular-local-storage/src/angular-local-storage.js"></script>
 	<script src="/node_modules/read-more/js/directives/readmore.js"></script>
 	<link rel="stylesheet" type="text/css" href="css/style.css" />
@@ -65,26 +66,30 @@
 
 			<md-list flex>
 				<md-list-item class="secondary-button-padding">
-					<p><b>Organizer</b>: {{organization.uName}}</p>
+					<p>
+						<b>Organizer</b>: {{detailOrgName}}</p>
 				</md-list-item>
 				<md-divider></md-divider>
 				<md-list-item class="secondary-button-padding">
-					<p><b>Location</b>: &nbsp;&nbsp;&nbsp;{{event.location}}</p>
-					<md-button class="md-raised md-accent" ng-click="doSecondaryAction($event)">Navigate</md-button>
+					<p>
+						<b>Location</b>: &nbsp;&nbsp;&nbsp;{{event.location}}</p>
+					<md-button class="md-raised md-accent" ng-click="navigate(event)">View Map</md-button>
 				</md-list-item>
 				<md-divider></md-divider>
 				<md-list-item class="secondary-button-padding">
-					<p><b>Members</b>: &nbsp;{{event.members}}</p>
+					<p>
+						<b>Members</b>: &nbsp;{{event.members}}</p>
 				</md-list-item>
 				<md-divider></md-divider>
 				<md-list-item class="secondary-button-padding">
-					<p><b>Time</b>: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{event.datetime}}</p>
+					<p>
+						<b>Time</b>: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{event.datetime}}</p>
 				</md-list-item>
 			</md-list>
 			<br>
 			<div class="wrapper">
-				<md-button class="md-raised md-primary" ng-click="applyEvent(event)" ng-show="!prevPage.includes('volunteerEvents.html')">Join Event</md-button>
-				<md-button class="md-raised md-warn" ng-click="leaveEvent(event)" ng-show="prevPage.includes('volunteerEvents.html')">Leave Event</md-button>
+				<md-button class="md-raised md-primary" ng-click="applyEvent(event)" ng-show="appliedStatus != 'applied' && appliedStatus != 'approved'">Join Event</md-button>
+				<md-button class="md-raised md-warn" ng-click="leaveEvent(event)" ng-show="appliedStatus == 'applied' || appliedStatus == 'approved'" ng-disabled="appliedStatus == 'approved'">Leave Event</md-button>
 			</div>
 		</div>
 
