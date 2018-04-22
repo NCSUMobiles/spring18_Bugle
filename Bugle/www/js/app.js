@@ -115,7 +115,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
     $scope.volunteers = [];
 
     // boolean flag set to true if the current event is applied to by the user.
-    $scope.isEventApplied = false;
+    $scope.appliedStatus = null;
 
     // chats
     $scope.chats = [];
@@ -133,6 +133,39 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         $scope.prevPage = localStorageService.get('prevPage');
         $scope.chats = localStorageService.get('chats');
         $scope.chat = localStorageService.get('chat');
+
+        // do this only on the event details page for volunteers.
+        if ($scope.user && $scope.user.type=='vol' && $window.location.href.includes('/eventDetails.html')) {
+            console.log('checking for event details');
+            //fetch org name and check if event is joined.
+            //userID of the organizer: $scope.event.uId - fetch the name of this organizer from the API.
+            //check applied status also from the API - pass $scope.user.uId, eId and if applicant table has entry for $scope.user.uId and eId then isEventApplied is true.;
+            var data = {
+                "orgID": $scope.event.uId,
+                "userID": $scope.user.uId,
+                "eventID":  $scope.event.eId
+            }
+
+            $http({
+                url: 'https://bugle-pl-srv.herokuapp.com/details-val',
+                method: 'POST',
+                data: data,
+                headers: { 'Content-Type': 'application/json' }
+            }).then(function (response) {
+                if (response.data.status != 'error') {
+                    console.log('SUCCESS: ' + JSON.stringify(response));
+                    $scope.detailOrgName = response.data.orgName;
+                    $scope.appliedStatus = response.data.appliedStatus;
+                } else {
+                    console.log(response.data.message);
+                    showToast('Could not validate Event applied status!');
+                }
+            }, function (response) {
+                console.log('ERROR: ' + JSON.stringify(response));
+            }).finally(function () {
+                $scope.dataLoading = false;
+            });
+        }
 
         var validUnauthPage = $window.location.href.includes('/login.html') || $window.location.href.includes('/organisationSignup.html') || $window.location.href.includes('/volunteerSignup.html');
 
@@ -407,6 +440,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         localStorageService.set('sessionUser', null);
         UserService.loggedInUser = null;
         $scope.user = null;
+        localStorageService.clearAll();
         $window.location.href = '/login.html';
     }
     // logout function end
@@ -492,6 +526,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
                 var message = JSON.stringify(response.data.message);
                 console.log('SUCCESS: ' + JSON.stringify(message));
                 showToast('Applied to Event!');
+                $scope.appliedStatus = 'applied';
             } else {
                 console.log('ERROR: ' + JSON.stringify(response.data.message));
                 showToast('Sorry, Could not apply for event!');
@@ -524,6 +559,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
                 var message = JSON.stringify(response.data.message);
                 console.log('SUCCESS: ' + JSON.stringify(message));
                 showToast('Left Event!');
+                $scope.appliedStatus = 'left';
             } else {
                 console.log('ERROR: ' + JSON.stringify(response.data.message));
                 showToast('Sorry, Could not leave event!');
@@ -684,5 +720,9 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         updateScopeOrganization(org);
         $window.location.href = '/organizationDetails.html';
     };
+
+    $scope.navigate = function(event) {
+        console.log('navigating...');
+    }
 
 }]);
