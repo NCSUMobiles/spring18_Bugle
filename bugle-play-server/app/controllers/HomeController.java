@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 
 import models.Applicants;
+import models.Chats;
 import models.Events;
 import models.Users;
 import play.Logger;
@@ -166,7 +167,10 @@ public class HomeController extends Controller {
 		} else {
 
 			String name = json.findPath("u_name").textValue();
-			String email = json.findPath("email").textValue().toLowerCase();
+			String email = json.findPath("email").textValue();
+			if (email != null) {
+				email = email.toLowerCase();
+			}
 			String mobile = json.findPath("mobile").textValue();
 			String dob = json.findPath("dob").textValue();
 			String password = json.findPath("password").textValue();
@@ -179,6 +183,7 @@ public class HomeController extends Controller {
 
 			// save to DB and return response.
 			if (databaseService.insertUser(user)) {
+				user = databaseService.validateLogin(email, password);
 				return ok(createSuccessResponse(Strings.USER, new Gson().toJson(user))).withHeader(Strings.CORS,
 						Strings.STAR);
 			} else {
@@ -464,6 +469,12 @@ public class HomeController extends Controller {
 				return ok(createErrorResponse("Unable to update event details.")).withHeader(Strings.CORS, Strings.STAR);
 			}
 		}
+	}
+	
+	public Result getChats(String vId) {
+		LOG.debug("getEvents method called.");
+		List<Chats> chats = databaseService.getChats(Integer.valueOf(vId));
+		return ok(createSuccessResponse("chats", new Gson().toJson(chats))).withHeader(Strings.CORS, Strings.STAR);
 	}
 
 	/**

@@ -7,18 +7,20 @@ package models;
 public class Chats {
 	private int cId;
 	private String cName;
-	private String uIds;
+	private int uId;
+	private int eId;
 	private String status;
 
 	public Chats() {
 	}
-	
-	public Chats(String cName, String uIds, String status) {
+
+	public Chats(String cName, int uId, int eId, String status) {
 		this.cName = cName;
-		this.uIds = uIds;
+		this.uId = uId;
+		this.eId = eId;
 		this.status = status;
 	}
-	
+
 	/**
 	 * @return the cId
 	 */
@@ -50,18 +52,33 @@ public class Chats {
 	}
 
 	/**
-	 * @return the uIds
+	 * @return the uId
 	 */
-	public String getuIds() {
-		return uIds;
+	public int getuId() {
+		return uId;
 	}
 
 	/**
-	 * @param uIds
-	 *            the uIds to set
+	 * @param uId
+	 *            the uId to set
 	 */
-	public void setuIds(String uIds) {
-		this.uIds = uIds;
+	public void setuId(int uId) {
+		this.uId = uId;
+	}
+
+	/**
+	 * @return the eId
+	 */
+	public int geteId() {
+		return eId;
+	}
+
+	/**
+	 * @param eId
+	 *            the eId to set
+	 */
+	public void seteId(int eId) {
+		this.eId = eId;
 	}
 
 	/**
@@ -79,11 +96,14 @@ public class Chats {
 		this.status = status;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "Chats [cId=" + cId + ", cName=" + cName + ", uIds=" + uIds + ", status=" + status + "]";
+		return "Chats [cId=" + cId + ", cName=" + cName + ", uId=" + uId + ", status=" + status + "]";
 	}
+
 }

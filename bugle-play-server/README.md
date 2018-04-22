@@ -23,6 +23,7 @@
 | GET | /organizations/:orgId       | Get a list of all active events for an organization. | [Events](https://bugle-pl-srv.herokuapp.com/organizations/1) |
 | GET | /volunteer-events/:vId      | Get a list of all events which a volunteer has applied to. | [EventList](https://bugle-pl-srv.herokuapp.com/volunteer-events/4) |
 | GET | /event-volunteers/:eId      | Get a list of all volunteers who have applied to an event. | [VolunteerList](https://bugle-pl-srv.herokuapp.com/event-volunteers/1) |
+| GET | /chats/:vId 	      		    | Get a list of all chats for a volunteer. | [Chats](https://bugle-pl-srv.herokuapp.com/chats/1) |
 | POST | /event                     | Create an Event. | [event.json](sample-json/request/event.json) |
 | POST | /login                     | Login action for a user. | [login.json](sample-json/request/login.json) |
 | POST | /signup                    | Sign Up action for creating a new user. | [signup.json](sample-json/request/signup.json) |
@@ -31,7 +32,8 @@
 | POST | /reject-volunteers         | Reject a list of volunteers for an event | [reject-volunteers.json](sample-json/request/reject-volunteers.json) |
 | POST | /mock-db                   | inserts mock values in the DB (Caution! needs key)  | [mock-db.json](sample-json/request/mock-db.json) |
 | POST | /reset-db                  | deletes all records from all tables in the DB (Caution! needs key)  | [reset-db.json](sample-json/request/reset-db.json) |
-| POST | /edit-user                 | edits the specified field in the user table in the DB  | [edit-user.json](sample-json/request/edit-user.json) |
+| POST | /edit-user                 | edits the fields in user table in the DB   | [edit-user.json](sample-json/request/edit-user.json) |
+| POST | /edit-event                | edits the fields in events table in the DB  | [edit-event.json](sample-json/request/edit-event.json) |
 
 #### API Response
 
@@ -46,6 +48,7 @@
 | GET /organizations/1       | [Events Response](sample-json/response/events.json) |
 | GET /volunteer-events/4    | [EventList Response](sample-json/response/volunteer-events.json) |
 | GET /event-volunteers/1    | [VolunteerList Response](sample-json/response/event-volunteers.json) |
+| GET /chats/1   			       | [Chats Response](sample-json/response/chats.json) |
 | POST /event                | [Event Response](sample-json/response/event.json) |
 | POST /login                | [Login Response](sample-json/response/login.json) |
 | POST /signup               | [SignUp Response](sample-json/response/signup.json) |
@@ -55,3 +58,4 @@
 | POST /mock-db              | [MockDB Response](sample-json/response/mock-db.json) |
 | POST /reset-db             | [ResetDB Response](sample-json/response/reset-db.json) |
 | POST /edit-user            | [EditUser Response](sample-json/response/edit-user.json) |
+| POST /edit-event           | [EditEvent Response](sample-json/response/edit-event.json) |
