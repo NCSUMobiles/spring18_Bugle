@@ -42,7 +42,7 @@ li {
 /* The bottom menu bar */
 .nav_bar {
     overflow: hidden;
-    background-color: rgb(134, 134, 134);
+    background-color: rgb(204, 201, 201);
     position: fixed;
     bottom: 0;
     width: 100%;
@@ -55,9 +55,10 @@ li {
     display: block;
     color: #f2f2f2;
     text-align: center;
-    padding: 10px 10px;
+    padding: 1.2rem 1.5rem;
     text-decoration: none;
     font-size: 17px;
+    color: black;
   }
   
   .nav_bar a:hover {
@@ -66,7 +67,8 @@ li {
   }
   
   .nav_bar a.active {
-    background-color: rgb(78, 76, 175);
+    background-color: rgba(76, 175, 80, 0.89);
+    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.26);
     color: white;
   }
   
