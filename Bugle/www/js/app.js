@@ -7,11 +7,11 @@ app.config(function (localStorageServiceProvider) {
         .setNotify(true, true);
 });
 
-app.config(function($mdThemingProvider) {
+app.config(function ($mdThemingProvider) {
     $mdThemingProvider.theme('default')
-      .primaryPalette('green')
-      .accentPalette('light-blue');
-  });
+        .primaryPalette('green')
+        .accentPalette('light-blue');
+});
 
 
 app.service('UserService', function () {
@@ -157,7 +157,6 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
                 console.log('updating session user to: ' + JSON.stringify(user));
                 localStorageService.set('sessionUser', null);
                 localStorageService.set('sessionUser', user);
-                showToast('Login successful.');
                 if (user.type === 'vol') {
                     $window.location.href = '/volunteer.html';
                 } else {
@@ -199,8 +198,8 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             //TODO: check if status in response is 'success'
             if (response.data.status != 'error') {
                 console.log('SUCCESS: ' + JSON.stringify(response));
-                showToast('Successfully Signed up, you can Login now.');
                 $window.location.href = '/login.html';
+                showToast('Successfully Signed up, you can Login now.');
             } else {
                 console.log(response.data.message);
                 showToast('Sorry Could not sign up! Try again later.');
@@ -543,9 +542,39 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         $window.location.href = '/' + page + '.html';
     };
 
-    $scope.createEvent = function() {
-        console.log('creating event!');
-        
+    $scope.createEvent = function () {
+        $scope.dataLoading = true;
+        console.log('creating event.');
+
+        var eventInfo = {
+            "e_name": $scope.eName,
+            "location": $scope.location,
+            "datetime": $scope.datetime,
+            "description": $scope.description,
+            "members": $scope.members,
+            "u_id": $scope.user.uId,
+            "status": "active"
+        };
+
+        $http({
+            url: 'https://bugle-pl-srv.herokuapp.com/event',
+            method: 'POST',
+            data: eventInfo,
+            headers: { 'Content-Type': 'application/json' }
+        }).then(function successLogin(response) {
+            if (response.data.status != 'error') {
+                console.log('SUCCESS: ' + JSON.stringify(response));
+                $window.location.href = '/organization.html';
+                showToast(response.data.message);
+            } else {
+                console.log(response.data.message);
+                showToast(response.data.message);
+            }
+        }, function failLogin(response) {
+            console.log('ERROR: ' + JSON.stringify(response));
+        }).finally(function () {
+            $scope.dataLoading = false;
+        });
     }
 
 }]);

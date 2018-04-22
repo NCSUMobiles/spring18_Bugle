@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 
 import models.Applicants;
+import models.Chats;
 import models.Events;
 import models.Users;
 import play.Logger;
@@ -468,6 +469,12 @@ public class HomeController extends Controller {
 				return ok(createErrorResponse("Unable to update event details.")).withHeader(Strings.CORS, Strings.STAR);
 			}
 		}
+	}
+	
+	public Result getChats(String vId) {
+		LOG.debug("getEvents method called.");
+		List<Chats> chats = databaseService.getChats(Integer.valueOf(vId));
+		return ok(createSuccessResponse("chats", new Gson().toJson(chats))).withHeader(Strings.CORS, Strings.STAR);
 	}
 
 	/**

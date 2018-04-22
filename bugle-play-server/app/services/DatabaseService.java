@@ -11,6 +11,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import models.Applicants;
+import models.Chats;
 import models.Events;
 import models.Users;
 import play.Logger;
@@ -50,7 +51,7 @@ public class DatabaseService {
 			String createUsers = "CREATE TABLE IF NOT EXISTS users (u_id SERIAL PRIMARY KEY, u_name text NOT NULL, email text NOT NULL, mobile text, dob text, password text NOT NULL, type text NOT NULL, description text, location text, website text)";
 			String createEvents = "CREATE TABLE IF NOT EXISTS events (e_id SERIAL PRIMARY KEY, e_name text NOT NULL, location text, datetime text, description text, members text, u_id integer, status text)";
 			String createApplicants = "CREATE TABLE IF NOT EXISTS applicants (a_id SERIAL PRIMARY KEY, u_id integer NOT NULL, e_id integer NOT NULL, status text)";
-			String createChats = "CREATE TABLE IF NOT EXISTS chats (c_id SERIAL PRIMARY KEY, c_name text NOT NULL, u_ids text, status text)";
+			String createChats = "CREATE TABLE IF NOT EXISTS chats (c_id SERIAL PRIMARY KEY, c_name text NOT NULL, u_id integer, e_id integer, status text)";
 			try (Statement stmt = con.createStatement()) {
 				LOG.debug("Creating users table...");
 				stmt.execute(createUsers);
@@ -122,7 +123,7 @@ public class DatabaseService {
 				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 74','Chicago','21.4.2018 08:00AM','description volunteering event. Big volunteering event need lots of volunteers!! come volunteer with us!','100',(select u_id from users where u_name='Organization 3' limit 1),'active')");
 		// applicants
 		insertStatements.add(
-				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Default User' limit 1), (select e_id from events where e_name='Event 1' limit 1), 'applied')");
+				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Default User' limit 1), (select e_id from events where e_name='Event 1' limit 1), 'approved')");
 		insertStatements.add(
 				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Snapchat User' limit 1), (select e_id from events where e_name='Event 28' limit 1), 'applied')");
 		insertStatements.add(
@@ -145,6 +146,9 @@ public class DatabaseService {
 				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Facebook User' limit 1), (select e_id from events where e_name='Event 74' limit 1), 'applied')");
 		insertStatements.add(
 				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Twitter User' limit 1), (select e_id from events where e_name='Event 123' limit 1), 'applied')");
+		// chats
+		insertStatements.add(
+				"INSERT INTO chats (c_name, u_id, e_id, status) values ((('Event 1')::text || ': Chat'), (SELECT u_id from applicants where e_id in (SELECT e_id from events where e_name='Event 1' LIMIT 1) order by u_id LIMIT 1), (SELECT e_id from events where e_name='Event 1' LIMIT 1), 'active');");
 		Connection con = null;
 		try {
 			con = db.getConnection();
@@ -344,8 +348,10 @@ public class DatabaseService {
 	}
 
 	public boolean insertEvent(Events event) {
-		LOG.debug("Inserting Event");
+		LOG.debug("Inserting Event and creating its correspondign chat group");
 		String insertStatement = "INSERT INTO events (e_name, location, datetime, description, members, u_id, status) VALUES(?,?,?,?,?,?,?)";
+		// when an event is created, its chat group should also be created.
+		String insertChat = "INSERT INTO chats (c_name, u_id, e_id, status) VALUES(?,?,(SELECT e_id from events where e_name = ? order by e_id LIMIT 1),?)";
 		Connection con = null;
 		try {
 			con = db.getConnection();
@@ -357,9 +363,14 @@ public class DatabaseService {
 			pstmt.setString(5, event.getMembers());
 			pstmt.setInt(6, event.getuId());
 			pstmt.setString(7, event.getStatus());
-			return pstmt.executeUpdate() > 0;
+			PreparedStatement pstmt2 = con.prepareStatement(insertChat);
+			pstmt2.setString(1, event.geteName().concat(": Chat"));
+			pstmt2.setInt(2, event.getuId());
+			pstmt2.setString(3, event.geteName());
+			pstmt2.setString(4, Strings.STATUS_ACTIVE);
+			return pstmt.executeUpdate() > 0 && pstmt2.executeUpdate() > 0;
 		} catch (Exception e) {
-			LOG.error("Error while inserting event.");
+			LOG.error("Error while inserting event and corresponding chat group.");
 			e.printStackTrace();
 			return false;
 		} finally {
@@ -590,6 +601,8 @@ public class DatabaseService {
 					LOG.info("Status Updation failed for uID: " + uId);
 				}
 			}
+			// chan check here if executionStatus was true or false?
+			return true;
 		}
 		return false;
 	}
@@ -606,7 +619,7 @@ public class DatabaseService {
 	 * @return
 	 */
 	public boolean updateApplicantStatus(int uId, int eId, String status) {
-		LOG.debug("Updating Applicant status");
+		LOG.debug("Updating Applicant status for uId: " + uId);
 		Connection con = null;
 		String updateStatement = "UPDATE applicants set status = ? WHERE u_id = ? AND e_id = ?";
 		try {
@@ -615,7 +628,12 @@ public class DatabaseService {
 				pstmt.setString(1, status);
 				pstmt.setInt(2, uId);
 				pstmt.setInt(3, eId);
-				return pstmt.executeUpdate() > 0;
+				if (pstmt.executeUpdate() > 0) {
+					return updateChats(con, uId, eId, status);
+				} else {
+					LOG.debug("Could not update status of applicant: " + uId);
+					return false;
+				}
 			} catch (Exception e) {
 				LOG.error("Error while executing query for updating Applicant Status.");
 				e.printStackTrace();
@@ -637,10 +655,42 @@ public class DatabaseService {
 		}
 	}
 
+	private boolean updateChats(Connection con, int uId, int eId, String status) {
+		LOG.debug("Updating the Chats based on approved/rejected applicant.");
+		if (Strings.STATUS_APPROVED.equalsIgnoreCase(status)) {
+			LOG.debug("The applicant " + uId + " is approved. Adding him to the chat for event: " + eId);
+			String insertStatement = "INSERT INTO chats (c_name, u_id, e_id, status) values ((select e_name from events where e_id = ? limit 1)::text || ': Chat', ?, ?, 'active')";
+			try (PreparedStatement pstmt = con.prepareStatement(insertStatement)) {
+				pstmt.setInt(1, eId);
+				pstmt.setInt(2, uId);
+				pstmt.setInt(3, eId);
+				return pstmt.executeUpdate() > 0;
+			} catch (Exception e) {
+				LOG.error("Error while inserting into chats: " + insertStatement);
+				e.printStackTrace();
+				return false;
+			}
+		} else if (Strings.STATUS_REJECTED.equalsIgnoreCase(status)) {
+			LOG.debug("The applicant " + uId + " is rejected. Deactivating him from the chat for event: " + eId);
+			String updateStatement = "DELETE FROM chats where u_id = ? and e_id = ?";
+			try (PreparedStatement pstmt = con.prepareStatement(updateStatement)) {
+				pstmt.setInt(1, uId);
+				pstmt.setInt(2, eId);
+				return pstmt.executeUpdate() > 0;
+			} catch (Exception e) {
+				LOG.error("Error while deleting from chats: " + updateStatement);
+				e.printStackTrace();
+				return false;
+			}
+		}
+		LOG.debug("Weird? Applicant is neither approved nor rejected. Nothing needs to be updated in chats.");
+		return true;
+	}
+
 	public boolean updateUser(Users user) {
 		LOG.debug("Updating User ID: " + user.getuId());
 		Connection con = null;
-		String updateStatement = "UPDATE users set mobile = ? , dob = ? , password = ? , description = ? , website = ? , location = ? WHERE u_id = ?";
+		String updateStatement = "UPDATE users set mobile = ? , dob = ? , password = ? , description = ? , website = ? , location = ? WHERE u_id = ? and u_name = ? and email = ?";
 		try {
 			con = db.getConnection();
 			try (PreparedStatement pstmt = con.prepareStatement(updateStatement)) {
@@ -651,6 +701,8 @@ public class DatabaseService {
 				pstmt.setString(5, user.getWebsite());
 				pstmt.setString(6, user.getLocation());
 				pstmt.setInt(7, user.getuId());
+				pstmt.setString(8, user.getuName());
+				pstmt.setString(9, user.getEmail());
 				return pstmt.executeUpdate() > 0;
 			} catch (Exception e) {
 				LOG.error("Error while executing query for updating User.");
@@ -674,7 +726,7 @@ public class DatabaseService {
 	}
 
 	public boolean updateEvent(Events event) {
-		LOG.debug("Updating Event ID: " + event.getuId());
+		LOG.debug("Updating Event ID: " + event.geteId());
 		Connection con = null;
 		String updateStatement = "UPDATE events set e_name = ? , location = ? , datetime = ? , description = ? , members = ? , status = ? WHERE e_id = ?";
 		try {
@@ -707,6 +759,48 @@ public class DatabaseService {
 				}
 			}
 		}
+	}
+
+	public List<Chats> getChats(Integer uId) {
+		LOG.debug("Fetching Chats.");
+		List<Chats> chats = new ArrayList<Chats>();
+		String selectQuery = "SELECT * from chats where u_id = ? and status = 'active'";
+		Connection con = null;
+		try {
+			con = db.getConnection();
+			try (PreparedStatement selectStatement = con.prepareStatement(selectQuery)) {
+				selectStatement.setInt(1, uId);
+				ResultSet rs = selectStatement.executeQuery();
+				while (rs.next()) {
+					Chats chat = new Chats();
+					chat.setcId(rs.getInt("c_id"));
+					chat.setcName(rs.getString("c_name"));
+					chat.setuId(rs.getInt("u_id"));
+					chat.seteId(rs.getInt("e_id"));
+					chat.setStatus(rs.getString("status"));
+					chats.add(chat);
+				}
+			} catch (Exception e) {
+				LOG.error("Error while executing query for fetching Chats.");
+				e.printStackTrace();
+				return chats;
+			}
+		} catch (Exception e) {
+			LOG.error("Error while getting DB connection for fetching Chats.");
+			e.printStackTrace();
+			return chats;
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					LOG.error("Error while closing the connection from get Chats method.");
+					e.printStackTrace();
+				}
+			}
+		}
+		LOG.debug("Fetched Chats.");
+		return chats;
 	}
 
 }

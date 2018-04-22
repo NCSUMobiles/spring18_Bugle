@@ -1,4 +1,4 @@
 {
     "status": "success",
-    "message": "User mobile updated Successfully"
+    "user": "{\"uId\":54,\"uName\":\"Default User\",\"email\":\"usr1@vol.com\",\"mobile\":\"1290310239\",\"dob\":\"21.08.93\",\"password\":\"v1\",\"type\":\"vol\",\"description\":\"\",\"location\":\"\",\"website\":\"\"}"
 }
