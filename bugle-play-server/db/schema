@@ -36,3 +36,11 @@ CREATE TABLE IF NOT EXISTS chats (
 	e_id integer,
 	status text
 );
+
+CREATE TABLE IF NOT EXISTS messages (
+	m_id SERIAL PRIMARY KEY,
+	c_id integer,
+	e_id integer,
+	msg text,
+	status text
+);
