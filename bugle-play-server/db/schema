@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS applicants (
 CREATE TABLE IF NOT EXISTS chats (
 	c_id SERIAL PRIMARY KEY,
 	c_name text NOT NULL,
-	u_ids text,
+	u_id integer,
+	e_id integer,
 	status text
 );

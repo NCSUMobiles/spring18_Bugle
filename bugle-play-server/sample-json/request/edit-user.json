@@ -1,4 +1,12 @@
 {
-	"u_id": 60,
-	"mobile": "1239890983"
+	"USERS_UID": 54,
+	"USERS_UNAME": "Default User",
+	"USERS_EMAIL": "usr1@vol.com",
+	"USERS_TYPE": "vol",
+	"USERS_MOBILE": "1290310239",
+	"USERS_DOB": "21.08.93",
+	"USERS_PASSWORD": "v1",
+	"USERS_DESCRIPTION": "",
+	"USERS_WEBSITE": "",
+	"USERS_LOCATION": ""
 }

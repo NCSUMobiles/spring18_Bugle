@@ -59,3 +59,6 @@ POST     /edit-user							 		   controllers.HomeController.editUser
 
 # edits the event in the events table.
 POST     /edit-event						 		   controllers.HomeController.editEvent
+
+# gets the chats for an applicant.
+GET     /chats/:vId							 		   controllers.HomeController.getChats(vId: String)
