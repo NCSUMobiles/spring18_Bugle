@@ -22,6 +22,8 @@ app.service('UserService', function () {
     var currentEvent = '';
     var currentVolunteers = '';
     var prevPage = '';
+    var chats = '';
+    var chat = '';
 
     return {
         getLoggedInUser: function () {
@@ -65,6 +67,18 @@ app.service('UserService', function () {
         },
         setPrevPage: function (p) {
             prevPage = p;
+        },
+        getChats: function () {
+            return chats;
+        },
+        setChats: function (ch) {
+            chats = ch;
+        },
+        getChat: function () {
+            return chat;
+        },
+        setChat: function (c) {
+            chat = c;
         }
     }
 });
@@ -97,11 +111,17 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
 
     $scope.eventSelected = false;
 
-    // The actual list will com from the Database via the API
+    // The actual list will come from the Database via the API
     $scope.volunteers = [];
 
     // boolean flag set to true if the current event is applied to by the user.
     $scope.isEventApplied = false;
+
+    // chats
+    $scope.chats = [];
+
+    // chat
+    $scope.chat = {};
 
     $scope.fetchSession = function () {
         $scope.user = localStorageService.get('sessionUser');
@@ -111,6 +131,8 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         $scope.event = localStorageService.get('event');
         $scope.volunteers = localStorageService.get('volunteers');
         $scope.prevPage = localStorageService.get('prevPage');
+        $scope.chats = localStorageService.get('chats');
+        $scope.chat = localStorageService.get('chat');
 
         var validUnauthPage = $window.location.href.includes('/login.html') || $window.location.href.includes('/organisationSignup.html') || $window.location.href.includes('/volunteerSignup.html');
 
@@ -575,6 +597,52 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         }).finally(function () {
             $scope.dataLoading = false;
         });
+    }
+
+    $scope.getChats = function () {
+        console.log('getting chats for user: ' + $scope.user.uId);
+        var srvURL = 'https://bugle-pl-srv.herokuapp.com/chats/' + $scope.user.uId;
+        console.log('API URL: ' + srvURL)
+        $http({
+            method: 'GET',
+            url: srvURL,
+            headers: { 'Content-Type': '*/*' }
+        }).then(function (response) {
+            //TODO: check if status in response is 'success'
+            console.log('SUCCESS: ' + JSON.stringify(response));
+            var chats = JSON.parse(response.data.chats);
+            updateScopeChats(chats);
+            console.log('updating session chats to: ' + JSON.stringify(chats));
+            localStorageService.set('chats', null);
+            localStorageService.set('chats', chats);
+        }, function (response) {
+            console.log('ERROR: ' + JSON.stringify(response));
+        });
+    }
+
+    // Update Scope Chats function Start
+    var updateScopeChats = function (ch) {
+        console.log('updating Service chats to: ' + ch);
+        UserService.chats = ch;
+        $scope.chats = ch;
+    }
+    // Update Scope Chats function end
+
+    // Update Scope Chat function Start
+    var updateScopeChat = function (c) {
+        console.log('updating Service chat to: ' + c);
+        UserService.chat = c;
+        $scope.chat = c;
+    }
+    // Update Scope Chat function end
+
+    $scope.openChat = function (ch) {
+        console.log('opening chat for: ' + JSON.stringify(ch));
+        updateScopeChat(ch);
+        console.log('updating session chat to: ' + JSON.stringify(ch));
+        localStorageService.set('chat', null);
+        localStorageService.set('chat', ch);
+        $window.location.href = '/chat.html';
     }
 
 }]);

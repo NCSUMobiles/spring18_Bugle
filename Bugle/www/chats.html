@@ -54,7 +54,16 @@
           </md-toolbar>
 
         <div class='home__content my_container'>
-            Chat Groups: <a href="chat.html">View Chat</a>
+            <md-list flex ng-init="getChats()">
+                <md-list-item class="md-1-line" ng-repeat="chat in chats" ng-click="openChat(chat)">
+                    <md-card flex>
+                        <md-card-title>
+                            <md-card-title-text>{{chat.cName}}</md-card-title-text>
+                        </md-card-title>
+                    </md-card>
+                    <!-- <div class="md-list-item-text" layout="column"></div> -->
+                </md-list-item>
+            </md-list>
         </div>
 
         <div class='home__footer'>
