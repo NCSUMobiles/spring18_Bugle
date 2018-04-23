@@ -15,3 +15,4 @@
 - [ ] Chat groups. -Sumit
 - [x] Logout button.
 - [ ] Validation on all Forms (profile page validations are pending). -Shyam
+- [ ] Map Navigation. -Nida
