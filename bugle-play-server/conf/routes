@@ -77,3 +77,9 @@ POST   /details-val						 			   controllers.HomeController.validateDetails
 
 # Leave an event by a volunteer.
 POST   /leave-event						 			   controllers.HomeController.leaveEvent
+
+# Save the Google Profile of a User.
+POST   /save-gprof						 			   controllers.HomeController.saveGoogleProfile
+
+# Get the Google Profile of a User.
+GET    /get-gprof/:pId						 		   controllers.HomeController.getGoogleProfile(pId: String)
