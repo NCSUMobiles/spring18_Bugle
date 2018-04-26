@@ -467,7 +467,7 @@ public class DatabaseService {
 	public List<Users> getEventApplicants(int eId) {
 		LOG.debug("Fetching Event applicants for event ID: " + eId);
 		List<Users> users = new ArrayList<Users>();
-		String selectQuery = "SELECT * FROM users WHERE u_id IN (SELECT u_id from applicants where e_id = ?)";
+		String selectQuery = "SELECT * FROM users WHERE u_id IN (SELECT u_id from applicants where status = 'applied' and e_id = ?)";
 		Connection con = null;
 		try {
 			con = db.getConnection();

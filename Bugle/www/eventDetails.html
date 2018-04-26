@@ -28,15 +28,9 @@
 
 <body ng-controller="index" ng-init="fetchSession()">
 
-	<!-- The Organization Home Page -->
+	<!-- The Event Details Page -->
 
 	<div class='home active'>
-
-		<!-- <div class='home__header center_text'>
-			<a ng-if="prevPage.includes('orgEvents.html')" href="orgEvents.html" class="back_button">Back</a>
-			<a ng-if="prevPage.includes('volunteerEvents.html')" href="volunteerEvents.html" class="back_button">Back</a>
-            <h3><b>{{event.eName}}</b></h3>
-		</div> -->
 
 		<md-toolbar>
 			<div class="md-toolbar-tools">
@@ -46,50 +40,53 @@
 				<md-button ng-if="prevPage.includes('volunteerEvents.html')" class="md-icon-button" aria-label="Go Back" ng-click="gotoPage('volunteerEvents')">
 					<i class="fas fa-angle-left"></i>
 				</md-button>
-				<!-- <md-truncate class="center_text" style="position: absolute; left: 90px; right: 170px; top: 13px; bottom: 13px;">{{user.uName}}</md-truncate> -->
-
 				<span flex>{{event.eName}}: Details</span>
-				<!-- <md-button class="md-raised" aria-label="Learn More">
-                Learn More
-              </md-button>
-              <md-button class="md-fab md-mini" aria-label="Favorite">
-                <md-icon md-svg-icon="img/icons/favorite.svg"></md-icon>
-              </md-button> -->
 			</div>
 		</md-toolbar>
 
 		<div class='home__content' style='padding: 20px'>
-			<p>
-				<b>Event Description:</b>
-			</p>
-			<p read-more ng-model="event.description" words="false" length="50"></p>
 
-			<md-list flex>
-				<md-list-item class="secondary-button-padding">
-					<p>
-						<b>Organizer</b>: {{detailOrgName}}</p>
-				</md-list-item>
-				<md-divider></md-divider>
-				<md-list-item class="secondary-button-padding">
-					<p>
-						<b>Location</b>: &nbsp;&nbsp;&nbsp;{{event.location}}</p>
-					<md-button class="md-raised md-accent" ng-click="navigate(event)">View Map</md-button>
-				</md-list-item>
-				<md-divider></md-divider>
-				<md-list-item class="secondary-button-padding">
-					<p>
-						<b>Members</b>: &nbsp;{{event.members}}</p>
-				</md-list-item>
-				<md-divider></md-divider>
-				<md-list-item class="secondary-button-padding">
-					<p>
-						<b>Time</b>: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{event.datetime}}</p>
-				</md-list-item>
-			</md-list>
+			<table style="border: none;">
+				<tr style="padding: 1.2rem;">
+					<th>Organizer</th>
+					<td style="padding: 0.8rem;" colspan="2">
+						{{detailOrgName}}
+					</td>
+				</tr>
+				<tr style="padding: 1.2rem;">
+					<th>Location</th>
+					<td style="padding: 0.8rem;">
+						{{event.location}}
+					</td>
+					<td style="text-align: right;">
+						<md-button class="md-raised md-accent" ng-click="navigate(event)">View Map</md-button>
+					</td>
+				</tr>
+				<tr style="padding: 1.2rem;">
+					<th>Date/Time</th>
+					<td style="padding: 0.8rem;" colspan="2">
+						{{event.datetime}}
+					</td>
+				</tr>
+				<tr style="padding: 1.2rem;">
+					<th>Members</th>
+					<td style="padding: 0.8rem;" colspan="2">
+						{{event.members}}
+					</td>
+				</tr>
+				<tr style="padding: 1.2rem;">
+					<th>Description</th>
+					<td style="padding: 0.8rem;" colspan="2">
+						<p read-more ng-model="event.description" words="false" length="50"></p>
+					</td>
+				</tr>
+			</table>
+
 			<br>
 			<div class="wrapper">
 				<md-button class="md-raised md-primary" ng-click="applyEvent(event)" ng-show="appliedStatus != 'applied' && appliedStatus != 'approved'">Join Event</md-button>
-				<md-button class="md-raised md-warn" ng-click="leaveEvent(event)" ng-show="appliedStatus == 'applied' || appliedStatus == 'approved'" ng-disabled="appliedStatus == 'approved'">Leave Event</md-button>
+				<md-button class="md-raised md-warn" ng-click="leaveEvent(event)" ng-show="appliedStatus == 'applied' || appliedStatus == 'approved'"
+				 ng-disabled="appliedStatus == 'approved'">Leave Event</md-button>
 			</div>
 		</div>
 
@@ -106,7 +103,7 @@
 
 	</div>
 
-	<!-- End Organization Home Page -->
+	<!-- End Event Details Page -->
 
 </body>
 
