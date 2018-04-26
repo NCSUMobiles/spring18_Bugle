@@ -609,6 +609,42 @@ public class HomeController extends Controller {
 			}
 		}
 	}
+	
+	/**
+	 * Method to save the Google Profile of a User.
+	 * @return
+	 */
+	public Result saveGoogleProfile() {
+		LOG.debug("saveGoogleProfile method called.");
+		JsonNode json = request().body().asJson();
+		if (json == null) {
+			return badRequest("Expecting Json data for saving User's Google Profile.").withHeader(Strings.CORS, Strings.STAR);
+		} else {
+			//"uId":"106569823817207733422","uName":"Sumit Srivastava","email":"cool.dude.sumit.srivastava@gmail.com"
+			String name = json.findPath("u_name").textValue();
+			String email = json.findPath("email").textValue();
+			if (email != null) {
+				email = email.toLowerCase();
+			}
+			String gprofid = json.findPath("gId").textValue();
+			String type = json.findPath("type").textValue();
+
+			// save to DB and return response.
+			if (databaseService.saveGProfile(name, email,gprofid, type)) {
+				Users user = databaseService.validateLogin(email, gprofid);
+				return ok(createSuccessResponse(Strings.USER, new Gson().toJson(user))).withHeader(Strings.CORS,
+						Strings.STAR);
+			} else {
+				return ok(createErrorResponse("Failed to Create User")).withHeader(Strings.CORS, Strings.STAR);
+			}
+		}
+	}
+	
+	public Result getGoogleProfile(String pId) {
+		LOG.debug("getUser method called.");
+		Users user = databaseService.getGoogleUser(pId);
+		return ok(createSuccessResponse("user", new Gson().toJson(user))).withHeader(Strings.CORS, Strings.STAR);
+	}
 
 	/**
 	 * This method returns the following JSON response:

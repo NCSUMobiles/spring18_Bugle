@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html ng-app="root">
+
+<head>
+    <meta content="img/logo_128.png" itemprop="image">
+    <link href="img/logo_128.png" rel="icon">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google-signin-client_id" content="149731367696-4abqado01gmo3687lu4n3lsfl5dkne1m.apps.googleusercontent.com">
+    <title>Bugle: Google Login Type</title>
+    <!-- Angular Material style sheet -->
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-animate.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-aria.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-messages.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
+    <script src="/node_modules/angular-local-storage/src/angular-local-storage.js"></script>
+    <script src="/node_modules/read-more/js/directives/readmore.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+    <script type="text/javascript" src="js/app.js"></script>
+</head>
+
+<body ng-controller="index" ng-init="fetchSession()">
+
+    <div>Welcome {{tempGUser.uName}}, Please Choose a User Type</div>
+    <p>
+        <md-button class="md-raised pull-right" ng-click="setGUserType('vol')" ng-disabled="dataLoading">Volunteer</md-button>
+        <md-progress-circular class="center_text" md-mode="indeterminate" ng-show="dataLoading"></md-progress-circular>
+        <md-button class="md-raised" ng-click="setGUserType('org')" ng-disabled="dataLoading">Organization</md-button>
+    </p>
+</body>
+
+</html>
