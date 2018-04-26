@@ -48,13 +48,14 @@
                     <input type="hidden" id='e_id' name="e_id" value='{{event.id}}' />
                     <ul>
                         <li data-ng-repeat="volunteer in volunteers">
-                            <input name='u_ids' value="{{volunteer.uId}}" type="checkbox"> {{volunteer.uName}}
+                            <input name='u_ids' value="{{volunteer.uId}}" ng-click="toggle(volunteer.uId, selected)" type="checkbox"> {{volunteer.uName}}
+
                         </li>
                     </ul>
                     <br>
                     <div ng-if="volunteers.length == 0"> No voluteers yet.</div>
-                    <button type="submit" ng-if="volunteers.length > 0" name="approve" formaction="/approve-volunteers" class="btn btn-success btn-shadow pull-right">Approve</button>
-                    <button type="submit" ng-if="volunteers.length > 0" name="reject" formaction="/reject-volunteers" class="btn btn-danger btn-shadow">Reject</button>
+                    <button class="btn btn-success btn-shadow pull-right" ng-click="approveVol(event)" ng-show="true">Approve</button>
+                    <button  class="btn btn-danger btn-shadow" ng-click="rejectVol(event)" ng-show="true">Reject</button>
                 </form>
             </div>
 

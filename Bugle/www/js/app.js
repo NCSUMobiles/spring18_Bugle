@@ -469,6 +469,84 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         });
     };
     // function for a volunteer to apply for a event end.
+    $scope.selected = [];
+ $scope.toggle = function (item, list) {
+        var idx = list.indexOf(item);
+        if (idx > -1) {
+          list.splice(idx, 1);
+        }
+        else {
+          list.push(item);
+        }
+      };
+
+    // function for a org to approve volunteer start.
+    
+    $scope.approveVol = function (event) {
+
+        console.log('For event ' + JSON.stringify(event) + ', approving volunteers: ' + JSON.stringify($scope.selected));
+
+        var eventApplication = {
+            'e_Id': event.eId,
+            'u_Ids':''+$scope.selected+''
+        };
+
+        console.log('application: ' + JSON.stringify(eventApplication));
+
+        $http({
+            method: 'POST',
+            url: 'https://bugle-pl-srv.herokuapp.com/approve-volunteers',
+            data: eventApplication,
+            headers: { 'Content-Type': 'application/json' }
+        }).then(function (response) {
+            console.log('response: ' + JSON.stringify(response));
+            if (response.status != 'error') {
+                var message = JSON.stringify(response.data.message);
+                console.log('SUCCESS: ' + JSON.stringify(message));
+                showToast('approved for Event!');
+            } else {
+                console.log('ERROR: ' + JSON.stringify(response.data.message));
+                showToast('Sorry, approval failed!');
+            }
+        }, function (response) {
+            console.log('ERROR: ' + JSON.stringify(response));
+        });
+    };
+    // function for a org to approve volunteer end.
+
+     // function for a org to reject volunteer start.
+    
+     $scope.rejectVol = function (event) {
+
+        console.log('For event ' + JSON.stringify(event) + ', rejecting volunteers: ' + JSON.stringify($scope.selected));
+
+        var eventApplication = {
+            'e_Id': event.eId,
+            'u_Ids':''+$scope.selected+''
+        };
+
+        console.log('application: ' + JSON.stringify(eventApplication));
+
+        $http({
+            method: 'POST',
+            url: 'https://bugle-pl-srv.herokuapp.com/reject-volunteers',
+            data: eventApplication,
+            headers: { 'Content-Type': 'application/json' }
+        }).then(function (response) {
+            console.log('response: ' + JSON.stringify(response));
+            if (response.status != 'error') {
+                var message = JSON.stringify(response.data.message);
+                console.log('SUCCESS: ' + JSON.stringify(message));
+                showToast('Rejection successful');
+            } else {
+                console.log('ERROR: ' + JSON.stringify(response.data.message));
+                showToast('Sorry, rejection failed!');
+            }
+        }, function (response) {
+            console.log('ERROR: ' + JSON.stringify(response));
+        });
+    };
+    // function for a org to reject volunteer end.
 
     var showToast = function (message) {
         $mdToast.show(
