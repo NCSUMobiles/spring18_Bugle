@@ -53,7 +53,7 @@ public class DatabaseService {
 			String createEvents = "CREATE TABLE IF NOT EXISTS events (e_id SERIAL PRIMARY KEY, e_name text NOT NULL, location text, datetime text, description text, members text, u_id integer, status text)";
 			String createApplicants = "CREATE TABLE IF NOT EXISTS applicants (a_id SERIAL PRIMARY KEY, u_id integer NOT NULL, e_id integer NOT NULL, status text)";
 			String createChats = "CREATE TABLE IF NOT EXISTS chats (c_id SERIAL PRIMARY KEY, c_name text NOT NULL, u_id integer, e_id integer, status text)";
-			String createMessages = "CREATE TABLE IF NOT EXISTS messages (m_id SERIAL PRIMARY KEY, c_id integer, e_id integer, msg text, status text)";
+			String createMessages = "CREATE TABLE IF NOT EXISTS messages (m_id SERIAL PRIMARY KEY, c_id integer, e_id integer, msg text, status text, unique(c_id, e_id))";
 			try (Statement stmt = con.createStatement()) {
 				LOG.debug("Creating users table...");
 				stmt.execute(createUsers);
@@ -837,19 +837,22 @@ public class DatabaseService {
 	/**
 	 * Method to fetch the message for the given message id.
 	 * 
-	 * @param mId
-	 *            the message ID.
+	 * @param cId
+	 *            the chat ID.
+	 * @param eId
+	 *            the event ID.
 	 * @return
 	 */
-	public Messages getMessage(Integer mId) {
-		LOG.debug("getting Message: " + mId);
+	public Messages getMessage(int cId, int eId) {
+		LOG.debug("getting Message for Chat: " + cId + ", Event: " + eId);
 		Messages message = null;
-		String selectQuery = "SELECT * from messages where m_id = ?";
+		String selectQuery = "SELECT * from messages where c_id = ? and e_id = ?";
 		Connection con = null;
 		try {
 			con = db.getConnection();
 			try (PreparedStatement selectStatement = con.prepareStatement(selectQuery)) {
-				selectStatement.setInt(1, mId);
+				selectStatement.setInt(1, cId);
+				selectStatement.setInt(2, eId);
 				ResultSet rs = selectStatement.executeQuery();
 				while (rs.next()) {
 					message = new Messages();
@@ -889,7 +892,7 @@ public class DatabaseService {
 	 */
 	public boolean saveMessage(Messages message) {
 		LOG.debug("Inserting message");
-		String insertStatement = "INSERT INTO messages (c_id, e_id, msg, status) VALUES(?,?,?,?)";
+		String insertStatement = "INSERT INTO messages (c_id, e_id, msg, status) VALUES (?,?,?,?) ON CONFLICT (c_id, e_id) DO UPDATE SET msg = excluded.msg, status = excluded.status";
 		Connection con = null;
 		try {
 			con = db.getConnection();

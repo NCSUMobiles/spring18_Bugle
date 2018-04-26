@@ -43,5 +43,6 @@ CREATE TABLE IF NOT EXISTS messages (
 	c_id integer,
 	e_id integer,
 	msg text,
-	status text
+	status text,
+	unique(c_id, e_id)
 );
