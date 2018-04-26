@@ -70,11 +70,10 @@
             <div ng-if="eventSelected">
                 <b>Volunteer Applications for {{event.eName}}: </b>
                 <br>
-                <form action="#" method="post">
                     <input type="hidden" id='e_id' name="e_id" value='{{event.id}}' />
                     <ul>
                         <li data-ng-repeat="volunteer in volunteers">
-                            <input name='u_ids' value="{{volunteer.uId}}" type="checkbox"> {{volunteer.uName}}
+                            <input name='u_ids' value="{{volunteer.uId}}" ng-click="toggle(volunteer.uId, selected)" type="checkbox"> {{volunteer.uName}}
                         </li>
                     </ul>
                     <!-- <div class="demo-select-all-checkboxes" flex ng-repeat="volunteer in volunteers">
@@ -83,10 +82,9 @@
                         </md-checkbox>
                     </div> -->
                     <br>
-                    <div ng-if="volunteers.length == 0"> No voluteers yet.</div>
-                    <md-button type="submit" ng-if="volunteers.length > 0" name="approve" formaction="/approve-volunteers" class="md-raised md-primary pull-right">Approve</md-button>
-                    <md-button type="submit" ng-if="volunteers.length > 0" name="reject" formaction="/reject-volunteers" class="md-raised md-warn">Reject</md-button>
-                </form>
+                    <div ng-if="volunteers.length == 0"> No volunteers yet.</div>
+                    <md-button type="submit" ng-if="volunteers.length > 0" ng-click="approveVol(event)" ng-show="true" class="md-raised md-primary pull-right">Approve</md-button>
+                    <md-button type="submit" ng-if="volunteers.length > 0" ng-click="rejectVol(event)" ng-show="true" class="md-raised md-warn">Reject</md-button>
             </div>
 
         </div>
