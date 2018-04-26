@@ -494,9 +494,9 @@ public class HomeController extends Controller {
 	 *            the message ID
 	 * @return
 	 */
-	public Result getMessage(String mId) {
+	public Result getMessage(String cId, String eId) {
 		LOG.debug("getMessage method called.");
-		Messages message = databaseService.getMessage(Integer.valueOf(mId));
+		Messages message = databaseService.getMessage(Integer.valueOf(cId), Integer.valueOf(eId));
 		return ok(createSuccessResponse(Strings.MESSAGE, new Gson().toJson(message))).withHeader(Strings.CORS,
 				Strings.STAR);
 	}
