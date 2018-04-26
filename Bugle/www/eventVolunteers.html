@@ -44,7 +44,6 @@
             <div ng-if="eventSelected">
                 <b>Volunteer Applications for {{event.eName}}: </b>
                 <br>
-                <form action="#" method="post">
                     <input type="hidden" id='e_id' name="e_id" value='{{event.id}}' />
                     <ul>
                         <li data-ng-repeat="volunteer in volunteers">
@@ -56,7 +55,6 @@
                     <div ng-if="volunteers.length == 0"> No voluteers yet.</div>
                     <button class="btn btn-success btn-shadow pull-right" ng-click="approveVol(event)" ng-show="true">Approve</button>
                     <button  class="btn btn-danger btn-shadow" ng-click="rejectVol(event)" ng-show="true">Reject</button>
-                </form>
             </div>
 
         </div>
