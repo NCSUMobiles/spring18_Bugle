@@ -1,0 +1,4 @@
+{
+    "status": "success",
+    "chats": "[{\"cId\":1,\"cName\":\"Event 1\",\"uId\":4,\"eId\":1,\"status\":\"active\"}]"
+}

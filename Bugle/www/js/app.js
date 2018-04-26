@@ -7,6 +7,12 @@ app.config(function (localStorageServiceProvider) {
         .setNotify(true, true);
 });
 
+app.config(function ($mdThemingProvider) {
+    $mdThemingProvider.theme('default')
+        .primaryPalette('green')
+        .accentPalette('indigo');
+});
+
 
 app.service('UserService', function () {
     var loggedInUser = '';
@@ -16,6 +22,8 @@ app.service('UserService', function () {
     var currentEvent = '';
     var currentVolunteers = '';
     var prevPage = '';
+    var chats = '';
+    var chat = '';
 
     return {
         getLoggedInUser: function () {
@@ -59,6 +67,18 @@ app.service('UserService', function () {
         },
         setPrevPage: function (p) {
             prevPage = p;
+        },
+        getChats: function () {
+            return chats;
+        },
+        setChats: function (ch) {
+            chats = ch;
+        },
+        getChat: function () {
+            return chat;
+        },
+        setChat: function (c) {
+            chat = c;
         }
     }
 });
@@ -91,11 +111,17 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
 
     $scope.eventSelected = false;
 
-    // The actual list will com from the Database via the API
+    // The actual list will come from the Database via the API
     $scope.volunteers = [];
 
     // boolean flag set to true if the current event is applied to by the user.
-    $scope.isEventApplied = false;
+    $scope.appliedStatus = null;
+
+    // chats
+    $scope.chats = [];
+
+    // chat
+    $scope.chat = {};
 
     $scope.fetchSession = function () {
         $scope.user = localStorageService.get('sessionUser');
@@ -105,6 +131,41 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         $scope.event = localStorageService.get('event');
         $scope.volunteers = localStorageService.get('volunteers');
         $scope.prevPage = localStorageService.get('prevPage');
+        $scope.chats = localStorageService.get('chats');
+        $scope.chat = localStorageService.get('chat');
+
+        // do this only on the event details page for volunteers.
+        if ($scope.user && $scope.user.type=='vol' && $window.location.href.includes('/eventDetails.html')) {
+            console.log('checking for event details');
+            //fetch org name and check if event is joined.
+            //userID of the organizer: $scope.event.uId - fetch the name of this organizer from the API.
+            //check applied status also from the API - pass $scope.user.uId, eId and if applicant table has entry for $scope.user.uId and eId then isEventApplied is true.;
+            var data = {
+                "orgID": $scope.event.uId,
+                "userID": $scope.user.uId,
+                "eventID":  $scope.event.eId
+            }
+
+            $http({
+                url: 'https://bugle-pl-srv.herokuapp.com/details-val',
+                method: 'POST',
+                data: data,
+                headers: { 'Content-Type': 'application/json' }
+            }).then(function (response) {
+                if (response.data.status != 'error') {
+                    console.log('SUCCESS: ' + JSON.stringify(response));
+                    $scope.detailOrgName = response.data.orgName;
+                    $scope.appliedStatus = response.data.appliedStatus;
+                } else {
+                    console.log(response.data.message);
+                    showToast('Could not validate Event applied status!');
+                }
+            }, function (response) {
+                console.log('ERROR: ' + JSON.stringify(response));
+            }).finally(function () {
+                $scope.dataLoading = false;
+            });
+        }
 
         var validUnauthPage = $window.location.href.includes('/login.html') || $window.location.href.includes('/organisationSignup.html') || $window.location.href.includes('/volunteerSignup.html');
 
@@ -143,18 +204,22 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             data: loginInfo,
             headers: { 'Content-Type': 'application/json' }
         }).then(function successLogin(response) {
-            //TODO: check if status in response is 'success'
-            console.log('SUCCESS: ' + JSON.stringify(response));
-            var user = JSON.parse(response.data.user);
-            $scope.greeting = response.data.status + '. Hello ' + user.uName;
-            updateScopeUser(user);
-            console.log('updating session user to: ' + JSON.stringify(user));
-            localStorageService.set('sessionUser', null);
-            localStorageService.set('sessionUser', user);
-            if (user.type === 'vol') {
-                $window.location.href = '/volunteer.html';
+            if (response.data.status != 'error') {
+                console.log('SUCCESS: ' + JSON.stringify(response));
+                var user = JSON.parse(response.data.user);
+                $scope.greeting = response.data.status + '. Hello ' + user.uName;
+                updateScopeUser(user);
+                console.log('updating session user to: ' + JSON.stringify(user));
+                localStorageService.set('sessionUser', null);
+                localStorageService.set('sessionUser', user);
+                if (user.type === 'vol') {
+                    $window.location.href = '/volunteer.html';
+                } else {
+                    $window.location.href = '/organization.html';
+                }
             } else {
-                $window.location.href = '/organization.html';
+                console.log(response.data.message);
+                showToast(response.data.message);
             }
         }, function failLogin(response) {
             console.log('ERROR: ' + JSON.stringify(response));
@@ -186,18 +251,13 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             headers: { 'Content-Type': 'application/json' }
         }).then(function (response) {
             //TODO: check if status in response is 'success'
-            console.log('SUCCESS: ' + JSON.stringify(response));
-            // var user = JSON.parse(response.data.user);
-            var user = response.data.user;
-            $scope.greeting = response.data.status + '. Hello ' + user.uName;
-            updateScopeUser(user);
-            console.log('updating session user to: ' + JSON.stringify(user));
-            localStorageService.set('sessionUser', null);
-            localStorageService.set('sessionUser', user);
-            if (type === 'vol') {
-                $window.location.href = '/volunteer.html';
+            if (response.data.status != 'error') {
+                console.log('SUCCESS: ' + JSON.stringify(response));
+                $window.location.href = '/login.html';
+                showToast('Successfully Signed up, you can Login now.');
             } else {
-                $window.location.href = '/organization.html';
+                console.log(response.data.message);
+                showToast('Sorry Could not sign up! Try again later.');
             }
         }, function (response) {
             console.log('ERROR: ' + JSON.stringify(response));
@@ -215,13 +275,17 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             url: 'https://bugle-pl-srv.herokuapp.com/organizations',
             headers: { 'Content-Type': '*/*' }
         }).then(function (response) {
-            //TODO: check if status in response is 'success'
-            console.log('SUCCESS: ' + JSON.stringify(response));
-            var orgs = JSON.parse(response.data.organizations);
-            updateScopeOrganizations(orgs);
-            console.log('updating session organizations to: ' + JSON.stringify(orgs));
-            localStorageService.set('organizations', null);
-            localStorageService.set('organizations', orgs);
+            if (response.data.status != 'error') {
+                console.log('SUCCESS: ' + JSON.stringify(response));
+                var orgs = JSON.parse(response.data.organizations);
+                updateScopeOrganizations(orgs);
+                console.log('updating session organizations to: ' + JSON.stringify(orgs));
+                localStorageService.set('organizations', null);
+                localStorageService.set('organizations', orgs);
+            } else {
+                console.log(response.data.message);
+                showToast('Could not load organizations');
+            }
         }, function (response) {
             console.log('ERROR: ' + JSON.stringify(response));
         });
@@ -230,8 +294,6 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
 
     // Get volunteer events function start
     $scope.getVolunteerEvents = function (uId) {
-        //TODO: remove hardcoded value later.
-        // uId = 1;
         console.log('fetching events for volunteer ID: ' + uId);
         var srvURL = 'https://bugle-pl-srv.herokuapp.com/volunteer-events/' + uId;
         console.log('API URL: ' + srvURL)
@@ -240,13 +302,17 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             url: srvURL,
             headers: { 'Content-Type': '*/*' }
         }).then(function (response) {
-            //TODO: check if status in response is 'success'
-            console.log('SUCCESS: ' + JSON.stringify(response));
-            var events = JSON.parse(response.data.events);
-            updateScopeEvents(events);
-            console.log('updating session events to: ' + JSON.stringify(events));
-            localStorageService.set('events', null);
-            localStorageService.set('events', events);
+            if (response.data.status != 'error') {
+                console.log('SUCCESS: ' + JSON.stringify(response));
+                var events = JSON.parse(response.data.events);
+                updateScopeEvents(events);
+                console.log('updating session events to: ' + JSON.stringify(events));
+                localStorageService.set('events', null);
+                localStorageService.set('events', events);
+            } else {
+                console(response.data.message);
+                showToast('Could not load events.');
+            }
         }, function (response) {
             console.log('ERROR: ' + JSON.stringify(response));
         });
@@ -255,7 +321,6 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
 
     // Get organization events function start
     $scope.getOrganizationEvents = function (uId) {
-        //uId = 2;//TODO: Remove this
         console.log('fetching events for organization ID: ' + uId);
         var srvURL = 'https://bugle-pl-srv.herokuapp.com/organizations/' + uId;
         console.log('API URL: ' + srvURL)
@@ -375,6 +440,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         localStorageService.set('sessionUser', null);
         UserService.loggedInUser = null;
         $scope.user = null;
+        localStorageService.clearAll();
         $window.location.href = '/login.html';
     }
     // logout function end
@@ -460,6 +526,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
                 var message = JSON.stringify(response.data.message);
                 console.log('SUCCESS: ' + JSON.stringify(message));
                 showToast('Applied to Event!');
+                $scope.appliedStatus = 'applied';
             } else {
                 console.log('ERROR: ' + JSON.stringify(response.data.message));
                 showToast('Sorry, Could not apply for event!');
@@ -480,6 +547,107 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         }
       };
 
+    // function for a org to approve volunteer start.
+    
+    $scope.approveVol = function (event) {
+
+        console.log('For event ' + JSON.stringify(event) + ', approving volunteers: ' + JSON.stringify($scope.selected));
+
+        var eventApplication = {
+            'e_Id': event.eId,
+            'u_Ids':''+$scope.selected+''
+        };
+
+        console.log('application: ' + JSON.stringify(eventApplication));
+
+        $http({
+            method: 'POST',
+            url: 'https://bugle-pl-srv.herokuapp.com/approve-volunteers',
+            data: eventApplication,
+            headers: { 'Content-Type': 'application/json' }
+        }).then(function (response) {
+            console.log('response: ' + JSON.stringify(response));
+            if (response.status != 'error') {
+                var message = JSON.stringify(response.data.message);
+                console.log('SUCCESS: ' + JSON.stringify(message));
+                showToast('approved for Event!');
+            } else {
+                console.log('ERROR: ' + JSON.stringify(response.data.message));
+                showToast('Sorry, approval failed!');
+            }
+        }, function (response) {
+            console.log('ERROR: ' + JSON.stringify(response));
+        });
+    };
+    // function for a org to approve volunteer end.
+
+     // function for a org to reject volunteer start.
+    
+     $scope.rejectVol = function (event) {
+
+        console.log('For event ' + JSON.stringify(event) + ', rejecting volunteers: ' + JSON.stringify($scope.selected));
+
+        var eventApplication = {
+            'e_Id': event.eId,
+            'u_Ids':''+$scope.selected+''
+        };
+
+        console.log('application: ' + JSON.stringify(eventApplication));
+
+        $http({
+            method: 'POST',
+            url: 'https://bugle-pl-srv.herokuapp.com/reject-volunteers',
+            data: eventApplication,
+            headers: { 'Content-Type': 'application/json' }
+        }).then(function (response) {
+            console.log('response: ' + JSON.stringify(response));
+            if (response.status != 'error') {
+                var message = JSON.stringify(response.data.message);
+                console.log('SUCCESS: ' + JSON.stringify(message));
+                showToast('Rejection successful');
+            } else {
+                console.log('ERROR: ' + JSON.stringify(response.data.message));
+                showToast('Sorry, rejection failed!');
+            }
+        }, function (response) {
+            console.log('ERROR: ' + JSON.stringify(response));
+        });
+    };
+    // function for a org to reject volunteer end.
+
+     // function for a volunteer to leave an event start.
+     $scope.leaveEvent = function (event) {
+        console.log('applying For event: ' + JSON.stringify(event) + ', by volunteer: ' + JSON.stringify($scope.user));
+
+        var Leavingevent = {
+            'e_Id': event.eId,
+            'u_Id': $scope.user.uId
+        };
+
+        console.log('Leaving event: ' + JSON.stringify(Leavingevent));
+
+        $http({
+            method: 'POST',
+            url: 'https://bugle-pl-srv.herokuapp.com/leave-event',
+            data: Leavingevent,
+            headers: { 'Content-Type': 'application/json' }
+        }).then(function (response) {
+            console.log('response: ' + JSON.stringify(response));
+            if (response.status != 'error') {
+                var message = JSON.stringify(response.data.message);
+                console.log('SUCCESS: ' + JSON.stringify(message));
+                showToast('Left Event!');
+                $scope.appliedStatus = 'left';
+            } else {
+                console.log('ERROR: ' + JSON.stringify(response.data.message));
+                showToast('Sorry, Could not leave event!');
+            }
+        }, function (response) {
+            console.log('ERROR: ' + JSON.stringify(response));
+        });
+    };
+    // function for a volunteer to leaven an event end.
+    
     // function for a org to approve volunteer start.
     
     $scope.approveVol = function (event) {
@@ -604,5 +772,103 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         $scope.updateField = false;
         $window.location.href = '/profile.html';
     };
+
+    //function to redirect to a page on button click
+    $scope.gotoPage = function (page) {
+        $window.location.href = '/' + page + '.html';
+    };
+
+    $scope.createEvent = function () {
+        $scope.dataLoading = true;
+        console.log('creating event.');
+
+        var eventInfo = {
+            "e_name": $scope.eName,
+            "location": $scope.location,
+            "datetime": $scope.datetime,
+            "description": $scope.description,
+            "members": $scope.members,
+            "u_id": $scope.user.uId,
+            "status": "active"
+        };
+
+        $http({
+            url: 'https://bugle-pl-srv.herokuapp.com/event',
+            method: 'POST',
+            data: eventInfo,
+            headers: { 'Content-Type': 'application/json' }
+        }).then(function successLogin(response) {
+            if (response.data.status != 'error') {
+                console.log('SUCCESS: ' + JSON.stringify(response));
+                $window.location.href = '/organization.html';
+                showToast(response.data.message);
+            } else {
+                console.log(response.data.message);
+                showToast(response.data.message);
+            }
+        }, function failLogin(response) {
+            console.log('ERROR: ' + JSON.stringify(response));
+        }).finally(function () {
+            $scope.dataLoading = false;
+        });
+    }
+
+    $scope.getChats = function () {
+        console.log('getting chats for user: ' + $scope.user.uId);
+        var srvURL = 'https://bugle-pl-srv.herokuapp.com/chats/' + $scope.user.uId;
+        console.log('API URL: ' + srvURL)
+        $http({
+            method: 'GET',
+            url: srvURL,
+            headers: { 'Content-Type': '*/*' }
+        }).then(function (response) {
+            //TODO: check if status in response is 'success'
+            console.log('SUCCESS: ' + JSON.stringify(response));
+            var chats = JSON.parse(response.data.chats);
+            updateScopeChats(chats);
+            console.log('updating session chats to: ' + JSON.stringify(chats));
+            localStorageService.set('chats', null);
+            localStorageService.set('chats', chats);
+        }, function (response) {
+            console.log('ERROR: ' + JSON.stringify(response));
+        });
+    }
+
+    // Update Scope Chats function Start
+    var updateScopeChats = function (ch) {
+        console.log('updating Service chats to: ' + ch);
+        UserService.chats = ch;
+        $scope.chats = ch;
+    }
+    // Update Scope Chats function end
+
+    // Update Scope Chat function Start
+    var updateScopeChat = function (c) {
+        console.log('updating Service chat to: ' + c);
+        UserService.chat = c;
+        $scope.chat = c;
+    }
+    // Update Scope Chat function end
+
+    $scope.openChat = function (ch) {
+        console.log('opening chat for: ' + JSON.stringify(ch));
+        updateScopeChat(ch);
+        console.log('updating session chat to: ' + JSON.stringify(ch));
+        localStorageService.set('chat', null);
+        localStorageService.set('chat', ch);
+        $window.location.href = '/chat.html';
+    };
+
+    $scope.showDetails = function(org) {
+        console.log('updating session organization to: ' + JSON.stringify(org));
+        localStorageService.set('organization', null);
+        localStorageService.set('organization', org);
+        updateScopeOrganization(org);
+        $window.location.href = '/organizationDetails.html';
+    };
+
+    $scope.navigate = function(event) {
+        console.log('navigating...');
+    }
 
 }]);

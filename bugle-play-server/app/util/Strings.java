@@ -22,6 +22,7 @@ public class Strings {
 	public static final String VOL = "vol";
 
 	public static final String STATUS_APPLIED = "applied";
+	public static final String STATUS_WITHDRAWN = "withdrawn";
 	public static final String STATUS_APPROVED = "approved";
 	public static final String STATUS_REJECTED = "rejected";
 	public static final String STATUS_ACTIVE = "active";

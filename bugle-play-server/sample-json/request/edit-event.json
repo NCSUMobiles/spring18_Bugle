@@ -1,0 +1,9 @@
+{
+	"EVENT_EID": 36,
+	"EVENT_ENAME": "Event 1",
+	"EVENT_LOCATION": "Raleigh",
+	"EVENT_DATETIME": "24.5.2018 11:00AM",
+	"EVENT_DESCRIPTION": "description of the volunteering event.",
+	"EVENT_MEMBERS": "14",
+	"EVENT_STATUS": "active"
+}
