@@ -497,6 +497,9 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
     //--END: Content from Event Details page controller
 
     $scope.updateField = false;
+    
+    $scope.dobError = false;
+    $scope.mobileError = false;
 
     // function to enable users to modify Profile details start
     $scope.modify = function () {
@@ -578,6 +581,28 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         );
     }
 
+    function testingDateStr(str) {
+        var t = str.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+      	if(t === null)
+      	    return false;
+      	var m = +t[1], d = +t[2], y = +t[3];
+
+      	// Below should be a more acurate algorithm
+      	if(m >= 1 && m <= 12 && d >= 1 && d <= 31) {
+      		return true;  
+      	}
+
+      	  return false;
+        }
+    
+    function testingPhoneStr(str) {
+        var t = str.match(/^(\d{10})$/);
+      	if(t === null)
+      	    return false;
+
+      	return true;
+    }
+    
     // update user Profile details function
     $scope.update = function (user) {
 
@@ -598,6 +623,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             'USERS_LOCATION': $scope.user.location
         };
 
+        
         $http({
             url: updateUserURL,
             method: 'POST',
@@ -608,12 +634,23 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             //var user = response.config.data;
             var user = JSON.parse(response.data.user);
             //var user = response.data.user;
-            updateScopeUser(user);
-            console.log('updated records for user: ' + user);
-            localStorageService.set('sessionUser', null);
-            localStorageService.set('sessionUser', user);
-            $scope.updateField = false;
-            $window.location.href = '/profile.html';
+            if ( !testingDateStr(user.dob) ) {
+            	$scope.dobError = true;
+            }
+            if ( !testingPhoneStr(user.mobile) ) {
+            	$scope.mobileError = true;
+            }
+            if ( testingDateStr(user.dob) & testingPhoneStr(user.mobile) ) {
+	            updateScopeUser(user);
+	            console.log('updated records for user: ' + user);
+	            localStorageService.set('sessionUser', null);
+	            localStorageService.set('sessionUser', user);
+	            $scope.updateField = false;
+	            $window.location.href = '/profile.html';
+	            $scope.dobError = false;
+	            $scope.mobileError = false;
+            }
+
         }, function (response) {
             console.log('ERROR: ' + JSON.stringify(response));
         }).finally(function () {
