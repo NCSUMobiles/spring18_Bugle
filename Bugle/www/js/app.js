@@ -969,6 +969,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             //TODO: logout the Google Profile here?
             $window.location.href = '/login.html';
         } else {
+            $scope.dataLoading = true;
             //fetch user from our database using goolge profile ID, if present.
             $http({
                 url: serviceURL + '/get-gprof/' + profile.getId(),
@@ -1010,6 +1011,8 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
                 console.log('Could not read the details for this Google user from our database.');
                 showToast('Google Login failed. Signup using Email!');
                 $window.location.href = '/login.html';
+            }).finally(function () {
+                $scope.dataLoading = false;
             });
         }
 
