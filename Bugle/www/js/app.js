@@ -134,12 +134,14 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
 
     $scope.tempGUser = {};
 
+    $scope.isGoogleUser = false;
+
     //Loading Google API
     function onLoad() {
-        gapi.load('auth2', function() {
-          gapi.auth2.init();
+        gapi.load('auth2', function () {
+            gapi.auth2.init();
         });
-      }
+    }
 
     $scope.fetchSession = function () {
         $scope.user = localStorageService.get('sessionUser');
@@ -152,6 +154,16 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         $scope.chats = localStorageService.get('chats');
         $scope.chat = localStorageService.get('chat');
         $scope.tempGUser = localStorageService.get('tempGUser');
+
+        //only do this for profile page.
+        if ($window.location.href.includes('/profile.html')) {
+            console.log('doing the special thing for profile page.');
+            //loading gapi again?
+            gapi.load('auth2', function () {
+                gapi.auth2.init();
+            });
+            $scope.isGoogleUser = true;
+        }
 
         // do this only on the event details page for volunteers.
         if ($scope.user && $scope.user.type == 'vol' && $window.location.href.includes('/eventDetails.html')) {
@@ -199,12 +211,12 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
                 $window.location.href = '/organization.html';
             }
         } else {
-            var orgPage =  $window.location.href.includes('/organization.html') || $window.location.href.includes('/createEvent.html') || $window.location.href.includes('/eventVolunteers.html');
+            var orgPage = $window.location.href.includes('/organization.html') || $window.location.href.includes('/createEvent.html') || $window.location.href.includes('/eventVolunteers.html');
             if (orgPage && $scope.user.type == 'vol') {
                 console.log('redirecting lost volunteer to Volunteer Home page.');
                 $window.location.href = '/volunteer.html';
             }
-    
+
             var volPage = $window.location.href.includes('/volunteerEvents.html') || $window.location.href.includes('/volunteer.html') || $window.location.href.includes('/orgEvents.html');
             if (volPage && $scope.user.type == 'org') {
                 console.log('redirecting lost organization to Organization Home page.');
@@ -466,6 +478,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
 
     // logout function start
     $scope.logout = function () {
+        console.log('normal logout called');
         localStorageService.set('sessionUser', null);
         UserService.loggedInUser = null;
         $scope.user = null;
@@ -476,10 +489,15 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
 
     // logout google user function start
     $scope.logoutGUser = function () {
+        console.log('logoutGUser called');
+        UserService.loggedInUser = null;
+        $scope.user = null;
+        localStorageService.clearAll();
         var auth2 = gapi.auth2.getAuthInstance();
         auth2.signOut().then(function () {
             console.log('Google User signed out.');
         });
+        $window.location.href = '/login.html';
     }
     // logout google user function start
 
@@ -535,7 +553,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
     //--END: Content from Event Details page controller
 
     $scope.updateField = false;
-    
+
     $scope.dobError = false;
     $scope.mobileError = false;
 
@@ -610,7 +628,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         });
     };
     // function for a volunteer to leave an event end.
-    
+
     $scope.selected = [];
     // toggle selected checkbox start
     $scope.toggle = function (uId, selected) {
@@ -629,14 +647,14 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
 
 
     // function for a org to approve volunteer start.
-    
+
     $scope.approveVol = function (event) {
 
         console.log('For event ' + JSON.stringify(event) + ', approving volunteers: ' + JSON.stringify($scope.selected));
 
         var eventApplication = {
             'e_Id': event.eId,
-            'u_Ids':''+$scope.selected+''
+            'u_Ids': '' + $scope.selected + ''
         };
 
         console.log('application: ' + JSON.stringify(eventApplication));
@@ -663,15 +681,15 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
     };
     // function for a org to approve volunteer end.
 
-     // function for a org to reject volunteer start.
-    
-     $scope.rejectVol = function (event) {
+    // function for a org to reject volunteer start.
+
+    $scope.rejectVol = function (event) {
 
         console.log('For event ' + JSON.stringify(event) + ', rejecting volunteers: ' + JSON.stringify($scope.selected));
 
         var eventApplication = {
             'e_Id': event.eId,
-            'u_Ids':''+$scope.selected+''
+            'u_Ids': '' + $scope.selected + ''
         };
 
         console.log('application: ' + JSON.stringify(eventApplication));
@@ -707,31 +725,41 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
     }
 
     function testingDateStr(str) {
-        var t = str.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-      	if(t === null)
-      	    return false;
-      	var m = +t[1], d = +t[2], y = +t[3];
+        if (str) {
+            console.log('validating date of birth.');
+            var t = str.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+            if (t === null)
+                return false;
+            var m = +t[1], d = +t[2], y = +t[3];
 
-      	// Below should be a more acurate algorithm
-      	if(m >= 1 && m <= 12 && d >= 1 && d <= 31) {
-      		return true;  
-      	}
+            // Below should be a more acurate algorithm
+            if (m >= 1 && m <= 12 && d >= 1 && d <= 31) {
+                return true;
+            }
 
-      	  return false;
+            return false;
+        } else {
+            console.log('no date of birth to validate.');
+            return true;
         }
-    
-    function testingPhoneStr(str) {
-        var t = str.match(/^(\d{10})$/);
-      	if(t === null)
-      	    return false;
-
-      	return true;
     }
-    
+
+    function testingPhoneStr(str) {
+        if (str) {
+            console.log('validating Phone number.');
+            var t = str.match(/^(\d{10})$/);
+            if (t === null)
+                return false;
+
+            return true;
+        } else {
+            console.log('no phone number to validate.');
+            return true;
+        }
+    }
+
     // update user Profile details function
     $scope.update = function (user) {
-
-        $scope.dataLoading = true;
         console.log('update user called for user ' + user.uName);
         var updateUserURL = serviceURL + '/edit-user';
         var updateUserInfo = {
@@ -747,22 +775,33 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             'USERS_LOCATION': $scope.user.location
         };
 
-        $http({
-            url: updateUserURL,
-            method: 'POST',
-            data: updateUserInfo,
-            headers: { 'Content-Type': 'application/json' }
-        }).then(function (response) {
-            console.log('RESPONSE: ' + JSON.stringify(response));
-            if (response.data.status != 'error') {
-                var user = JSON.parse(response.data.user);
-                if ( !testingDateStr(user.dob) ) {
-                    $scope.dobError = true;
-                }
-                if ( !testingPhoneStr(user.mobile) ) {
-                    $scope.mobileError = true;
-                }
-                if ( testingDateStr(user.dob) & testingPhoneStr(user.mobile) ) {
+        //validating input
+        //check for correct format of dob
+        if (!testingDateStr(user.dob)) {
+            $scope.dobError = true;
+        } else {
+            $scope.dobError = false;
+        }
+
+        //check for correct format of dob
+        if (!testingPhoneStr(user.mobile)) {
+            $scope.mobileError = true;
+        } else {
+            $scope.mobileError = false;
+        }
+
+        //calling the API only if there are no error on forms
+        if (!$scope.dobError && !$scope.mobileError) {
+            $scope.dataLoading = true;
+            $http({
+                url: updateUserURL,
+                method: 'POST',
+                data: updateUserInfo,
+                headers: { 'Content-Type': 'application/json' }
+            }).then(function (response) {
+                console.log('RESPONSE: ' + JSON.stringify(response));
+                if (response.data.status != 'error') {
+                    var user = JSON.parse(response.data.user);
                     updateScopeUser(user);
                     console.log('updated records for user: ' + user);
                     localStorageService.set('sessionUser', null);
@@ -772,23 +811,23 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
                     $scope.dobError = false;
                     $scope.mobileError = false;
                 } else {
-                if ($scope.dobError) {
-                    showToast('Error: Please Check Date of Birth.');
+                    console.log('ERROR: ' + JSON.stringify(response.data.message));
+                    showToast('Something went wrong while updating Profile. Please try again later.');
                 }
-                if ($scope.mobileError) {
-                    showToast('Error: Please Check Mobile number.');
-                }
-                }
-            } else {
-                console.log('ERROR: ' + JSON.stringify(response.data.message));
+            }, function (response) {
+                console.log('ERROR: ' + JSON.stringify(response));
                 showToast('Something went wrong while updating Profile. Please try again later.');
+            }).finally(function () {
+                $scope.dataLoading = false;
+            });
+        } else {
+            if ($scope.dobError) {
+                showToast('Error: Please Check Date of Birth.');
             }
-        }, function (response) {
-            console.log('ERROR: ' + JSON.stringify(response));
-            showToast('Something went wrong while updating Profile. Please try again later.');
-        }).finally(function () {
-            $scope.dataLoading = false;
-        });
+            if ($scope.mobileError) {
+                showToast('Error: Please Check Mobile number.');
+            }
+        }
     };
 
     // cancel Profile update function
@@ -905,7 +944,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         console.log('Name: ' + profile.getName());
         console.log('Image URL: ' + profile.getImageUrl());
         console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-        
+
         var gUser = {
             "gId": profile.getId(),
             "uName": profile.getName(),
@@ -929,7 +968,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
                 if (response.data.status != 'error') {
                     console.log('SUCCESS response: ' + JSON.stringify(response));
                     var dbuser = JSON.parse(response.data.user);
-                    if (dbuser != "null") {
+                    if (dbuser != null) {
                         console.log('this google user exists in our database: ' + JSON.stringify(response.data.user));
                         //set user using fetched user and redirect accordingly.
                         updateScopeUser(dbuser);
@@ -958,12 +997,12 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
                 }
             }, function failLogin(response) {
                 console.log('Could not read the details for this Google user from our database.');
-                    showToast('Google Login failed. Signup using Email!');
-                    $window.location.href = '/login.html';
+                showToast('Google Login failed. Signup using Email!');
+                $window.location.href = '/login.html';
             });
         }
 
-        $scope.$digest();        
+        $scope.$digest();
     }
     window.onSignIn = onSignIn;
 
