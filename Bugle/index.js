@@ -2,7 +2,7 @@ var express = require('express');
 var socket = require('socket.io');
 
 var app = express();
-app.use(express.static(__dirname + '/www')).use('/node_modules', express.static('node_modules'));
+app.use(express.static(__dirname + '/www', {index: 'login.html'})).use('/node_modules', express.static('node_modules'));
 
 var port = process.env.PORT || 5000;
 var server = app.listen(port, function() {
