@@ -13,11 +13,12 @@ public class Events {
 	private String members;
 	private int uId;
 	private String status;
-	
+
 	public Events() {
 	}
 
-	public Events(String eName, String location, String datetime, String description, String members, int uId, String status) {
+	public Events(String eName, String location, String datetime, String description, String members, int uId,
+			String status) {
 		this.eName = eName;
 		this.location = location;
 		this.datetime = datetime;
@@ -26,6 +27,7 @@ public class Events {
 		this.uId = uId;
 		this.status = status;
 	}
+
 	/**
 	 * @return the eId
 	 */
@@ -146,7 +148,9 @@ public class Events {
 		this.status = status;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
