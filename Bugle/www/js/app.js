@@ -158,11 +158,18 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         //only do this for profile page.
         if ($window.location.href.includes('/profile.html')) {
             console.log('doing the special thing for profile page.');
+            //console.log('the logged in user is: ' + JSON.stringify($scope.user));
+            //load gapi if he is a gUser else set isGoogleUser to false
             //loading gapi again?
-            gapi.load('auth2', function () {
-                gapi.auth2.init();
-            });
-            $scope.isGoogleUser = true;
+            if ($scope.user.gprofid === $scope.user.password) {
+                gapi.load('auth2', function () {
+                    gapi.auth2.init();
+                });
+                $scope.isGoogleUser = true;
+            } else {
+                $scope.isGoogleUser = false;
+            }
+           
         }
 
         // do this only on the event details page for volunteers.
@@ -946,7 +953,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
 
         var gUser = {
-            "gId": profile.getId(),
+            "gprofid": profile.getId(),
             "uName": profile.getName(),
             "email": profile.getEmail(),
             "type": $scope.gUserType
@@ -1026,7 +1033,8 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         var gUserInfo = {
             'u_name': usr.uName,
             'email': usr.email,
-            'gId': usr.gId,
+            'gprofid': usr.gprofid,
+            'password': usr.gprofid,
             'type': type
         };
 
@@ -1039,8 +1047,8 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             if (response.data.status != 'error') {
                 console.log('SUCCESS response: ' + JSON.stringify(response));
                 var user = JSON.parse(response.data.user);
-                user.password = usr.gId;
-                user.gId = usr.gId;
+                user.password = usr.gprofid;
+                user.gprofid = usr.gprofid;
                 updateScopeUser(user);
                 localStorageService.set('sessionUser', null);
                 localStorageService.set('sessionUser', user);
