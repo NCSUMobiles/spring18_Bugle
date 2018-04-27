@@ -10,22 +10,26 @@ var getbtn = document.getElementById('getdb');
 
 var chatID = document.getElementById('chatID');
 var eventID = document.getElementById('eventID');
+var mID = document.getElementById('mID');
 
 var url;
 
 //Emit Events
 btn.addEventListener('click', function () {
     if (message.value) {
+        var dt = new Date();
+        var utcDate = dt.toUTCString();
         socket.emit('chat', {
             message: message.value,
             handle: handle.value,
             //send chat id decide whether or not to send message!
             chatID: chatID.value,
-            eventID: eventID.value
+            eventID: eventID.value,
+            timestamp: utcDate
         });
         console.log('Sending to play server');
         url = 'https://bugle-pl-srv.herokuapp.com/msgs';
-        var parameter = output.innerHTML + '<p><strong>' + handle.value + ': </strong>' + message.value + '</p>';
+        var parameter = output.innerHTML + '<md-card><p style="word-break: break-all !important; padding:5% !important;"><strong>' + handle.value + '</strong><br>' + message.value + '<br><font size = "-2">' + utcDate + '</font></p></md-card>';
         console.log("I am sending .. "+parameter);
         saveToPlayServer(url, parameter);
         /*send to play server :
@@ -47,15 +51,23 @@ socket.on('chat', function (data) {
          display output from content retrieved by the play server
     */
    
-    output.innerHTML += '<p><strong>' + data.handle + ': </strong>' + data.message + '</p>';
-
+   var shouldScroll = output.scrollTop + output.clientHeight === output.scrollHeight;
+    output.innerHTML += '<md-card><p style="word-break: break-all !important; padding:5% !important;"><strong>' + data.handle + '</strong><br>' + data.message + '<br><font size = "-2">' + data.timestamp + '</font></p></md-card>';
+    if(!shouldScroll){
+        scrollToBottom();
+    }
 });
 
+function scrollToBottom() {
+    output.scrollTop = output.scrollHeight;
+  }
+  
+scrollToBottom();
+
 function initialize() {
-    console.log("The chat id in initialize: -------------- " + chatID.value);
-    console.log("The event id in initialize: -------------- " + eventID.value);
+    console.log("The message id in initialize: -------------- " + mID.value);
     /* Call play server. We have the chat id, retrieve all chats and display */
-    url = 'https://bugle-pl-srv.herokuapp.com/msgs' + "/" + chatID.value + "/" + eventID.value;
+    url = 'https://bugle-pl-srv.herokuapp.com/msgs' + "/" + mID.value
     console.log("This is the new url for GET: "+url);
     retrieveFromPlayServer(url);
 };
