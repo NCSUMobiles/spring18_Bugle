@@ -26,8 +26,10 @@
 
     <div>Welcome {{tempGUser.uName}}, Please Choose a User Type</div>
     <p>
-        <md-button class="md-raised pull-right" ng-click="setGUserType('vol')" ng-disabled="dataLoading">Volunteer</md-button>
+        <md-button class="md-raised" ng-click="setGUserType('vol')" ng-disabled="dataLoading">Volunteer</md-button>
+        <br>
         <md-progress-circular class="center_text" md-mode="indeterminate" ng-show="dataLoading"></md-progress-circular>
+        <br>
         <md-button class="md-raised" ng-click="setGUserType('org')" ng-disabled="dataLoading">Organization</md-button>
     </p>
 </body>
