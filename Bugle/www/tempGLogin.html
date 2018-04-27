@@ -24,14 +24,31 @@
 
 <body ng-controller="index" ng-init="fetchSession()">
 
-    <div>Welcome {{tempGUser.uName}}, Please Choose a User Type</div>
-    <p>
-        <md-button class="md-raised" ng-click="setGUserType('vol')" ng-disabled="dataLoading">Volunteer</md-button>
-        <br>
-        <md-progress-circular class="center_text" md-mode="indeterminate" ng-show="dataLoading"></md-progress-circular>
-        <br>
-        <md-button class="md-raised" ng-click="setGUserType('org')" ng-disabled="dataLoading">Organization</md-button>
-    </p>
+    <!-- The Temp GLogin Page -->
+    <div class='home active'>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <md-button class="md-icon-button" aria-label="Go Back" disabled>
+                    <i class="fas fa-angle-left"></i>
+                </md-button>
+                <span flex>Welcome {{tempGUser.uName}}</span>
+            </div>
+        </md-toolbar>
+
+        <md-content flex layout-padding>Please Choose a User Type.</md-content>
+
+        <div class='my_container'>
+            <md-progress-circular style="position:absolute; left:45%; top:32%;" md-mode="indeterminate" ng-show="dataLoading"></md-progress-circular>
+            <br>
+            <md-button style="position:absolute; left:33%; top:42%;" class="md-raised" ng-click="setGUserType('vol')" ng-disabled="dataLoading">Volunteer</md-button>
+            <md-button style="position:absolute; left:30%; top:58%;" class="md-raised" ng-click="setGUserType('org')" ng-disabled="dataLoading">Organization</md-button>
+            <!-- <md-button style="position:absolute; left:22%; top:75%;" type="button" class="md-raised md-warn" ng-click="logoutGUser()">Logout Google User</md-button> -->
+        </div>
+
+    </div>
+
+    <!-- End Temp GLogin Page -->
+
 </body>
 
 </html>

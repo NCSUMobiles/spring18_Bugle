@@ -19,7 +19,8 @@
     <script src="/node_modules/read-more/js/directives/readmore.js"></script>
     <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg"
+        crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="css/style.css" />
     <link rel="stylesheet" type="text/css" href="css/login.css" />
     <script type="text/javascript" src="js/app.js"></script>
@@ -34,7 +35,6 @@
         </div>
 
         <div class="container">
-
             <md-input-container class="md-icon-float md-block">
                 <label>Email</label>
                 <input ng-model="email" type="email" required>
@@ -46,21 +46,29 @@
             </md-input-container>
 
             <button type="submit" class="btn-shadow" ng-disabled="dataLoading">Login</button>
-            <div class="g-signin2" data-onsuccess="onSignIn"></div>
-            <md-progress-circular class="center_text" md-mode="indeterminate" ng-show="dataLoading"></md-progress-circular>
+            <md-progress-circular style="position:absolute; left:45%; top:52%;" md-mode="indeterminate" ng-show="dataLoading"></md-progress-circular>
         </div>
+        <div>
+            <div style="text-align: center; margin-left: 12%; margin-right: 12%; height: 0.7em; border-bottom: 2px solid grey; margin-bottom: 0.7em;">
+                <b style="background-color: white;">&nbsp;OR&nbsp;</b>
+            </div>
+            <br>
+            <br>
+            <div style="position: absolute; top:61%; left:33%;" class="g-signin2" data-onsuccess="onSignIn"></div>
+        </div>
+        <br>
 
         <div class='container'>
             <a href="volunteerSignup.html" class="linkbutton">Volunteer Sign Up</a>
             <a href="organisationSignup.html" class="linkbutton">Organization Sign Up</a>
         </div>
 
-        <div class="container">
+        <!-- <div class="container">
             <span class="psw">
                 <a href="#">Forgot Password?</a>
             </span>
-        </div>
-        
+        </div> -->
+
     </form>
 
 </body>
