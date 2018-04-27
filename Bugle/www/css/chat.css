@@ -13,6 +13,11 @@
     background: #f9f9f9;
 }
 
+#output {
+    height: 100%;
+    overflow-y: auto;
+}
+
 input{
     padding: 10px 20px;
     box-sizing: border-box;
