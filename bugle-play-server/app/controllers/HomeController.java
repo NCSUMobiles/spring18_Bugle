@@ -626,7 +626,7 @@ public class HomeController extends Controller {
 			if (email != null) {
 				email = email.toLowerCase();
 			}
-			String gprofid = json.findPath("gId").textValue();
+			String gprofid = json.findPath("gprofid").textValue();
 			String type = json.findPath("type").textValue();
 
 			// save to DB and return response.
