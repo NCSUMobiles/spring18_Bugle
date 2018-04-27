@@ -35,14 +35,27 @@ CREATE TABLE IF NOT EXISTS chats (
 	c_name text NOT NULL,
 	u_id integer,
 	e_id integer,
+	m_id integer, //message Id of the initial message of this event's chat.
 	status text
 );
 
 CREATE TABLE IF NOT EXISTS messages (
 	m_id SERIAL PRIMARY KEY,
-	c_id integer,
 	e_id integer,
 	msg text,
 	status text,
-	unique(c_id, e_id)
+	unique(e_id)
 );
+
+DROP FUNCTION IF EXISTS update_mId;
+CREATE OR REPLACE FUNCTION update_mId()
+RETURNS trigger AS '
+BEGIN
+  IF NEW.m_id IS NULL THEN
+    NEW.m_id := (select m_id from chats where e_id = NEW.e_id and m_id IS NOT NULL);
+  END IF;
+  RETURN NEW;
+END' LANGUAGE 'plpgsql';
+
+DROP TRIGGER IF EXISTS update_chat_mId on "chats";
+CREATE TRIGGER update_chat_mId before insert on chats for each row execute procedure update_mId();

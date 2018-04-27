@@ -494,9 +494,9 @@ public class HomeController extends Controller {
 	 *            the message ID
 	 * @return
 	 */
-	public Result getMessage(String cId, String eId) {
+	public Result getMessage(String mId) {
 		LOG.debug("getMessage method called.");
-		Messages message = databaseService.getMessage(Integer.valueOf(cId), Integer.valueOf(eId));
+		Messages message = databaseService.getMessage(Integer.valueOf(mId));
 		return ok(createSuccessResponse(Strings.MESSAGE, new Gson().toJson(message))).withHeader(Strings.CORS,
 				Strings.STAR);
 	}
@@ -512,22 +512,22 @@ public class HomeController extends Controller {
 		if (json == null) {
 			return badRequest("Expecting Json data for saving Message.").withHeader(Strings.CORS, Strings.STAR);
 		} else {
-			int cId = json.findPath("cId").intValue();
-			int eId = json.findPath("eId").intValue();
+			int cId = Integer.valueOf(json.findPath("cId").textValue());
+			int eId = Integer.valueOf(json.findPath("eId").textValue());
 			String msg = json.findPath("message").textValue();
 
 			Messages message = new Messages();
-			message.setcId(cId);
 			message.seteId(eId);
 			message.setMsg(msg);
 			message.setStatus(Strings.STATUS_ACTIVE);
 
-			LOG.debug("Saving message for Chat: " + cId);
+			LOG.debug("Saving message for Chat: " + cId + ", and Event: " + eId);
 
 			if (databaseService.saveMessage(message)) {
 				LOG.debug("Saved message for Chat: " + cId);
-				// TODO: this message will not have message ID. If that is needed then we need
-				// to do another DB call to read the message ID for this chatID and eventID.
+				// doing another DB call to read the message ID for this chatID and eventID.
+				message = databaseService.readDBMessage(eId);
+				//this newly fetched message would have message ID as well.
 				return ok(createSuccessResponse(Strings.MESSAGE, new Gson().toJson(message))).withHeader(Strings.CORS,
 						Strings.STAR);
 			} else {

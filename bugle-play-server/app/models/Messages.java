@@ -6,7 +6,6 @@ package models;
  */
 public class Messages {
 	private int mId;
-	private int cId;
 	private int eId;
 	private String msg;
 	private String status;
@@ -24,21 +23,6 @@ public class Messages {
 	 */
 	public void setmId(int mId) {
 		this.mId = mId;
-	}
-
-	/**
-	 * @return the cId
-	 */
-	public int getcId() {
-		return cId;
-	}
-
-	/**
-	 * @param cId
-	 *            the cId to set
-	 */
-	public void setcId(int cId) {
-		this.cId = cId;
 	}
 
 	/**
@@ -93,7 +77,7 @@ public class Messages {
 	 */
 	@Override
 	public String toString() {
-		return "Messages [mId=" + mId + ", uId=" + cId + ", eId=" + eId + ", msg=" + msg + ", status=" + status + "]";
+		return "Messages [mId=" + mId + ", eId=" + eId + ", msg=" + msg + ", status=" + status + "]";
 	}
 
 }
