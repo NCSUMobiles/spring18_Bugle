@@ -30,7 +30,7 @@ btn.addEventListener('click', function () {
         console.log('Sending to play server');
         url = 'https://bugle-pl-srv.herokuapp.com/msgs';
         var parameter = output.innerHTML + '<md-card><p style="word-break: break-all !important; padding:5% !important;"><strong><font size = "-2" color = "blue">' + handle.value + '</font></strong><br>' + message.value + '<br><font size = "-2">' + utcDate + '</font></p></md-card>';
-        console.log("I am sending .. "+parameter);
+        // console.log("I am sending .. "+parameter);
         saveToPlayServer(url, parameter);
         /*send to play server :
         1. output.innerHTML += '<p><strong>' + message.value + ': </strong>' + handle.value + '</p>';
@@ -68,7 +68,6 @@ function initialize() {
     console.log("The message id in initialize: -------------- " + mID.value);
     /* Call play server. We have the chat id, retrieve all chats and display */
     url = 'https://bugle-pl-srv.herokuapp.com/msgs' + "/" + mID.value
-    console.log("This is the new url for GET: "+url);
     retrieveFromPlayServer(url);
 };
 
@@ -77,8 +76,8 @@ function saveToPlayServer(url, parameter) {
     var postMessage = new XMLHttpRequest();
     postMessage.onreadystatechange = function() {
         if (postMessage.readyState == XMLHttpRequest.DONE) {
-            console.log("Server response for POST ... ");
-            console.log(postMessage.responseText);
+            console.log("Got Server response for POST ... ");
+            // console.log(postMessage.responseText);
         }
     }
     postMessage.open('POST', url);
@@ -97,19 +96,18 @@ function retrieveFromPlayServer(url) {
     var getMessage = new XMLHttpRequest();
     getMessage.onreadystatechange = function() {
         if (getMessage.readyState == XMLHttpRequest.DONE) {
-            console.log("Server response for GET ... ");
-            console.log(getMessage.responseText);
+            console.log("Got Server response for GET ... ");
+            // console.log(getMessage.responseText);
             var responseData = getMessage.responseText;
             var jsonResponse = JSON.parse(responseData);
-            console.log(jsonResponse.message);
+            // console.log(jsonResponse.message);
             var innerJSON = JSON.parse(jsonResponse.message);
-            console.log("Inner JSON");
-            console.log(innerJSON.msg);
+            // console.log(innerJSON.msg);
             output.innerHTML = innerJSON.msg;
         }
     }
     getMessage.open('GET', url);
     getMessage.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     getMessage.send();
-    console.log('Get call ended ');
+    console.log('Get call ended.');
 };
