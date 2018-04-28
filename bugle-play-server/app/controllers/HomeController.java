@@ -656,6 +656,19 @@ public class HomeController extends Controller {
 	}
 
 	/**
+	 * Gets a list of the approved volunteers for an event.
+	 * 
+	 * @param eId
+	 *            the event ID.
+	 * @return
+	 */
+	public Result getApprovedVolunteers(String eId) {
+		LOG.debug("getApprovedVolunteers method called.");
+		List<Users> users = databaseService.getApprovedVolunteers(Integer.valueOf(eId));
+		return ok(createSuccessResponse("volunteers", new Gson().toJson(users))).withHeader(Strings.CORS, Strings.STAR);
+	}
+
+	/**
 	 * This method returns the following JSON response:
 	 * 
 	 * <pre>

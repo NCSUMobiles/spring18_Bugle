@@ -1242,4 +1242,57 @@ public class DatabaseService {
 		return user;
 	}
 
+	/**
+	 * This method returns the list of users who are approved for a given event ID.
+	 * 
+	 * @param eId
+	 *            the event ID.
+	 * @return
+	 */
+	public List<Users> getApprovedVolunteers(int eId) {
+		LOG.debug("Fetching Approved Volunteers for Event ID: " + eId);
+		List<Users> volunteers = new ArrayList<Users>();
+		String selectQuery = "SELECT * from users where type = 'vol' and u_id in (select u_id from applicants where status='approved' and e_id=?)";
+		Connection con = null;
+		try {
+			con = db.getConnection();
+			try (PreparedStatement selectStatement = con.prepareStatement(selectQuery)) {
+				selectStatement.setInt(1, eId);
+				ResultSet rs = selectStatement.executeQuery();
+				while (rs.next()) {
+					Users user = new Users();
+					user.setuId(rs.getInt("u_id"));
+					user.setuName(rs.getString("u_name"));
+					user.setEmail(rs.getString("email"));
+					user.setMobile(rs.getString("mobile"));
+					user.setDob(rs.getString("dob"));
+					user.setPassword(rs.getString("password"));
+					user.setType(rs.getString("type"));
+					user.setDescription(rs.getString("description"));
+					user.setWebsite(rs.getString("website"));
+					volunteers.add(user);
+				}
+			} catch (Exception e) {
+				LOG.error("Error while executing query for fetching Approved Volunteers.");
+				e.printStackTrace();
+				return volunteers;
+			}
+		} catch (Exception e) {
+			LOG.error("Error while getting DB connection for fetching Approved Volunteers.");
+			e.printStackTrace();
+			return volunteers;
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					LOG.error("Error while closing the connection from get Approved Volunteers method.");
+					e.printStackTrace();
+				}
+			}
+		}
+		LOG.debug("Fetched Approved Volunteers.");
+		return volunteers;
+	}
+
 }
