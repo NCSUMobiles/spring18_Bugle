@@ -18,7 +18,7 @@ var url;
 btn.addEventListener('click', function () {
     if (message.value) {
         var dt = new Date();
-        var utcDate = dt.toUTCString();
+        var utcDate = dt.toLocaleDateString() + ' ' + dt.toLocaleTimeString();
         socket.emit('chat', {
             message: message.value,
             handle: handle.value,
@@ -29,7 +29,7 @@ btn.addEventListener('click', function () {
         });
         console.log('Sending to play server');
         url = 'https://bugle-pl-srv.herokuapp.com/msgs';
-        var parameter = output.innerHTML + '<md-card><p style="word-break: break-all !important; padding:5% !important;"><strong>' + handle.value + '</strong><br>' + message.value + '<br><font size = "-2">' + utcDate + '</font></p></md-card>';
+        var parameter = output.innerHTML + '<md-card><p style="word-break: break-all !important; padding:5% !important;"><strong><font size = "-2" color = "blue">' + handle.value + '</font></strong><br>' + message.value + '<br><font size = "-2">' + utcDate + '</font></p></md-card>';
         console.log("I am sending .. "+parameter);
         saveToPlayServer(url, parameter);
         /*send to play server :
@@ -52,7 +52,7 @@ socket.on('chat', function (data) {
     */
    
    var shouldScroll = output.scrollTop + output.clientHeight === output.scrollHeight;
-    output.innerHTML += '<md-card><p style="word-break: break-all !important; padding:5% !important;"><strong>' + data.handle + '</strong><br>' + data.message + '<br><font size = "-2">' + data.timestamp + '</font></p></md-card>';
+    output.innerHTML += '<md-card><p style="word-break: break-all !important; padding:5% !important;"><strong><font size = "-2" color = "blue">' + data.handle + '</font></strong><br>' + data.message + '<br><font size = "-2">' + data.timestamp + '</font></p></md-card>';
     if(!shouldScroll){
         scrollToBottom();
     }

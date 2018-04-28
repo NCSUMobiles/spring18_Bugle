@@ -54,7 +54,7 @@ public class DatabaseService {
 			String createApplicants = "CREATE TABLE IF NOT EXISTS applicants (a_id SERIAL PRIMARY KEY, u_id integer NOT NULL, e_id integer NOT NULL, status text)";
 			String createChats = "CREATE TABLE IF NOT EXISTS chats (c_id SERIAL PRIMARY KEY, c_name text NOT NULL, u_id integer, e_id integer, status text, m_id integer)";
 			String createMessages = "CREATE TABLE IF NOT EXISTS messages (m_id SERIAL PRIMARY KEY, e_id integer, msg text, status text, unique(e_id))";
-			String createFunction = "CREATE OR REPLACE FUNCTION update_mId() RETURNS trigger AS ' BEGIN   IF NEW.m_id IS NULL THEN    NEW.m_id := (select m_id from chats where e_id = NEW.e_id and m_id IS NOT NULL);   END IF;   RETURN NEW; END' LANGUAGE 'plpgsql'";
+			String createFunction = "CREATE OR REPLACE FUNCTION update_mId() RETURNS trigger AS ' BEGIN   IF NEW.m_id IS NULL THEN    NEW.m_id := (select m_id from chats where e_id = NEW.e_id and m_id IS NOT NULL LIMIT 1);   END IF;   RETURN NEW; END' LANGUAGE 'plpgsql'";
 			String dropTrigger = "DROP TRIGGER IF EXISTS update_chat_mId on \"chats\"";
 			String createTrigger = "CREATE TRIGGER update_chat_mId before insert on chats for each row execute procedure update_mId()";
 			try (Statement stmt = con.createStatement()) {
@@ -161,19 +161,19 @@ public class DatabaseService {
 				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Melinda May' limit 1), (select e_id from events where e_name='Event 123' limit 1), 'applied')");
 		// messages - inserting default messages
 		insertStatements.add(
-				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 1' LIMIT 1),'<p>Welcome to Event 1: Chat<p><br>','active')");
+				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 1' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 1: Chat<p><br>','active')");
 		insertStatements.add(
-				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 28' LIMIT 1),'<p>Welcome to Event 28: Chat<p><br>','active')");
+				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 28' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 28: Chat<p><br>','active')");
 		insertStatements.add(
-				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 123' LIMIT 1),'<p>Welcome to Event 123: Chat<p><br>','active')");
+				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 123' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 123: Chat<p><br>','active')");
 		insertStatements.add(
-				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 234' LIMIT 1),'<p>Welcome to Event 234: Chat<p><br>','active')");
+				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 234' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 234: Chat<p><br>','active')");
 		insertStatements.add(
-				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 23' LIMIT 1),'<p>Welcome to Event 23: Chat<p><br>','active')");
+				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 23' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 23: Chat<p><br>','active')");
 		insertStatements.add(
-				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 47' LIMIT 1),'<p>Welcome to Event 47: Chat<p><br>','active')");
+				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 47' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 47: Chat<p><br>','active')");
 		insertStatements.add(
-				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 74' LIMIT 1),'<p>Welcome to Event 74: Chat<p><br>','active')");
+				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 74' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 74: Chat<p><br>','active')");
 		// chats - organizers
 		insertStatements.add(
 				"INSERT INTO chats (c_name, u_id, e_id, status, m_id) values ((('Event 1')::text || ': Chat'), (SELECT u_id from events where e_name='Event 1' order by u_id LIMIT 1), (SELECT e_id from events where e_name='Event 1' LIMIT 1), 'active', (SELECT m_id FROM messages where e_id IN (SELECT e_id from events where e_name='Event 1' LIMIT 1)))");
@@ -1240,6 +1240,59 @@ public class DatabaseService {
 		}
 		LOG.debug("Fetched user.");
 		return user;
+	}
+
+	/**
+	 * This method returns the list of users who are approved for a given event ID.
+	 * 
+	 * @param eId
+	 *            the event ID.
+	 * @return
+	 */
+	public List<Users> getApprovedVolunteers(int eId) {
+		LOG.debug("Fetching Approved Volunteers for Event ID: " + eId);
+		List<Users> volunteers = new ArrayList<Users>();
+		String selectQuery = "SELECT * from users where type = 'vol' and u_id in (select u_id from applicants where status='approved' and e_id=?)";
+		Connection con = null;
+		try {
+			con = db.getConnection();
+			try (PreparedStatement selectStatement = con.prepareStatement(selectQuery)) {
+				selectStatement.setInt(1, eId);
+				ResultSet rs = selectStatement.executeQuery();
+				while (rs.next()) {
+					Users user = new Users();
+					user.setuId(rs.getInt("u_id"));
+					user.setuName(rs.getString("u_name"));
+					user.setEmail(rs.getString("email"));
+					user.setMobile(rs.getString("mobile"));
+					user.setDob(rs.getString("dob"));
+					user.setPassword(rs.getString("password"));
+					user.setType(rs.getString("type"));
+					user.setDescription(rs.getString("description"));
+					user.setWebsite(rs.getString("website"));
+					volunteers.add(user);
+				}
+			} catch (Exception e) {
+				LOG.error("Error while executing query for fetching Approved Volunteers.");
+				e.printStackTrace();
+				return volunteers;
+			}
+		} catch (Exception e) {
+			LOG.error("Error while getting DB connection for fetching Approved Volunteers.");
+			e.printStackTrace();
+			return volunteers;
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					LOG.error("Error while closing the connection from get Approved Volunteers method.");
+					e.printStackTrace();
+				}
+			}
+		}
+		LOG.debug("Fetched Approved Volunteers.");
+		return volunteers;
 	}
 
 }
