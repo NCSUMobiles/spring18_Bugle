@@ -25,6 +25,7 @@ app.service('UserService', function () {
     var chats = '';
     var chat = '';
     var tmpGUser = '';
+    var participants = '';
 
     return {
         getLoggedInUser: function () {
@@ -86,12 +87,18 @@ app.service('UserService', function () {
         },
         setTmpGUser: function (tgu) {
             tmpGUser = tgu;
+        },
+        getParticipants: function () {
+            return participants;
+        },
+        setParticipants: function (p) {
+            participants = p;
         }
     }
 });
 
 
-app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService', 'localStorageService', function ($scope, $http, $window, $mdToast, UserService, localStorageService) {
+app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService', 'localStorageService', '$mdDialog', function ($scope, $http, $window, $mdToast, UserService, localStorageService, $mdDialog) {
 
     var serviceURL = 'https://bugle-pl-srv.herokuapp.com';
 
@@ -136,6 +143,8 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
 
     $scope.isGoogleUser = false;
 
+    $scope.participants = [];
+
     //Loading Google API
     function onLoad() {
         gapi.load('auth2', function () {
@@ -155,6 +164,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         $scope.chats = localStorageService.get('chats');
         $scope.chat = localStorageService.get('chat');
         $scope.tempGUser = localStorageService.get('tempGUser');
+        $scope.participants = localStorageService.get('participants');
 
         //only do this for profile page.
         if ($window.location.href.includes('/profile.html')) {
@@ -1079,5 +1089,49 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             $scope.dataLoading = false;
         });
     }
+
+    $scope.loadParticipants = function (eid, ev) {
+        console.log('Showing participants for event: ' + eid);
+        var srvURL = serviceURL + '/approved-vols/' + eid;
+        $http({
+            method: 'GET',
+            url: srvURL,
+            headers: { 'Content-Type': '*/*' }
+        }).then(function (response) {
+            // console.log('API response: ' + JSON.stringify(response));
+            if (response.data.status != 'error') {
+                console.log('response status: ' + response.data.status);
+                var participants = JSON.parse(response.data.volunteers);
+                updateScopeParticipants(participants);
+                console.log('updating session participants.');
+                localStorageService.set('participants', null);
+                localStorageService.set('participants', participants);
+                $mdDialog.show({
+                    controller: 'index',
+                    templateUrl: 'participants.modal.html',
+                    parent: angular.element(document.body),
+                    targetEvent: ev,
+                    clickOutsideToClose: true
+                });
+            } else {
+                console.log('Error: ' + response.data.message);
+                showToast('Could not load participants for event.');
+            }
+        }, function (response) {
+            console.log('ERROR: ' + JSON.stringify(response));
+        });
+    }
+
+    $scope.okPModal = function() {
+        $mdDialog.cancel();
+    }
+
+    // Update Scope Participants function Start
+    var updateScopeParticipants = function (p) {
+        console.log('updating Service participants.');
+        UserService.participants = p;
+        $scope.participants = p;
+    }
+    // Update Scope Participants function end
 
 }]);
