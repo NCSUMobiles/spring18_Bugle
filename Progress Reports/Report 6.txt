@@ -1,0 +1,11 @@
+Updates for pending tasks:
+- We wrapped up the implementation of the Chat Page and persisting the Chat.
+- Completed the Approve/Reject Volunteer functionality.
+- Added form validations for create Event and edit profile pages
+- Improved the UI to use Material Design.
+- Implemented Optional Feature: Google Sign in.
+
+Things Pending
+- User Testing (we will be doing that this week, and fixing any bugs that might come up)
+- Adding Optional Feature of Google Maps Navigation.
+- Making a Final Capstone Presentation and Screencast demo.

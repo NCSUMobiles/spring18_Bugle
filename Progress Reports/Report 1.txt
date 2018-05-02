@@ -1,0 +1,4 @@
+We discussed the requirements with Ryan from Bugle and noted down the main requirements. 
+Based on that we came up with some Wireframe design to show how the app would look like.
+We plan on using ReactJS.
+We also decided the schedule for the project and the various components that we will be working on.
