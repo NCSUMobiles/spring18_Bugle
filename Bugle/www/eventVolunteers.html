@@ -62,9 +62,9 @@
                     </ul>
                     <br>
                     <div ng-if="volunteers.length == 0"> No volunteers to Approve.</div>
-                    <md-button type="submit" ng-disabled="selected.length==0" ng-if="volunteers.length > 0" ng-click="approveVol(event)" ng-show="true"
+                    <md-button type="submit" ng-disabled="selected.length==0 || dataLoading" ng-if="volunteers.length > 0" ng-click="approveVol(event)" ng-show="true"
                         class="md-raised md-primary pull-right">Approve</md-button>
-                    <md-button type="submit" ng-disabled="selected.length==0" ng-if="volunteers.length > 0" ng-click="rejectVol(event)" ng-show="true"
+                    <md-button type="submit" ng-disabled="selected.length==0 || dataLoading" ng-if="volunteers.length > 0" ng-click="rejectVol(event)" ng-show="true"
                         class="md-raised md-warn">Reject</md-button>
                 </form>
             </div>
