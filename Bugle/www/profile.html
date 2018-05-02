@@ -65,8 +65,8 @@
                             <b> Name:</b>
                         </td>
                         <td>
-                            <div ng-hide="updateField">{{user.uName}}</div>
-                            <div ng-show="updateField">{{user.uName}}</div>
+                            <div ng-hide="updateProfileField">{{user.uName}}</div>
+                            <div ng-show="updateProfileField">{{user.uName}}</div>
                         </td>
                     </tr>
                     <tr>
@@ -75,8 +75,8 @@
                             <b> Email ID:</b>
                         </td>
                         <td>
-                            <div ng-hide="updateField">{{user.email}}</div>
-                            <div ng-show="updateField">{{user.email}}</div>
+                            <div ng-hide="updateProfileField">{{user.email}}</div>
+                            <div ng-show="updateProfileField">{{user.email}}</div>
                         </td>
                     </tr>
                     <tr ng-hide="isGoogleUser">
@@ -85,8 +85,8 @@
                             <b> Password:</b>
                         </td>
                         <td>
-                            <div ng-hide="updateField">****</div>
-                            <div ng-show="updateField">
+                            <div ng-hide="updateProfileField">****</div>
+                            <div ng-show="updateProfileField">
                                 <input class="form-control form-control-sm frminput" type="password" ng-required="true" ng-model="user.password" />
                             </div>
                         </td>
@@ -97,8 +97,8 @@
                             <b> Contact:</b>
                         </td>
                         <td>
-                            <div ng-hide="updateField">{{user.mobile}}</div>
-                            <div ng-show="updateField">
+                            <div ng-hide="updateProfileField">{{user.mobile}}</div>
+                            <div ng-show="updateProfileField">
                                 <input class="form-control form-control-sm frminput" type="text" ng-model="user.mobile" />
                             </div>
                             <div ng-if="mobileError">Expected Format: 10 digits</div>
@@ -110,8 +110,8 @@
                             <b> Date of Birth:</b>
                         </td>
                         <td style="width:65%">
-                            <div ng-hide="updateField">{{user.dob}}</div>
-                            <div ng-show="updateField">
+                            <div ng-hide="updateProfileField">{{user.dob}}</div>
+                            <div ng-show="updateProfileField">
                                 <input class="form-control form-control-sm frminput" type="text" ng-required="true" ng-model="user.dob" />
                             </div>
                             <div ng-if="dobError">Expected Format: MM/DD/YYYY</div>
@@ -123,8 +123,8 @@
                             <b> Location:</b>
                         </td>
                         <td style="width:70%">
-                            <div ng-hide="updateField">{{user.location}}</div>
-                            <div ng-show="updateField">
+                            <div ng-hide="updateProfileField">{{user.location}}</div>
+                            <div ng-show="updateProfileField">
                                 <input class="form-control form-control-sm frminput" type="text" ng-model="user.location" />
                             </div>
                         </td>
@@ -135,20 +135,20 @@
                             <b> Website:</b>
                         </td>
                         <td>
-                            <div ng-hide="updateField">{{user.website}}</div>
-                            <div ng-show="updateField">
+                            <div ng-hide="updateProfileField">{{user.website}}</div>
+                            <div ng-show="updateProfileField">
                                 <input class="form-control form-control-sm" type="text" ng-model="user.website" />
                             </div>
                         </td>
                     </tr>
-                    <tr ng-if="user.type == 'org'">
+                    <tr>
                         <td>
                             <span class="glyphicon glyphicon-comment"></span>
                             <b> Bio:</b>
                         </td>
                         <td>
-                            <div ng-hide="updateField">{{user.description}}</div>
-                            <div ng-show="updateField">
+                            <div ng-hide="updateProfileField">{{user.description}}</div>
+                            <div ng-show="updateProfileField">
                                 <textarea class="form-control form-control-sm" ng-model="user.description"></textarea>
                             </div>
                         </td>
@@ -157,9 +157,9 @@
             </table>
 
             <br>
-            <md-button type="button" class="md-raised md-accent" ng-hide="updateField" ng-click="modify()">Modify</md-button>
-            <md-button type="button" class="md-raised md-primary" ng-show="updateField" ng-disabled="dataLoading" ng-click="update(user)">Update</md-button>
-            <md-button type="button" class="md-raised md-warn" ng-show="updateField" ng-disabled="dataLoading" ng-click="cancelUpdate(user)">Cancel</md-button>
+            <md-button type="button" class="md-raised md-accent" ng-hide="updateProfileField" ng-click="modifyProfile()">Modify</md-button>
+            <md-button type="button" class="md-raised md-primary" ng-show="updateProfileField" ng-disabled="dataLoading" ng-click="updateProfile(user)">Update</md-button>
+            <md-button type="button" class="md-raised md-warn" ng-show="updateProfileField" ng-disabled="dataLoading" ng-click="cancelUpdateProfile()">Cancel</md-button>
             <md-button type="button" class="md-raised md-warn pull-right" ng-if="!isGoogleUser" ng-click="logout()">Logout</md-button>
             <md-button type="button" class="md-raised md-warn pull-right" ng-if="isGoogleUser" ng-click="logoutGUser()">G-Logout</md-button>
 
