@@ -57,15 +57,27 @@
                     <input type="hidden" id='e_id' name="e_id" value='{{event.id}}' />
                     <ul>
                         <li data-ng-repeat="volunteer in volunteers">
-                            <input name='u_ids' value="{{volunteer.uId}}" ng-click="toggle(volunteer.uId, selected)" type="checkbox"> {{volunteer.uName}}
+                            <table>
+                                <tr>
+                                    <td>
+                                        <input name='u_ids' value="{{volunteer.uId}}" ng-click="toggle(volunteer.uId, selected)" type="checkbox"> {{volunteer.uName}}
+                                    </td>
+                                    <td>
+                                        <md-button class="md-icon-button pull-right" style="margin-bottom: 1px !important;" ng-click="showUsrDetails(volunteer)"
+                                            aria-label="info" ng-if="user.type == 'org'">
+                                            <i class="fas fa-info"></i>
+                                        </md-button>
+                                    </td>
+                                </tr>
+                            </table>
                         </li>
                     </ul>
                     <br>
                     <div ng-if="volunteers.length == 0"> No volunteers to Approve.</div>
-                    <md-button type="submit" ng-disabled="selected.length==0 || dataLoading" ng-if="volunteers.length > 0" ng-click="approveVol(event)" ng-show="true"
-                        class="md-raised md-primary pull-right">Approve</md-button>
-                    <md-button type="submit" ng-disabled="selected.length==0 || dataLoading" ng-if="volunteers.length > 0" ng-click="rejectVol(event)" ng-show="true"
-                        class="md-raised md-warn">Reject</md-button>
+                    <md-button type="submit" ng-disabled="selected.length==0 || dataLoading" ng-if="volunteers.length > 0" ng-click="approveVol(event)"
+                        ng-show="true" class="md-raised md-primary pull-right">Approve</md-button>
+                    <md-button type="submit" ng-disabled="selected.length==0 || dataLoading" ng-if="volunteers.length > 0" ng-click="rejectVol(event)"
+                        ng-show="true" class="md-raised md-warn">Reject</md-button>
                 </form>
             </div>
 

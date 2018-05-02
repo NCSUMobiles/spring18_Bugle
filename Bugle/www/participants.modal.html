@@ -10,11 +10,25 @@
     </md-toolbar>
 
     <md-dialog-content>
+        <md-content flex layout-padding ng-if="participants.length == 0"> No participants yet!</md-content>
         <md-list flex>
-            <md-list-item class="md-1-line" style="border: 1px solid black; margin: 1rem; border-radius: 0.6rem; background: #dddbe0;" data-ng-repeat="p in participants">
-                <div class="md-list-item-text">
-                    <h5>{{p.uName}}</h5>
-                </div>
+            <md-list-item class="md-1-line" style="border: 1px solid black; margin: 1rem; border-radius: 0.6rem; background: #dddbe0;"
+                data-ng-repeat="p in participants">
+                <table>
+                    <tr>
+                        <td>
+                            <div class="md-list-item-text">
+                                <h5>{{p.uName}}</h5>
+                            </div>
+                        </td>
+                        <td>
+                            <md-button class="md-icon-button pull-right" ng-click="showUsrDetails(p)" aria-label="info"
+                                ng-if="user.type == 'org'">
+                                <i class="fas fa-info"></i>
+                            </md-button>
+                        </td>
+                    </tr>
+                </table>
             </md-list-item>
         </md-list>
     </md-dialog-content>
