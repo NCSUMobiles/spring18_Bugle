@@ -45,7 +45,7 @@
                 <input ng-model="password" type="password" required>
             </md-input-container>
 
-            <button type="submit" class="btn-shadow" ng-disabled="dataLoading">Login</button>
+            <button type="submit" class="btn-shadow" ng-disabled="dataLoading"><b>Login</b></button>
             <md-progress-circular style="position:absolute; left:45%; top:52%;" md-mode="indeterminate" ng-show="dataLoading"></md-progress-circular>
         </div>
         <div>
@@ -54,7 +54,10 @@
             </div>
             <br>
             <br>
-            <div style="position: relative; margin-top:1%; left:36%;" class="g-signin2" data-onsuccess="onSignIn"></div>
+            <div style="margin: auto; width: 25%; padding: 0px;">
+                <div style="width:100%;" class="g-signin2" data-onsuccess="onSignIn"></div>
+            </div>
+            <!-- <div style="position: relative; margin-top:1%; left:36%;" class="g-signin2" data-onsuccess="onSignIn"></div> -->
         </div>
         <br>
 
