@@ -6,6 +6,7 @@
     <link href="img/logo_128.png" rel="icon">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google-signin-client_id" content="149731367696-4abqado01gmo3687lu4n3lsfl5dkne1m.apps.googleusercontent.com">
     <title>Bugle: Event Volunteers</title>
     <!-- Angular Material style sheet -->
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.css">
@@ -16,6 +17,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
     <script src="/node_modules/angular-local-storage/src/angular-local-storage.js"></script>
     <script src="/node_modules/read-more/js/directives/readmore.js"></script>
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
     <link rel="stylesheet" type="text/css" href="css/style.css" />
     <link rel="stylesheet" type="text/css" href="css/base.css" />
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
@@ -29,39 +31,20 @@
 
     <div class='home active'>
 
-        <!-- <div class='home__header center_text'>
-            <h3>
-                <b>Event Volunteers</b>
-            </h3>
-        </div> -->
-
         <md-toolbar>
             <div class="md-toolbar-tools">
                 <md-button class="md-icon-button" aria-label="Go Back" disabled>
                     <i class="fas fa-angle-left"></i>
                 </md-button>
-
-                <!-- <md-truncate class="center_text" style="position: absolute; left: 90px; right: 170px; top: 13px; bottom: 13px;">{{user.uName}}</md-truncate> -->
-
-                <span flex>Event Volunteer</span>
-                <!-- <md-button class="md-raised" aria-label="Learn More">
-                Learn More
-              </md-button>
-              <md-button class="md-fab md-mini" aria-label="Favorite">
-                <md-icon md-svg-icon="img/icons/favorite.svg"></md-icon>
-              </md-button> -->
+                <span flex>Event Volunteers</span>
             </div>
         </md-toolbar>
 
         <div class='home__content my_container'>
             <br>
-            <!-- Drop down to show the organization's events -->
-            <!-- <select data-ng-init="getOrganizationEvents(user.uId)" ng-model="eventSelected" ng-options="e as e.eName for e in events" ng-change="getEventVolunteers()">
-                <option value="" disabled selected>Select an Event</option>
-            </select> -->
             <md-select placeholder="Select an Event" ng-model="eventSelected" ng-init="getOrganizationEvents(user.uId)" style="min-width: 200px;"
                 ng-change="getEventVolunteers()">
-                <md-option ng-value="e" ng-repeat="e in events">{{e.eName}}</md-option>
+                <md-option ng-value="e" ng-selected="{{e === eventSelected}}" ng-repeat="e in events">{{e.eName}}</md-option>
             </md-select>
             <br>
             <br>
@@ -70,21 +53,18 @@
             <div ng-if="eventSelected">
                 <b>Volunteer Applications for {{event.eName}}: </b>
                 <br>
+                <form>
                     <input type="hidden" id='e_id' name="e_id" value='{{event.id}}' />
                     <ul>
                         <li data-ng-repeat="volunteer in volunteers">
                             <input name='u_ids' value="{{volunteer.uId}}" ng-click="toggle(volunteer.uId, selected)" type="checkbox"> {{volunteer.uName}}
                         </li>
                     </ul>
-                    <!-- <div class="demo-select-all-checkboxes" flex ng-repeat="volunteer in volunteers">
-                        <md-checkbox ng-checked="exists(volunteer, volunteers)" ng-click="toggle(volunteer, volunteers)">
-                            {{volunteer.uName}}
-                        </md-checkbox>
-                    </div> -->
                     <br>
-                    <div ng-if="volunteers.length == 0"> No volunteers yet.</div>
-                    <md-button type="submit" ng-if="volunteers.length > 0" ng-click="approveVol(event)" ng-show="true" class="md-raised md-primary pull-right">Approve</md-button>
-                    <md-button type="submit" ng-if="volunteers.length > 0" ng-click="rejectVol(event)" ng-show="true" class="md-raised md-warn">Reject</md-button>
+                    <div ng-if="volunteers.length == 0"> No more volunteers yet.</div>
+                    <md-button type="submit" ng-disabled="selected.length==0" ng-if="volunteers.length > 0" ng-click="approveVol(event)" ng-show="true" class="md-raised md-primary pull-right">Approve</md-button>
+                    <md-button type="submit" ng-disabled="selected.length==0" ng-if="volunteers.length > 0" ng-click="rejectVol(event)" ng-show="true" class="md-raised md-warn">Reject</md-button>
+				</form>
             </div>
 
         </div>
@@ -101,7 +81,7 @@
 
     </div>
 
-    <!-- End Organization Volunteers Page -->
+    <!-- End Event Volunteers Page -->
 
 </body>
 

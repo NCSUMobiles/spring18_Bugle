@@ -49,7 +49,7 @@ public class DatabaseService {
 		try {
 			con = db.getConnection();
 			// Initialize database here.
-			String createUsers = "CREATE TABLE IF NOT EXISTS users (u_id SERIAL PRIMARY KEY, u_name text NOT NULL, email text NOT NULL, mobile text, dob text, password text NOT NULL, type text NOT NULL, description text, location text, website text)";
+			String createUsers = "CREATE TABLE IF NOT EXISTS users (u_id SERIAL PRIMARY KEY, u_name text NOT NULL, email text NOT NULL, mobile text, dob text, password text NOT NULL, type text NOT NULL, description text, location text, website text, gprofid text)";
 			String createEvents = "CREATE TABLE IF NOT EXISTS events (e_id SERIAL PRIMARY KEY, e_name text NOT NULL, location text, datetime text, description text, members text, u_id integer, status text)";
 			String createApplicants = "CREATE TABLE IF NOT EXISTS applicants (a_id SERIAL PRIMARY KEY, u_id integer NOT NULL, e_id integer NOT NULL, status text)";
 			String createChats = "CREATE TABLE IF NOT EXISTS chats (c_id SERIAL PRIMARY KEY, c_name text NOT NULL, u_id integer, e_id integer, status text)";
@@ -97,34 +97,34 @@ public class DatabaseService {
 				"INSERT INTO users (u_name, email, mobile, password, type, description, location, website) values ('Organization 3','org3@org.com','1236547894','o3','org','This is the third volunteer organization. We do volunteer work for this and that. For more information visit: xyz.org3.com','Chicago','xyz.org3.com')");
 		// users-volunteers
 		insertStatements.add(
-				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('John Smith','usr1@vol.com','1232233421','21.08.93','v1','vol')");
+				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('John Smith','usr1@vol.com','1232233421','08/21/1993','v1','vol')");
 		insertStatements.add(
-				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Peter Parker','usr2@vol.com','1231231233','19.01.90','v2','vol')");
+				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Peter Parker','usr2@vol.com','1231231233','01/19/1990','v2','vol')");
 		insertStatements.add(
-				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Phil Coulson','usr3@vol.com','1233213458','18.01.95','v3','vol')");
+				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Phil Coulson','usr3@vol.com','1233213458','01/18/1995','v3','vol')");
 		insertStatements.add(
-				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Harry Potter','usr4@vol.com','123764543','24.09.85','v4','vol')");
+				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Harry Potter','usr4@vol.com','123764543','09/24/1985','v4','vol')");
 		insertStatements.add(
-				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Melinda May','usr5@vol.com','123987456','30.09.89','v5','vol')");
+				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Melinda May','usr5@vol.com','123987456','09/30/1989','v5','vol')");
 		insertStatements.add(
-				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Will Smith','usr6@vol.com','1239873458','11.11.90','v6','vol')");
+				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Will Smith','usr6@vol.com','1239873458','11/11/1990','v6','vol')");
 		insertStatements.add(
-				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Daisy Johnson','usr7@vol.com','1230978345','16.08.94','v7','vol')");
+				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Daisy Johnson','usr7@vol.com','1230978345','08/16/1994','v7','vol')");
 		// events
 		insertStatements.add(
-				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 1','Raleigh','24.5.2018 11:00AM','description of a volunteering event!! come volunteer with us','12',(select u_id from users where u_name='Organization 1' limit 1),'active')");
+				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 1','Raleigh','05/24/2018 11:00AM','description of a volunteering event!! come volunteer with us','12',(select u_id from users where u_name='Organization 1' limit 1),'active')");
 		insertStatements.add(
-				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 28','Colorado','19.7.2018 01:00PM','description of an exciting volunteering event!! come volunteer with us','22',(select u_id from users where u_name='Organization 1' limit 1),'active')");
+				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 28','Colorado','07/19/2018 01:00PM','description of an exciting volunteering event!! come volunteer with us','22',(select u_id from users where u_name='Organization 1' limit 1),'active')");
 		insertStatements.add(
-				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 123','San Jose','11.6.2018 10:00AM','description this is a volunteering event!! come volunteer with us in San Jose.','50',(select u_id from users where u_name='Organization 1' limit 1),'active')");
+				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 123','San Jose','06/11/2018 10:00AM','description this is a volunteering event!! come volunteer with us in San Jose.','50',(select u_id from users where u_name='Organization 1' limit 1),'active')");
 		insertStatements.add(
-				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 234','New York','16.5.2018 03:00PM','description welcome to the volunteering event!! come volunteer with us','10',(select u_id from users where u_name='Organization 2' limit 1),'active')");
+				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 234','New York','05/16/2018 03:00PM','description welcome to the volunteering event!! come volunteer with us','10',(select u_id from users where u_name='Organization 2' limit 1),'active')");
 		insertStatements.add(
-				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 23','Atlanta','01.7.2018 09:00AM','description volunteering event!! come volunteer with us in Atlanta','5',(select u_id from users where u_name='Organization 2' limit 1),'active')");
+				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 23','Atlanta','07/01/2018 09:00AM','description volunteering event!! come volunteer with us in Atlanta','5',(select u_id from users where u_name='Organization 2' limit 1),'active')");
 		insertStatements.add(
-				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 47','Florida','15.5.2018 11:00AM','description very interesting volunteering event!! come volunteer with us','7',(select u_id from users where u_name='Organization 3' limit 1),'active')");
+				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 47','Florida','05/15/2018 11:00AM','description very interesting volunteering event!! come volunteer with us','7',(select u_id from users where u_name='Organization 3' limit 1),'active')");
 		insertStatements.add(
-				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 74','Chicago','21.4.2018 08:00AM','description volunteering event. Big volunteering event need lots of volunteers!! come volunteer with us!','100',(select u_id from users where u_name='Organization 3' limit 1),'active')");
+				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 74','Chicago','04/21/2018 08:00AM','description volunteering event. Big volunteering event need lots of volunteers!! come volunteer with us!','100',(select u_id from users where u_name='Organization 3' limit 1),'active')");
 		// applicants
 		insertStatements.add(
 				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='John Smith' limit 1), (select e_id from events where e_name='Event 1' limit 1), 'approved')");
@@ -699,7 +699,8 @@ public class DatabaseService {
 			try (PreparedStatement pstmt = con.prepareStatement(updateStatement)) {
 				pstmt.setInt(1, uId);
 				pstmt.setInt(2, eId);
-				return pstmt.executeUpdate() > 0;
+				//status can be = 0 too as the user might not have been added in the chat initially.
+				return pstmt.executeUpdate() >= 0;
 			} catch (Exception e) {
 				LOG.error("Error while deleting from chats: " + updateStatement);
 				e.printStackTrace();
@@ -977,7 +978,7 @@ public class DatabaseService {
 				selectStatement.setInt(2, eId);
 				ResultSet rs = selectStatement.executeQuery();
 				if (rs.next()) {
-					String status =rs.getString("status");
+					String status = rs.getString("status");
 					LOG.debug("found application, status is: " + status);
 					return status;
 				} else {
@@ -1031,6 +1032,98 @@ public class DatabaseService {
 				}
 			}
 		}
+	}
+
+	/**
+	 * This method saves the Google Profile of a user to the database and uses the
+	 * google profile id as the password.
+	 * 
+	 * @param name
+	 *            the name
+	 * @param email
+	 *            the email
+	 * @param gprofid
+	 *            the google Profile ID.
+	 * @return
+	 */
+	public boolean saveGProfile(String name, String email, String gprofid, String type) {
+		LOG.debug("Inserting Google Profile");
+		String insertStatement = "INSERT INTO users (u_name, email, password, type, gprofid) VALUES(?,?,?,?,?)";
+		Connection con = null;
+		try {
+			con = db.getConnection();
+			PreparedStatement pstmt = con.prepareStatement(insertStatement);
+			pstmt.setString(1, name);
+			pstmt.setString(2, email);
+			pstmt.setString(3, gprofid);
+			pstmt.setString(4, type);
+			pstmt.setString(5, gprofid);
+			return pstmt.executeUpdate() > 0;
+		} catch (Exception e) {
+			LOG.error("Error while inserting Google Profile.");
+			e.printStackTrace();
+			return false;
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					LOG.error("Error while closing the connection from insert Google Profile method.");
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	/**
+	 * This method fetches the Google user from the database.
+	 * @param pId
+	 * @return
+	 */
+	public Users getGoogleUser(String pId) {
+		LOG.debug("getting Google User: " + pId);
+		Users user = null;
+		String selectQuery = "SELECT * from users where gprofid = ?";
+		Connection con = null;
+		try {
+			con = db.getConnection();
+			try (PreparedStatement selectStatement = con.prepareStatement(selectQuery)) {
+				selectStatement.setString(1, pId);
+				ResultSet rs = selectStatement.executeQuery();
+				while (rs.next()) {
+					user = new Users();
+					user.setuId(rs.getInt("u_id"));
+					user.setuName(rs.getString("u_name"));
+					user.setEmail(rs.getString("email"));
+					user.setMobile(rs.getString("mobile"));
+					user.setDob(rs.getString("dob"));
+					user.setPassword(rs.getString("password"));
+					user.setType(rs.getString("type"));
+					user.setDescription(rs.getString("description"));
+					user.setWebsite(rs.getString("website"));
+					user.setGprofid(rs.getString("gprofid"));
+				}
+			} catch (Exception e) {
+				LOG.error("Error while executing query for Get Google User.");
+				e.printStackTrace();
+				return user;
+			}
+		} catch (Exception e) {
+			LOG.error("Error while getting DB connection for Get Google User.");
+			e.printStackTrace();
+			return user;
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					LOG.error("Error while closing the connection from Get Google User method.");
+					e.printStackTrace();
+				}
+			}
+		}
+		LOG.debug("Fetched user.");
+		return user;
 	}
 
 }

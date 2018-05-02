@@ -24,6 +24,7 @@ app.service('UserService', function () {
     var prevPage = '';
     var chats = '';
     var chat = '';
+    var tmpGUser = '';
 
     return {
         getLoggedInUser: function () {
@@ -79,12 +80,20 @@ app.service('UserService', function () {
         },
         setChat: function (c) {
             chat = c;
+        },
+        getTmpGUser: function () {
+            return tmpGUser;
+        },
+        setTmpGUser: function (tgu) {
+            tmpGUser = tgu;
         }
     }
 });
 
 
 app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService', 'localStorageService', function ($scope, $http, $window, $mdToast, UserService, localStorageService) {
+
+    var serviceURL = 'https://bugle-pl-srv.herokuapp.com';
 
     $scope.title = 'Bugle Beta App';
 
@@ -123,6 +132,15 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
     // chat
     $scope.chat = {};
 
+    $scope.tempGUser = {};
+
+    //Loading Google API
+    function onLoad() {
+        gapi.load('auth2', function() {
+          gapi.auth2.init();
+        });
+      }
+
     $scope.fetchSession = function () {
         $scope.user = localStorageService.get('sessionUser');
         $scope.organizations = localStorageService.get('organizations');
@@ -133,9 +151,10 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         $scope.prevPage = localStorageService.get('prevPage');
         $scope.chats = localStorageService.get('chats');
         $scope.chat = localStorageService.get('chat');
+        $scope.tempGUser = localStorageService.get('tempGUser');
 
         // do this only on the event details page for volunteers.
-        if ($scope.user && $scope.user.type=='vol' && $window.location.href.includes('/eventDetails.html')) {
+        if ($scope.user && $scope.user.type == 'vol' && $window.location.href.includes('/eventDetails.html')) {
             console.log('checking for event details');
             //fetch org name and check if event is joined.
             //userID of the organizer: $scope.event.uId - fetch the name of this organizer from the API.
@@ -143,11 +162,11 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             var data = {
                 "orgID": $scope.event.uId,
                 "userID": $scope.user.uId,
-                "eventID":  $scope.event.eId
+                "eventID": $scope.event.eId
             }
 
             $http({
-                url: 'https://bugle-pl-srv.herokuapp.com/details-val',
+                url: serviceURL + '/details-val',
                 method: 'POST',
                 data: data,
                 headers: { 'Content-Type': 'application/json' }
@@ -167,22 +186,31 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             });
         }
 
+        var tempPage = $window.location.href.includes('/tempGLogin.html');
+
         var validUnauthPage = $window.location.href.includes('/login.html') || $window.location.href.includes('/organisationSignup.html') || $window.location.href.includes('/volunteerSignup.html');
 
-        if (!validUnauthPage && !$scope.user) {
+        if (!tempPage && !validUnauthPage && !$scope.user) {
             $window.location.href = '/login.html';
-        }
-
-        if (validUnauthPage && $scope.user) {
+        } else if (!tempPage && validUnauthPage && $scope.user) {
             if ($scope.user.type == 'vol') {
                 $window.location.href = '/volunteer.html';
             } else {
                 $window.location.href = '/organization.html';
             }
+        } else {
+            var orgPage =  $window.location.href.includes('/organization.html') || $window.location.href.includes('/createEvent.html') || $window.location.href.includes('/eventVolunteers.html');
+            if (orgPage && $scope.user.type == 'vol') {
+                console.log('redirecting lost volunteer to Volunteer Home page.');
+                $window.location.href = '/volunteer.html';
+            }
+    
+            var volPage = $window.location.href.includes('/volunteerEvents.html') || $window.location.href.includes('/volunteer.html') || $window.location.href.includes('/orgEvents.html');
+            if (volPage && $scope.user.type == 'org') {
+                console.log('redirecting lost organization to Organization Home page.');
+                $window.location.href = '/organization.html';
+            }
         }
-
-        //TODO: check how to implement this logic
-        $scope.isEventApplied = false;
 
     }
 
@@ -191,7 +219,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         $scope.dataLoading = true;
         console.log('login called');
 
-        var loginURL = 'https://bugle-pl-srv.herokuapp.com/login';
+        var loginURL = serviceURL + '/login';
         // var loginURL = 'localhost:9000/login';
         var loginInfo = {
             'email': $scope.email,
@@ -235,7 +263,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         $scope.dataLoading = true;
         console.log('register called for ' + type);
 
-        var signupURL = 'https://bugle-pl-srv.herokuapp.com/signup';
+        var signupURL = serviceURL + '/signup';
         var signupInfo = {
             'u_name': $scope.u_name,
             'email': $scope.email,
@@ -250,7 +278,6 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             data: signupInfo,
             headers: { 'Content-Type': 'application/json' }
         }).then(function (response) {
-            //TODO: check if status in response is 'success'
             if (response.data.status != 'error') {
                 console.log('SUCCESS: ' + JSON.stringify(response));
                 $window.location.href = '/login.html';
@@ -272,7 +299,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         console.log('fetching organizations from server');
         $http({
             method: 'GET',
-            url: 'https://bugle-pl-srv.herokuapp.com/organizations',
+            url: serviceURL + '/organizations',
             headers: { 'Content-Type': '*/*' }
         }).then(function (response) {
             if (response.data.status != 'error') {
@@ -295,7 +322,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
     // Get volunteer events function start
     $scope.getVolunteerEvents = function (uId) {
         console.log('fetching events for volunteer ID: ' + uId);
-        var srvURL = 'https://bugle-pl-srv.herokuapp.com/volunteer-events/' + uId;
+        var srvURL = serviceURL + '/volunteer-events/' + uId;
         console.log('API URL: ' + srvURL)
         $http({
             method: 'GET',
@@ -322,7 +349,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
     // Get organization events function start
     $scope.getOrganizationEvents = function (uId) {
         console.log('fetching events for organization ID: ' + uId);
-        var srvURL = 'https://bugle-pl-srv.herokuapp.com/organizations/' + uId;
+        var srvURL = serviceURL + '/organizations/' + uId;
         console.log('API URL: ' + srvURL)
         $http({
             method: 'GET',
@@ -349,8 +376,10 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         console.log('updating session event to: ' + JSON.stringify($scope.eventSelected));
         localStorageService.set('event', null);
         localStorageService.set('event', $scope.eventSelected);
-        var srvURL = 'https://bugle-pl-srv.herokuapp.com/event-volunteers/' + $scope.eventSelected.eId;
-        console.log('API URL: ' + srvURL)
+        var srvURL = serviceURL + '/event-volunteers/' + $scope.eventSelected.eId;
+        console.log('API URL: ' + srvURL);
+        //reset the selected checkboxes.
+        $scope.selected = [];
         $http({
             method: 'GET',
             url: srvURL,
@@ -371,7 +400,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
 
     // Update Scope User function Start
     var updateScopeUser = function (usr) {
-        console.log('updating Service user to: ' + usr);
+        console.log('updating Service user to: ' + JSON.stringify(usr));
         UserService.loggedInUser = usr;
         $scope.user = usr;
     }
@@ -444,6 +473,15 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         $window.location.href = '/login.html';
     }
     // logout function end
+
+    // logout google user function start
+    $scope.logoutGUser = function () {
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function () {
+            console.log('Google User signed out.');
+        });
+    }
+    // logout google user function start
 
     // view event details function end
     $scope.viewEventDetails = function (event) {
@@ -520,12 +558,12 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
 
         $http({
             method: 'POST',
-            url: 'https://bugle-pl-srv.herokuapp.com/apply-event',
+            url: serviceURL + '/apply-event',
             data: eventApplication,
             headers: { 'Content-Type': 'application/json' }
         }).then(function (response) {
             console.log('response: ' + JSON.stringify(response));
-            if (response.status != 'error') {
+            if (response.data.status != 'error') {
                 var message = JSON.stringify(response.data.message);
                 console.log('SUCCESS: ' + JSON.stringify(message));
                 showToast('Applied to Event!');
@@ -618,8 +656,8 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
     };
     // function for a org to reject volunteer end.
 
-     // function for a volunteer to leave an event start.
-     $scope.leaveEvent = function (event) {
+    // function for a volunteer to leave an event start.
+    $scope.leaveEvent = function (event) {
         console.log('applying For event: ' + JSON.stringify(event) + ', by volunteer: ' + JSON.stringify($scope.user));
 
         var Leavingevent = {
@@ -631,12 +669,12 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
 
         $http({
             method: 'POST',
-            url: 'https://bugle-pl-srv.herokuapp.com/leave-event',
+            url: serviceURL + '/leave-event',
             data: Leavingevent,
             headers: { 'Content-Type': 'application/json' }
         }).then(function (response) {
             console.log('response: ' + JSON.stringify(response));
-            if (response.status != 'error') {
+            if (response.data.status != 'error') {
                 var message = JSON.stringify(response.data.message);
                 console.log('SUCCESS: ' + JSON.stringify(message));
                 showToast('Left Event!');
@@ -649,8 +687,25 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             console.log('ERROR: ' + JSON.stringify(response));
         });
     };
-    // function for a volunteer to leaven an event end.
+    // function for a volunteer to leave an event end.
     
+    $scope.selected = [];
+    // toggle selected checkbox start
+    $scope.toggle = function (uId, selected) {
+        if (selected.includes(uId)) {
+            for (var i = 0; i < selected.length; i++) {
+                if (selected[i] == uId) {
+                    selected.splice(i, 1);
+                    break;
+                }
+            }
+        } else {
+            selected.push(uId);
+        }
+    }
+    // toggle selected checkbox end
+
+
     // function for a org to approve volunteer start.
     
     $scope.approveVol = function (event) {
@@ -666,15 +721,16 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
 
         $http({
             method: 'POST',
-            url: 'https://bugle-pl-srv.herokuapp.com/approve-volunteers',
+            url: serviceURL + '/approve-volunteers',
             data: eventApplication,
             headers: { 'Content-Type': 'application/json' }
         }).then(function (response) {
             console.log('response: ' + JSON.stringify(response));
-            if (response.status != 'error') {
+            if (response.data.status != 'error') {
                 var message = JSON.stringify(response.data.message);
                 console.log('SUCCESS: ' + JSON.stringify(message));
-                showToast('approved for Event!');
+                $scope.getEventVolunteers();
+                showToast('Volunteer(s) approved for Event!');
             } else {
                 console.log('ERROR: ' + JSON.stringify(response.data.message));
                 showToast('Sorry, approval failed!');
@@ -700,15 +756,16 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
 
         $http({
             method: 'POST',
-            url: 'https://bugle-pl-srv.herokuapp.com/reject-volunteers',
+            url: serviceURL + '/reject-volunteers',
             data: eventApplication,
             headers: { 'Content-Type': 'application/json' }
         }).then(function (response) {
             console.log('response: ' + JSON.stringify(response));
-            if (response.status != 'error') {
+            if (response.data.status != "error") {
                 var message = JSON.stringify(response.data.message);
                 console.log('SUCCESS: ' + JSON.stringify(message));
-                showToast('Rejection successful');
+                showToast('Volunteer(s) succesfully rejected for event.');
+                $scope.getEventVolunteers();
             } else {
                 console.log('ERROR: ' + JSON.stringify(response.data.message));
                 showToast('Sorry, rejection failed!');
@@ -754,8 +811,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
 
         $scope.dataLoading = true;
         console.log('update user called for user ' + user.uName);
-
-        var updateUserURL = 'https://bugle-pl-srv.herokuapp.com/edit-user'; //edit-user
+        var updateUserURL = serviceURL + '/edit-user';
         var updateUserInfo = {
             'USERS_UID': $scope.user.uId,
             'USERS_UNAME': $scope.user.uName,
@@ -769,36 +825,45 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             'USERS_LOCATION': $scope.user.location
         };
 
-        
         $http({
             url: updateUserURL,
             method: 'POST',
             data: updateUserInfo,
             headers: { 'Content-Type': 'application/json' }
         }).then(function (response) {
-            console.log('SUCCESS: ' + JSON.stringify(response));
-            //var user = response.config.data;
-            var user = JSON.parse(response.data.user);
-            //var user = response.data.user;
-            if ( !testingDateStr(user.dob) ) {
-            	$scope.dobError = true;
+            console.log('RESPONSE: ' + JSON.stringify(response));
+            if (response.data.status != 'error') {
+                var user = JSON.parse(response.data.user);
+                if ( !testingDateStr(user.dob) ) {
+                    $scope.dobError = true;
+                }
+                if ( !testingPhoneStr(user.mobile) ) {
+                    $scope.mobileError = true;
+                }
+                if ( testingDateStr(user.dob) & testingPhoneStr(user.mobile) ) {
+                    updateScopeUser(user);
+                    console.log('updated records for user: ' + user);
+                    localStorageService.set('sessionUser', null);
+                    localStorageService.set('sessionUser', user);
+                    $scope.updateField = false;
+                    $window.location.href = '/profile.html';
+                    $scope.dobError = false;
+                    $scope.mobileError = false;
+                } else {
+                if ($scope.dobError) {
+                    showToast('Error: Please Check Date of Birth.');
+                }
+                if ($scope.mobileError) {
+                    showToast('Error: Please Check Mobile number.');
+                }
+                }
+            } else {
+                console.log('ERROR: ' + JSON.stringify(response.data.message));
+                showToast('Something went wrong while updating Profile. Please try again later.');
             }
-            if ( !testingPhoneStr(user.mobile) ) {
-            	$scope.mobileError = true;
-            }
-            if ( testingDateStr(user.dob) & testingPhoneStr(user.mobile) ) {
-	            updateScopeUser(user);
-	            console.log('updated records for user: ' + user);
-	            localStorageService.set('sessionUser', null);
-	            localStorageService.set('sessionUser', user);
-	            $scope.updateField = false;
-	            $window.location.href = '/profile.html';
-	            $scope.dobError = false;
-	            $scope.mobileError = false;
-            }
-
         }, function (response) {
             console.log('ERROR: ' + JSON.stringify(response));
+            showToast('Something went wrong while updating Profile. Please try again later.');
         }).finally(function () {
             $scope.dataLoading = false;
         });
@@ -830,7 +895,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         };
 
         $http({
-            url: 'https://bugle-pl-srv.herokuapp.com/event',
+            url: serviceURL + '/event',
             method: 'POST',
             data: eventInfo,
             headers: { 'Content-Type': 'application/json' }
@@ -845,6 +910,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             }
         }, function failLogin(response) {
             console.log('ERROR: ' + JSON.stringify(response));
+            showToast('Something went wrong while creating Event. Please try again later.');
         }).finally(function () {
             $scope.dataLoading = false;
         });
@@ -852,7 +918,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
 
     $scope.getChats = function () {
         console.log('getting chats for user: ' + $scope.user.uId);
-        var srvURL = 'https://bugle-pl-srv.herokuapp.com/chats/' + $scope.user.uId;
+        var srvURL = serviceURL + '/chats/' + $scope.user.uId;
         console.log('API URL: ' + srvURL)
         $http({
             method: 'GET',
@@ -896,7 +962,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         $window.location.href = '/chat.html';
     };
 
-    $scope.showDetails = function(org) {
+    $scope.showDetails = function (org) {
         console.log('updating session organization to: ' + JSON.stringify(org));
         localStorageService.set('organization', null);
         localStorageService.set('organization', org);
@@ -904,8 +970,134 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         $window.location.href = '/organizationDetails.html';
     };
 
-    $scope.navigate = function(event) {
+    //For Google Maps Navigation
+    $scope.navigate = function (event) {
         console.log('navigating...');
+    }
+
+    //For Google Sign In
+    function onSignIn(googleUser) {
+        console.log('sign in called');
+        var profile = googleUser.getBasicProfile();
+        console.log('ID: ' + profile.getId());
+        console.log('Name: ' + profile.getName());
+        console.log('Image URL: ' + profile.getImageUrl());
+        console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+        
+        var gUser = {
+            "gId": profile.getId(),
+            "uName": profile.getName(),
+            "email": profile.getEmail(),
+            "type": $scope.gUserType
+        };
+
+        var userEmail = profile.getEmail();
+        console.log('The user email is: ' + userEmail);
+        if (userEmail == null) {
+            console.log('Google Profile does not have an Email!');
+            showToast('Google Profile does not have Email! Sign in using Email');
+            $window.location.href = '/login.html';
+        } else {
+            //fetch user from our database using goolge profile ID, if present.
+            $http({
+                url: serviceURL + '/get-gprof/' + profile.getId(),
+                method: 'GET',
+                headers: { 'Content-Type': '*/*' }
+            }).then(function successLogin(response) {
+                if (response.data.status != 'error') {
+                    console.log('SUCCESS response: ' + JSON.stringify(response));
+                    var dbuser = JSON.parse(response.data.user);
+                    if (dbuser != "null") {
+                        console.log('this google user exists in our database: ' + JSON.stringify(response.data.user));
+                        //set user using fetched user and redirect accordingly.
+                        updateScopeUser(dbuser);
+                        console.log('updating session user to: ' + JSON.stringify(dbuser));
+                        localStorageService.set('sessionUser', null);
+                        localStorageService.set('sessionUser', dbuser);
+                        console.log('The dbuser type is: ' + dbuser.type);
+                        if (dbuser.type == 'vol') {
+                            $window.location.href = '/volunteer.html';
+                        } else if (dbuser.type == 'org') {
+                            $window.location.href = '/organization.html';
+                        }
+                    } else {
+                        console.log('This google user is here for the first time. Save them to our database.');
+                        //show choose type page first and then save the user from there.
+                        updateScopeTempUser(gUser);
+                        console.log('updating local temp user to (google): ' + JSON.stringify(gUser));
+                        localStorageService.set('tempGUser', null);
+                        localStorageService.set('tempGUser', gUser);
+                        $window.location.href = '/tempGLogin.html';
+                    }
+                } else {
+                    console.log('Could not read the details for this Google user from our database.');
+                    showToast('Google Login failed. Signup using Email!');
+                    $window.location.href = '/login.html';
+                }
+            }, function failLogin(response) {
+                console.log('Could not read the details for this Google user from our database.');
+                    showToast('Google Login failed. Signup using Email!');
+                    $window.location.href = '/login.html';
+            });
+        }
+
+        $scope.$digest();        
+    }
+    window.onSignIn = onSignIn;
+
+    // Update Scope Temp User function Start
+    var updateScopeTempUser = function (usr) {
+        console.log('updating Temp Google user to: ' + JSON.stringify(usr));
+        UserService.loggedInUser = usr;
+        $scope.tempGUser = usr;
+    }
+    // Update Scope Temp User function end
+
+    $scope.setGUserType = function (type) {
+        $scope.dataLoading = true;
+        var usr = $scope.tempGUser;
+        console.log('TempGUser is: ' + JSON.stringify(usr));
+        usr.type = type;
+
+        console.log('Google User has set the type. User Object is: ' + JSON.stringify(usr));
+        //saving this user to our database.
+        var saveGUser = serviceURL + '/save-gprof';
+        var gUserInfo = {
+            'u_name': usr.uName,
+            'email': usr.email,
+            'gId': usr.gId,
+            'type': type
+        };
+
+        $http({
+            url: saveGUser,
+            method: 'POST',
+            data: gUserInfo,
+            headers: { 'Content-Type': 'application/json' }
+        }).then(function (response) {
+            if (response.data.status != 'error') {
+                console.log('SUCCESS response: ' + JSON.stringify(response));
+                var user = JSON.parse(response.data.user);
+                user.password = usr.gId;
+                user.gId = usr.gId;
+                updateScopeUser(user);
+                localStorageService.set('sessionUser', null);
+                localStorageService.set('sessionUser', user);
+                if (user.type === 'vol') {
+                    $window.location.href = '/volunteer.html';
+                } else {
+                    $window.location.href = '/organization.html';
+                }
+            } else {
+                console.log(response.data.message);
+                showToast('Sorry Could not sign in! Try again later.');
+            }
+        }, function (response) {
+            console.log('ERROR: ' + JSON.stringify(response));
+            showToast('Sorry Could not sign in! Try again later.');
+        }).finally(function () {
+            $scope.dataLoading = false;
+        });
     }
 
 }]);

@@ -16,6 +16,7 @@ public class Users {
 	private String description;
 	private String location;
 	private String website;
+	private String gprofid;
 
 	public Users() {
 	}
@@ -182,6 +183,20 @@ public class Users {
 		this.website = website;
 	}
 
+	/**
+	 * @return the gprofid
+	 */
+	public String getGprofid() {
+		return gprofid;
+	}
+
+	/**
+	 * @param gprofid the gprofid to set
+	 */
+	public void setGprofid(String gprofid) {
+		this.gprofid = gprofid;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -189,7 +204,7 @@ public class Users {
 	public String toString() {
 		return "Users [uId=" + uId + ", uName=" + uName + ", email=" + email + ", mobile=" + mobile + ", dob=" + dob
 				+ ", password=" + password + ", type=" + type + ", description=" + description + ", location="
-				+ location + ", website=" + website + "]";
+				+ location + ", website=" + website + ", gprofid=" + gprofid + "]";
 	}
 
 }

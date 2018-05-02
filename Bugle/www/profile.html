@@ -6,6 +6,7 @@
     <link href="img/logo_128.png" rel="icon">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google-signin-client_id" content="<YourClientID>.apps.googleusercontent.com">
     <title>Bugle: User Profile</title>
     <!-- Angular Material style sheet -->
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.css">
@@ -16,6 +17,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
     <script src="/node_modules/angular-local-storage/src/angular-local-storage.js"></script>
     <script src="/node_modules/read-more/js/directives/readmore.js"></script>
+    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="css/style.css" />
@@ -115,7 +117,7 @@
                         <td>
                             <div ng-hide="updateField">{{user.mobile}}</div>
                             <div ng-show="updateField">
-                                <input class="form-control form-control-sm frminput" type="text" ng-model="user.mobile"
+                                <input class="form-control form-control-sm frminput" type="text" ng-minlength="10" ng-maxlength="10" ng-model="user.mobile"
                                 />
                             </div>
                             <div ng-if="mobileError">Expected Format: 10 digits</div>
@@ -178,7 +180,9 @@
             <md-button type="button" class="md-raised md-accent" ng-hide="updateField" ng-click="modify()">Modify</md-button>
             <md-button type="button" class="md-raised md-primary" ng-show="updateField" ng-disabled="dataLoading" ng-click="update(user)">Update</md-button>
             <md-button type="button" class="md-raised md-warn" ng-show="updateField" ng-disabled="dataLoading" ng-click="cancelUpdate(user)">Cancel</md-button>
-            <md-button type="button" class="md-raised md-warn pull-right" ng-click="logout()">Logout</md-button>
+            <md-button type="button" class="md-raised md-warn pull-right" ng-if="user.gId == null" ng-click="logout()">Logout</md-button>
+            <md-button type="button" class="md-raised md-warn pull-right" ng-if="user.gId != null" ng-click="logoutGUser()">G-Logout</md-button>
+            
         </div>
 
         <div class='home__footer'>

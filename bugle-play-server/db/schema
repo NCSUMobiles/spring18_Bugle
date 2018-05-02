@@ -8,7 +8,8 @@ CREATE TABLE IF NOT EXISTS users (
 	type text NOT NULL,
 	description text,
 	location text,
-	website text
+	website text,
+	gprofid text
 );
 
 CREATE TABLE IF NOT EXISTS events (
