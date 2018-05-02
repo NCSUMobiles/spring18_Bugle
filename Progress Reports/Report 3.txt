@@ -1,0 +1,26 @@
+We created the remaining back end APIs and also started integrating the APIs with the front end. In addition to the ones we already had last week, we also have the following APIs ready now:
+
+/volunteer-events/:vId        - to get list of event applied by volunteer
+/event-volunteers/:eId        - to get list of volunteers in an event.
+/apply-event                         - to apply for an event
+/approve-volunteers           - to approve a list of volunteers
+/reject-volunteers               - to approve a list of volunteers
+/event                                   - for creating a new event.
+
+We also have following debug APIs to help mock the data for development:
+/mock-db                            - for creating a mock database.
+/reset-db                             - for resetting the mock database.
+
+Next, for the back end we are working on creating the APIs for chat functionality.
+
+For the front end, we are ready with following pages:
+- login.html (login page)
+- volunteerSignup.html (Sign Up page for volunteers)
+- organizationSignup.html (Sign Up page for organizations)
+
+We are now working on the following pages:
+- volunteer.html (Volunteer Home Page)
+- organization.html (OrganizationHome Page)
+- eventDetails.html (event details page)
+- chat.html (chat page)
+- approveVolunteer.html (approve volunteer page)
