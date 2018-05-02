@@ -1,0 +1,14 @@
+Things we worked on:
+- We created APIs for edit user and edit event. 
+- We changed the UI look and are planning to use Material design to give the website a more professional look.
+- Completed the profile page.
+- Completed the Event Details page UI (few API calls are left)
+
+Things pending:
+- We are working on persisting the Chat and forming Chat groups for each event.
+- We are working on the Approving/Rejecting volunteers.
+- Working on Form Validations for create event and edit profile pages.
+- Using maps for navigation in the event details page and while creating an event.
+- improving the UI.
+
+We plan to wrap up these tasks by the end of next week leaving us with a week for the optional features and testing.
