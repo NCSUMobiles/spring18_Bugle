@@ -1,0 +1,27 @@
+<md-dialog ng-controller="index" ng-init="fetchSession()" aria-label="Participants">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h4>{{chat.cName.slice(0, -6)}}: Volunteers</h4>
+            <span flex></span>
+            <md-button aria-label="dismiss" class="md-icon-button" ng-click="okPModal()">
+                <i class="fas fa-times"></i>
+            </md-button>
+        </div>
+    </md-toolbar>
+
+    <md-dialog-content>
+        <md-list flex>
+            <md-list-item class="md-1-line" style="border: 1px solid black; margin: 1rem; border-radius: 0.6rem; background: #dddbe0;" data-ng-repeat="p in participants">
+                <div class="md-list-item-text">
+                    <h5>{{p.uName}}</h5>
+                </div>
+            </md-list-item>
+        </md-list>
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row">
+        <md-button aria-label="dismiss" class="md-raised md-accent center-block" ng-click="okPModal()">
+            Ok
+        </md-button>
+    </md-dialog-actions>
+</md-dialog>

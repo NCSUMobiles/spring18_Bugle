@@ -1,0 +1,11 @@
+We created the database design and implemented following backend APIs using Play framework :
+
+/login                         - for login
+/signup                      - for signup
+/organizations          - for getting a list of organizations
+/organizations/:id    - for getting a list of events for organization with given id
+
+For the front end, we are developing the pages using AngularJS and calling the API.
+We also looked into using Firebase for authentication.
+We will be looking into creating the remaining APIs and integrating it with the front end. 
+We also looked into using Socket.io for implementing the chat.

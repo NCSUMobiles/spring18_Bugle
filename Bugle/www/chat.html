@@ -40,6 +40,9 @@
                     <i class="fas fa-angle-left"></i>
                 </md-button>
                 <span flex>{{chat.cName}}</span>
+                <md-button class="md-raised pull-right" ng-click="loadParticipants(chat.eId, $event)" aria-label="Show Participants">
+                    Participants
+                </md-button>
             </div>
         </md-toolbar>
 
@@ -50,8 +53,13 @@
                 </div>
                 <form>
                     <input id="handle" ng-show="false" type="text" ng-value="user.uName" />
-                    <input id="message" type="text" placeholder="Message" />
-                    <button type="submit" class="send_button" id="send">Send</button>
+                    <input id="chatID" ng-show="false" type="text" ng-value="chat.cId" />
+                    <input id="eventID" ng-show="false" type="text" ng-value="chat.eId" />
+                    <input id="mID" ng-show="false" type="text" ng-value="chat.mId" />
+                    <button type="submit" class="send_button pull-right" id="send">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                    <input id="message" type="text" placeholder="Message" style="border: solid 1px lightgray; width: 85%;" />
                 </form>
             </div>
         </div>

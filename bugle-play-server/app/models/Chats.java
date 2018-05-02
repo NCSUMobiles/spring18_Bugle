@@ -10,6 +10,7 @@ public class Chats {
 	private int uId;
 	private int eId;
 	private String status;
+	private int mId;
 
 	public Chats() {
 	}
@@ -96,14 +97,27 @@ public class Chats {
 		this.status = status;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/**
+	 * @return the mId
+	 */
+	public int getmId() {
+		return mId;
+	}
+
+	/**
+	 * @param mId the mId to set
+	 */
+	public void setmId(int mId) {
+		this.mId = mId;
+	}
+
+	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "Chats [cId=" + cId + ", cName=" + cName + ", uId=" + uId + ", status=" + status + "]";
+		return "Chats [cId=" + cId + ", cName=" + cName + ", uId=" + uId + ", eId=" + eId + ", status=" + status
+				+ ", mId=" + mId + "]";
 	}
 
 }

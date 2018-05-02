@@ -512,22 +512,22 @@ public class HomeController extends Controller {
 		if (json == null) {
 			return badRequest("Expecting Json data for saving Message.").withHeader(Strings.CORS, Strings.STAR);
 		} else {
-			int cId = json.findPath("cId").intValue();
-			int eId = json.findPath("eId").intValue();
+			int cId = Integer.valueOf(json.findPath("cId").textValue());
+			int eId = Integer.valueOf(json.findPath("eId").textValue());
 			String msg = json.findPath("message").textValue();
 
 			Messages message = new Messages();
-			message.setcId(cId);
 			message.seteId(eId);
 			message.setMsg(msg);
 			message.setStatus(Strings.STATUS_ACTIVE);
 
-			LOG.debug("Saving message for Chat: " + cId);
+			LOG.debug("Saving message for Chat: " + cId + ", and Event: " + eId);
 
 			if (databaseService.saveMessage(message)) {
 				LOG.debug("Saved message for Chat: " + cId);
-				// TODO: this message will not have message ID. If that is needed then we need
-				// to do another DB call to read the message ID for this chatID and eventID.
+				// doing another DB call to read the message ID for this chatID and eventID.
+				message = databaseService.readDBMessage(eId);
+				// this newly fetched message would have message ID as well.
 				return ok(createSuccessResponse(Strings.MESSAGE, new Gson().toJson(message))).withHeader(Strings.CORS,
 						Strings.STAR);
 			} else {
@@ -609,28 +609,29 @@ public class HomeController extends Controller {
 			}
 		}
 	}
-	
+
 	/**
 	 * Method to save the Google Profile of a User.
+	 * 
 	 * @return
 	 */
 	public Result saveGoogleProfile() {
 		LOG.debug("saveGoogleProfile method called.");
 		JsonNode json = request().body().asJson();
 		if (json == null) {
-			return badRequest("Expecting Json data for saving User's Google Profile.").withHeader(Strings.CORS, Strings.STAR);
+			return badRequest("Expecting Json data for saving User's Google Profile.").withHeader(Strings.CORS,
+					Strings.STAR);
 		} else {
-			//"uId":"106569823817207733422","uName":"Sumit Srivastava","email":"cool.dude.sumit.srivastava@gmail.com"
 			String name = json.findPath("u_name").textValue();
 			String email = json.findPath("email").textValue();
 			if (email != null) {
 				email = email.toLowerCase();
 			}
-			String gprofid = json.findPath("gId").textValue();
+			String gprofid = json.findPath("gprofid").textValue();
 			String type = json.findPath("type").textValue();
 
 			// save to DB and return response.
-			if (databaseService.saveGProfile(name, email,gprofid, type)) {
+			if (databaseService.saveGProfile(name, email, gprofid, type)) {
 				Users user = databaseService.validateLogin(email, gprofid);
 				return ok(createSuccessResponse(Strings.USER, new Gson().toJson(user))).withHeader(Strings.CORS,
 						Strings.STAR);
@@ -639,11 +640,32 @@ public class HomeController extends Controller {
 			}
 		}
 	}
-	
+
+	/**
+	 * Gets the Google profile of a saved Google user from database (if saved) or
+	 * null if the Google Profile is not save in our database.
+	 * 
+	 * @param pId
+	 *            the profileID of the Google user.
+	 * @return
+	 */
 	public Result getGoogleProfile(String pId) {
-		LOG.debug("getUser method called.");
+		LOG.debug("getGoogleProfile method called.");
 		Users user = databaseService.getGoogleUser(pId);
 		return ok(createSuccessResponse("user", new Gson().toJson(user))).withHeader(Strings.CORS, Strings.STAR);
+	}
+
+	/**
+	 * Gets a list of the approved volunteers for an event.
+	 * 
+	 * @param eId
+	 *            the event ID.
+	 * @return
+	 */
+	public Result getApprovedVolunteers(String eId) {
+		LOG.debug("getApprovedVolunteers method called.");
+		List<Users> users = databaseService.getApprovedVolunteers(Integer.valueOf(eId));
+		return ok(createSuccessResponse("volunteers", new Gson().toJson(users))).withHeader(Strings.CORS, Strings.STAR);
 	}
 
 	/**

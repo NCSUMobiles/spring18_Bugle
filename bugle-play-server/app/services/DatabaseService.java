@@ -52,8 +52,11 @@ public class DatabaseService {
 			String createUsers = "CREATE TABLE IF NOT EXISTS users (u_id SERIAL PRIMARY KEY, u_name text NOT NULL, email text NOT NULL, mobile text, dob text, password text NOT NULL, type text NOT NULL, description text, location text, website text, gprofid text)";
 			String createEvents = "CREATE TABLE IF NOT EXISTS events (e_id SERIAL PRIMARY KEY, e_name text NOT NULL, location text, datetime text, description text, members text, u_id integer, status text)";
 			String createApplicants = "CREATE TABLE IF NOT EXISTS applicants (a_id SERIAL PRIMARY KEY, u_id integer NOT NULL, e_id integer NOT NULL, status text)";
-			String createChats = "CREATE TABLE IF NOT EXISTS chats (c_id SERIAL PRIMARY KEY, c_name text NOT NULL, u_id integer, e_id integer, status text)";
-			String createMessages = "CREATE TABLE IF NOT EXISTS messages (m_id SERIAL PRIMARY KEY, c_id integer, e_id integer, msg text, status text)";
+			String createChats = "CREATE TABLE IF NOT EXISTS chats (c_id SERIAL PRIMARY KEY, c_name text NOT NULL, u_id integer, e_id integer, status text, m_id integer)";
+			String createMessages = "CREATE TABLE IF NOT EXISTS messages (m_id SERIAL PRIMARY KEY, e_id integer, msg text, status text, unique(e_id))";
+			String createFunction = "CREATE OR REPLACE FUNCTION update_mId() RETURNS trigger AS ' BEGIN   IF NEW.m_id IS NULL THEN    NEW.m_id := (select m_id from chats where e_id = NEW.e_id and m_id IS NOT NULL LIMIT 1);   END IF;   RETURN NEW; END' LANGUAGE 'plpgsql'";
+			String dropTrigger = "DROP TRIGGER IF EXISTS update_chat_mId on \"chats\"";
+			String createTrigger = "CREATE TRIGGER update_chat_mId before insert on chats for each row execute procedure update_mId()";
 			try (Statement stmt = con.createStatement()) {
 				LOG.debug("Creating users table...");
 				stmt.execute(createUsers);
@@ -65,6 +68,12 @@ public class DatabaseService {
 				stmt.execute(createChats);
 				LOG.debug("Creating messages table...");
 				stmt.execute(createMessages);
+				LOG.debug("Creating trigger function...");
+				stmt.execute(createFunction);
+				LOG.debug("Dropping chats trigger(if exists)...");
+				stmt.execute(dropTrigger);
+				LOG.debug("Creating chats trigger...");
+				stmt.execute(createTrigger);
 			} catch (Exception e) {
 				e.printStackTrace();
 				LOG.error("Error while executing query for initializing database.");
@@ -150,21 +159,36 @@ public class DatabaseService {
 				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Harry Potter' limit 1), (select e_id from events where e_name='Event 74' limit 1), 'applied')");
 		insertStatements.add(
 				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Melinda May' limit 1), (select e_id from events where e_name='Event 123' limit 1), 'applied')");
+		// messages - inserting default messages
+		insertStatements.add(
+				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 1' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 1: Chat<p><br>','active')");
+		insertStatements.add(
+				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 28' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 28: Chat<p><br>','active')");
+		insertStatements.add(
+				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 123' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 123: Chat<p><br>','active')");
+		insertStatements.add(
+				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 234' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 234: Chat<p><br>','active')");
+		insertStatements.add(
+				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 23' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 23: Chat<p><br>','active')");
+		insertStatements.add(
+				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 47' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 47: Chat<p><br>','active')");
+		insertStatements.add(
+				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 74' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 74: Chat<p><br>','active')");
 		// chats - organizers
 		insertStatements.add(
-				"INSERT INTO chats (c_name, u_id, e_id, status) values ((('Event 1')::text || ': Chat'), (SELECT u_id from events where e_name='Event 1' order by u_id LIMIT 1), (SELECT e_id from events where e_name='Event 1' LIMIT 1), 'active')");
+				"INSERT INTO chats (c_name, u_id, e_id, status, m_id) values ((('Event 1')::text || ': Chat'), (SELECT u_id from events where e_name='Event 1' order by u_id LIMIT 1), (SELECT e_id from events where e_name='Event 1' LIMIT 1), 'active', (SELECT m_id FROM messages where e_id IN (SELECT e_id from events where e_name='Event 1' LIMIT 1)))");
 		insertStatements.add(
-				"INSERT INTO chats (c_name, u_id, e_id, status) values ((('Event 28')::text || ': Chat'), (SELECT u_id from events where e_name='Event 28' order by u_id LIMIT 1), (SELECT e_id from events where e_name='Event 28' LIMIT 1), 'active')");
+				"INSERT INTO chats (c_name, u_id, e_id, status, m_id) values ((('Event 28')::text || ': Chat'), (SELECT u_id from events where e_name='Event 28' order by u_id LIMIT 1), (SELECT e_id from events where e_name='Event 28' LIMIT 1), 'active', (SELECT m_id FROM messages where e_id IN (SELECT e_id from events where e_name='Event 28' LIMIT 1)))");
 		insertStatements.add(
-				"INSERT INTO chats (c_name, u_id, e_id, status) values ((('Event 123')::text || ': Chat'), (SELECT u_id from events where e_name='Event 123' order by u_id LIMIT 1), (SELECT e_id from events where e_name='Event 123' LIMIT 1), 'active')");
+				"INSERT INTO chats (c_name, u_id, e_id, status, m_id) values ((('Event 123')::text || ': Chat'), (SELECT u_id from events where e_name='Event 123' order by u_id LIMIT 1), (SELECT e_id from events where e_name='Event 123' LIMIT 1), 'active', (SELECT m_id FROM messages where e_id IN (SELECT e_id from events where e_name='Event 123' LIMIT 1)))");
 		insertStatements.add(
-				"INSERT INTO chats (c_name, u_id, e_id, status) values ((('Event 234')::text || ': Chat'), (SELECT u_id from events where e_name='Event 234' order by u_id LIMIT 1), (SELECT e_id from events where e_name='Event 234' LIMIT 1), 'active')");
+				"INSERT INTO chats (c_name, u_id, e_id, status, m_id) values ((('Event 234')::text || ': Chat'), (SELECT u_id from events where e_name='Event 234' order by u_id LIMIT 1), (SELECT e_id from events where e_name='Event 234' LIMIT 1), 'active', (SELECT m_id FROM messages where e_id IN (SELECT e_id from events where e_name='Event 234' LIMIT 1)))");
 		insertStatements.add(
-				"INSERT INTO chats (c_name, u_id, e_id, status) values ((('Event 23')::text || ': Chat'), (SELECT u_id from events where e_name='Event 23' order by u_id LIMIT 1), (SELECT e_id from events where e_name='Event 23' LIMIT 1), 'active')");
+				"INSERT INTO chats (c_name, u_id, e_id, status, m_id) values ((('Event 23')::text || ': Chat'), (SELECT u_id from events where e_name='Event 23' order by u_id LIMIT 1), (SELECT e_id from events where e_name='Event 23' LIMIT 1), 'active', (SELECT m_id FROM messages where e_id IN (SELECT e_id from events where e_name='Event 23' LIMIT 1)))");
 		insertStatements.add(
-				"INSERT INTO chats (c_name, u_id, e_id, status) values ((('Event 47')::text || ': Chat'), (SELECT u_id from events where e_name='Event 47' order by u_id LIMIT 1), (SELECT e_id from events where e_name='Event 47' LIMIT 1), 'active')");
+				"INSERT INTO chats (c_name, u_id, e_id, status, m_id) values ((('Event 47')::text || ': Chat'), (SELECT u_id from events where e_name='Event 47' order by u_id LIMIT 1), (SELECT e_id from events where e_name='Event 47' LIMIT 1), 'active', (SELECT m_id FROM messages where e_id IN (SELECT e_id from events where e_name='Event 47' LIMIT 1)))");
 		insertStatements.add(
-				"INSERT INTO chats (c_name, u_id, e_id, status) values ((('Event 74')::text || ': Chat'), (SELECT u_id from events where e_name='Event 74' order by u_id LIMIT 1), (SELECT e_id from events where e_name='Event 74' LIMIT 1), 'active')");
+				"INSERT INTO chats (c_name, u_id, e_id, status, m_id) values ((('Event 74')::text || ': Chat'), (SELECT u_id from events where e_name='Event 74' order by u_id LIMIT 1), (SELECT e_id from events where e_name='Event 74' LIMIT 1), 'active', (SELECT m_id FROM messages where e_id IN (SELECT e_id from events where e_name='Event 74' LIMIT 1)))");
 		// chats - approved volunteers
 		insertStatements.add(
 				"INSERT INTO chats (c_name, u_id, e_id, status) values ((('Event 1')::text || ': Chat'), (SELECT u_id from applicants where e_id in (SELECT e_id from events where e_name='Event 1' LIMIT 1) order by u_id LIMIT 1), (SELECT e_id from events where e_name='Event 1' LIMIT 1), 'active')");
@@ -172,16 +196,17 @@ public class DatabaseService {
 		try {
 			con = db.getConnection();
 			boolean status = true;
+			LOG.debug("Inserting records...");
 			for (String insertStatement : insertStatements) {
 				try (PreparedStatement pstmt = con.prepareStatement(insertStatement)) {
 					int recordsInserted = pstmt.executeUpdate();
 					status = recordsInserted > 0;
 				} catch (Exception e) {
-					LOG.error("Error while generating mock data, for Insert statement: " + insertStatement);
+					LOG.error("Error while inserting records, for Insert statement: " + insertStatement);
 					e.printStackTrace();
 				}
 			}
-			LOG.debug("Mock data generated...");
+			LOG.debug("Mock data generation complete!");
 			return status;
 		} catch (Exception e) {
 			LOG.error("Error while getting DB connection for generating mock data.");
@@ -370,26 +395,64 @@ public class DatabaseService {
 
 	public boolean insertEvent(Events event) {
 		LOG.debug("Inserting Event and creating its correspondign chat group");
-		String insertStatement = "INSERT INTO events (e_name, location, datetime, description, members, u_id, status) VALUES(?,?,?,?,?,?,?)";
+		String insertEvent = "INSERT INTO events (e_name, location, datetime, description, members, u_id, status) VALUES(?,?,?,?,?,?,?) RETURNING e_id";
 		// when an event is created, its chat group should also be created.
-		String insertChat = "INSERT INTO chats (c_name, u_id, e_id, status) VALUES(?,?,(SELECT e_id from events where e_name = ? order by e_id LIMIT 1),?)";
+		// then its messages entry should be created.
+		String insertMessage = "INSERT INTO messages (e_id, msg, status) VALUES(?,?,?) RETURNING m_id";
+		// then its chat group should be created.
+		String insertChat = "INSERT INTO chats (c_name, u_id, e_id, m_id, status) VALUES(?,?,?,?,?)";
 		Connection con = null;
 		try {
 			con = db.getConnection();
-			PreparedStatement pstmt = con.prepareStatement(insertStatement);
-			pstmt.setString(1, event.geteName());
-			pstmt.setString(2, event.getLocation());
-			pstmt.setString(3, event.getDatetime());
-			pstmt.setString(4, event.getDescription());
-			pstmt.setString(5, event.getMembers());
-			pstmt.setInt(6, event.getuId());
-			pstmt.setString(7, event.getStatus());
-			PreparedStatement pstmt2 = con.prepareStatement(insertChat);
-			pstmt2.setString(1, event.geteName().concat(": Chat"));
-			pstmt2.setInt(2, event.getuId());
-			pstmt2.setString(3, event.geteName());
-			pstmt2.setString(4, Strings.STATUS_ACTIVE);
-			return pstmt.executeUpdate() > 0 && pstmt2.executeUpdate() > 0;
+			LOG.debug("Inserting event...");
+			PreparedStatement psEvent = con.prepareStatement(insertEvent);
+			psEvent.setString(1, event.geteName());
+			psEvent.setString(2, event.getLocation());
+			psEvent.setString(3, event.getDatetime());
+			psEvent.setString(4, event.getDescription());
+			psEvent.setString(5, event.getMembers());
+			psEvent.setInt(6, event.getuId());
+			psEvent.setString(7, event.getStatus());
+			int eId = 0;
+			psEvent.execute();
+			ResultSet rs = psEvent.getResultSet();
+			if (rs.next()) {
+				eId = rs.getInt(1);
+			}
+			if (eId > 0) {
+				LOG.debug("Event inserted! Event ID is: " + eId);
+				LOG.debug("Inserting message...");
+				PreparedStatement psMessage = con.prepareStatement(insertMessage);
+				psMessage.setInt(1, eId);
+				psMessage.setString(2, "<p>Welcome to " + event.geteName() + ": Chat<p><br>");
+				psMessage.setString(3, Strings.STATUS_ACTIVE);
+				int mId = 0;
+				psMessage.execute();
+				ResultSet rs3 = psMessage.getResultSet();
+				if (rs3.next()) {
+					mId = rs3.getInt(1);
+				}
+				if (mId > 0) {
+					LOG.debug("Message inserted! Message ID is: " + mId);
+					LOG.debug("Inserting chat...");
+					PreparedStatement psChat = con.prepareStatement(insertChat);
+					psChat.setString(1, event.geteName().concat(": Chat"));
+					psChat.setInt(2, event.getuId());
+					psChat.setInt(3, eId);
+					psChat.setInt(4, mId);
+					psChat.setString(5, Strings.STATUS_ACTIVE);
+					return psChat.executeUpdate() > 0;
+				} else {
+					// There is a chance of having corrupted event inserted here if chat could not
+					// be inserted after event insertion. Should delete the inserted event here?
+					LOG.debug("Could not Insert Message!! aborting... mID:" + mId);
+					return false;
+				}
+			} else {
+				LOG.debug("Could not Insert Event!! aborting... eID:" + eId);
+				return false;
+			}
+
 		} catch (Exception e) {
 			LOG.error("Error while inserting event and corresponding chat group.");
 			e.printStackTrace();
@@ -699,7 +762,8 @@ public class DatabaseService {
 			try (PreparedStatement pstmt = con.prepareStatement(updateStatement)) {
 				pstmt.setInt(1, uId);
 				pstmt.setInt(2, eId);
-				//status can be = 0 too as the user might not have been added in the chat initially.
+				// status can be = 0 too as the user might not have been added in the chat
+				// initially.
 				return pstmt.executeUpdate() >= 0;
 			} catch (Exception e) {
 				LOG.error("Error while deleting from chats: " + updateStatement);
@@ -808,6 +872,7 @@ public class DatabaseService {
 					chat.setcName(rs.getString("c_name"));
 					chat.setuId(rs.getInt("u_id"));
 					chat.seteId(rs.getInt("e_id"));
+					chat.setmId(rs.getInt("m_id"));
 					chat.setStatus(rs.getString("status"));
 					chats.add(chat);
 				}
@@ -837,12 +902,14 @@ public class DatabaseService {
 	/**
 	 * Method to fetch the message for the given message id.
 	 * 
-	 * @param mId
-	 *            the message ID.
+	 * @param cId
+	 *            the chat ID.
+	 * @param eId
+	 *            the event ID.
 	 * @return
 	 */
-	public Messages getMessage(Integer mId) {
-		LOG.debug("getting Message: " + mId);
+	public Messages getMessage(int mId) {
+		LOG.debug("getting Message " + mId);
 		Messages message = null;
 		String selectQuery = "SELECT * from messages where m_id = ?";
 		Connection con = null;
@@ -854,7 +921,6 @@ public class DatabaseService {
 				while (rs.next()) {
 					message = new Messages();
 					message.setmId(rs.getInt("m_id"));
-					message.setcId(rs.getInt("c_id"));
 					message.seteId(rs.getInt("e_id"));
 					message.setMsg(rs.getString("msg"));
 					message.setStatus(rs.getString("status"));
@@ -889,15 +955,14 @@ public class DatabaseService {
 	 */
 	public boolean saveMessage(Messages message) {
 		LOG.debug("Inserting message");
-		String insertStatement = "INSERT INTO messages (c_id, e_id, msg, status) VALUES(?,?,?,?)";
+		String insertStatement = "INSERT INTO messages (e_id, msg, status) VALUES (?,?,?) ON CONFLICT (e_id) DO UPDATE SET msg = excluded.msg, status = excluded.status";
 		Connection con = null;
 		try {
 			con = db.getConnection();
 			PreparedStatement pstmt = con.prepareStatement(insertStatement);
-			pstmt.setInt(1, message.getcId());
-			pstmt.setInt(2, message.geteId());
-			pstmt.setString(3, message.getMsg());
-			pstmt.setString(4, message.getStatus());
+			pstmt.setInt(1, message.geteId());
+			pstmt.setString(2, message.getMsg());
+			pstmt.setString(3, message.getStatus());
 			return pstmt.executeUpdate() > 0;
 		} catch (Exception e) {
 			LOG.error("Error while inserting message.");
@@ -913,6 +978,56 @@ public class DatabaseService {
 				}
 			}
 		}
+	}
+
+	/**
+	 * This method fetches the message that was just inserted via POST to fetch the
+	 * message ID for which it was stored.
+	 * 
+	 * @param cId
+	 *            the chat ID
+	 * @param eId
+	 *            the event ID
+	 * @return
+	 */
+	public Messages readDBMessage(int eId) {
+		LOG.debug("getting DB Message for EventID: " + eId);
+		Messages message = null;
+		String selectQuery = "SELECT * from messages where e_id = ?";
+		Connection con = null;
+		try {
+			con = db.getConnection();
+			try (PreparedStatement selectStatement = con.prepareStatement(selectQuery)) {
+				selectStatement.setInt(1, eId);
+				ResultSet rs = selectStatement.executeQuery();
+				while (rs.next()) {
+					message = new Messages();
+					message.setmId(rs.getInt("m_id"));
+					message.seteId(rs.getInt("e_id"));
+					message.setMsg(rs.getString("msg"));
+					message.setStatus(rs.getString("status"));
+				}
+			} catch (Exception e) {
+				LOG.error("Error while executing query for Read DB Message.");
+				e.printStackTrace();
+				return message;
+			}
+		} catch (Exception e) {
+			LOG.error("Error while getting DB connection for Read DB Message.");
+			e.printStackTrace();
+			return message;
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					LOG.error("Error while closing the connection from Read DB Message method.");
+					e.printStackTrace();
+				}
+			}
+		}
+		LOG.debug("Fetched DB message.");
+		return message;
 	}
 
 	/**
@@ -1077,6 +1192,7 @@ public class DatabaseService {
 
 	/**
 	 * This method fetches the Google user from the database.
+	 * 
 	 * @param pId
 	 * @return
 	 */
@@ -1124,6 +1240,59 @@ public class DatabaseService {
 		}
 		LOG.debug("Fetched user.");
 		return user;
+	}
+
+	/**
+	 * This method returns the list of users who are approved for a given event ID.
+	 * 
+	 * @param eId
+	 *            the event ID.
+	 * @return
+	 */
+	public List<Users> getApprovedVolunteers(int eId) {
+		LOG.debug("Fetching Approved Volunteers for Event ID: " + eId);
+		List<Users> volunteers = new ArrayList<Users>();
+		String selectQuery = "SELECT * from users where type = 'vol' and u_id in (select u_id from applicants where status='approved' and e_id=?)";
+		Connection con = null;
+		try {
+			con = db.getConnection();
+			try (PreparedStatement selectStatement = con.prepareStatement(selectQuery)) {
+				selectStatement.setInt(1, eId);
+				ResultSet rs = selectStatement.executeQuery();
+				while (rs.next()) {
+					Users user = new Users();
+					user.setuId(rs.getInt("u_id"));
+					user.setuName(rs.getString("u_name"));
+					user.setEmail(rs.getString("email"));
+					user.setMobile(rs.getString("mobile"));
+					user.setDob(rs.getString("dob"));
+					user.setPassword(rs.getString("password"));
+					user.setType(rs.getString("type"));
+					user.setDescription(rs.getString("description"));
+					user.setWebsite(rs.getString("website"));
+					volunteers.add(user);
+				}
+			} catch (Exception e) {
+				LOG.error("Error while executing query for fetching Approved Volunteers.");
+				e.printStackTrace();
+				return volunteers;
+			}
+		} catch (Exception e) {
+			LOG.error("Error while getting DB connection for fetching Approved Volunteers.");
+			e.printStackTrace();
+			return volunteers;
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					LOG.error("Error while closing the connection from get Approved Volunteers method.");
+					e.printStackTrace();
+				}
+			}
+		}
+		LOG.debug("Fetched Approved Volunteers.");
+		return volunteers;
 	}
 
 }

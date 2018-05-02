@@ -6,7 +6,7 @@
     <link href="img/logo_128.png" rel="icon">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="google-signin-client_id" content="149731367696-4abqado01gmo3687lu4n3lsfl5dkne1m.apps.googleusercontent.com">
+    <meta name="google-signin-client_id" content="<YourClientID>.apps.googleusercontent.com">
     <title>Bugle: Event Volunteers</title>
     <!-- Angular Material style sheet -->
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.css">
@@ -21,7 +21,8 @@
     <link rel="stylesheet" type="text/css" href="css/style.css" />
     <link rel="stylesheet" type="text/css" href="css/base.css" />
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg"
+        crossorigin="anonymous">
     <script type="text/javascript" src="js/app.js"></script>
 </head>
 
@@ -34,9 +35,8 @@
         <md-toolbar>
             <div class="md-toolbar-tools">
                 <md-button class="md-icon-button" aria-label="Go Back" disabled>
-                    <i class="fas fa-angle-left"></i>
                 </md-button>
-                <span flex>Event Volunteers</span>
+                <span flex>Event Volunteer Applications</span>
             </div>
         </md-toolbar>
 
@@ -49,7 +49,7 @@
             <br>
             <br>
 
-            <!-- Show a drop down for all active events of that organization here from where they can select the event for which they want to show the volunteers. By default show the volunteers of the first active event. -->
+            <!-- Show a drop down for all active events of that organization here from where they can select the event for which they want to show the volunteers. -->
             <div ng-if="eventSelected">
                 <b>Volunteer Applications for {{event.eName}}: </b>
                 <br>
@@ -61,10 +61,12 @@
                         </li>
                     </ul>
                     <br>
-                    <div ng-if="volunteers.length == 0"> No more volunteers yet.</div>
-                    <md-button type="submit" ng-disabled="selected.length==0" ng-if="volunteers.length > 0" ng-click="approveVol(event)" ng-show="true" class="md-raised md-primary pull-right">Approve</md-button>
-                    <md-button type="submit" ng-disabled="selected.length==0" ng-if="volunteers.length > 0" ng-click="rejectVol(event)" ng-show="true" class="md-raised md-warn">Reject</md-button>
-				</form>
+                    <div ng-if="volunteers.length == 0"> No volunteers to Approve.</div>
+                    <md-button type="submit" ng-disabled="selected.length==0" ng-if="volunteers.length > 0" ng-click="approveVol(event)" ng-show="true"
+                        class="md-raised md-primary pull-right">Approve</md-button>
+                    <md-button type="submit" ng-disabled="selected.length==0" ng-if="volunteers.length > 0" ng-click="rejectVol(event)" ng-show="true"
+                        class="md-raised md-warn">Reject</md-button>
+                </form>
             </div>
 
         </div>
@@ -76,7 +78,6 @@
                 <a href="chats.html">Chats</a>
                 <a href="profile.html">Profile</a>
             </div>
-
         </div>
 
     </div>

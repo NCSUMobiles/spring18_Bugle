@@ -6,7 +6,7 @@
     <link href="img/logo_128.png" rel="icon">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="google-signin-client_id" content="149731367696-4abqado01gmo3687lu4n3lsfl5dkne1m.apps.googleusercontent.com">
+    <meta name="google-signin-client_id" content="<YourClientID>.apps.googleusercontent.com">
     <title>Bugle: Google Login Type</title>
     <!-- Angular Material style sheet -->
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.css">
@@ -24,12 +24,31 @@
 
 <body ng-controller="index" ng-init="fetchSession()">
 
-    <div>Welcome {{tempGUser.uName}}, Please Choose a User Type</div>
-    <p>
-        <md-button class="md-raised pull-right" ng-click="setGUserType('vol')" ng-disabled="dataLoading">Volunteer</md-button>
-        <md-progress-circular class="center_text" md-mode="indeterminate" ng-show="dataLoading"></md-progress-circular>
-        <md-button class="md-raised" ng-click="setGUserType('org')" ng-disabled="dataLoading">Organization</md-button>
-    </p>
+    <!-- The Temp GLogin Page -->
+    <div class='home active'>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <md-button class="md-icon-button" aria-label="Go Back" disabled>
+                    <i class="fas fa-angle-left"></i>
+                </md-button>
+                <span flex>Welcome {{tempGUser.uName}}</span>
+            </div>
+        </md-toolbar>
+
+        <md-content flex layout-padding>Please Choose a User Type.</md-content>
+
+        <div class='my_container'>
+            <md-progress-circular style="position:absolute; left:45%; top:32%;" md-mode="indeterminate" ng-show="dataLoading"></md-progress-circular>
+            <br>
+            <md-button style="position:absolute; left:33%; top:42%;" class="md-raised" ng-click="setGUserType('vol')" ng-disabled="dataLoading">Volunteer</md-button>
+            <md-button style="position:absolute; left:30%; top:58%;" class="md-raised" ng-click="setGUserType('org')" ng-disabled="dataLoading">Organization</md-button>
+            <!-- <md-button style="position:absolute; left:22%; top:75%;" type="button" class="md-raised md-warn" ng-click="logoutGUser()">Logout Google User</md-button> -->
+        </div>
+
+    </div>
+
+    <!-- End Temp GLogin Page -->
+
 </body>
 
 </html>

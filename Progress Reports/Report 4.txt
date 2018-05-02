@@ -1,0 +1,13 @@
+We are mostly done with the back-end. We changed the database from sqlite to psql since sqlite is just in memory database and the data got reset every time the server went to sleep.
+
+We created the following Pages in the Front End:
+- Volunteer.html (Volunteer Home Page)
+- Organization.html (OrganizationHome Page)
+- approveVolunteer.html (approve volunteer page)
+- Session implementation with login and logout functionality.
+
+In The front end, We are working on the following pages:
+- Profile Page
+- Event Details Page (CSS part is left)
+- API calls from the front end for apply event, create event, edit profile, approve/reject volunteers.
+- Chat Page.
