@@ -226,7 +226,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
                 $window.location.href = '/organization.html';
             }
         } else {
-            var orgPage = $window.location.href.includes('/organization.html') || $window.location.href.includes('/createEvent.html') || $window.location.href.includes('/eventVolunteers.html');
+            var orgPage = $window.location.href.includes('/organization.html') || $window.location.href.includes('/createEvent.html') || $window.location.href.includes('/eventVolunteers.html') || $window.location.href.includes('/orgEventDetails.html');
             if (orgPage && $scope.user.type == 'vol') {
                 console.log('redirecting lost volunteer to Volunteer Home page.');
                 $window.location.href = '/volunteer.html';
@@ -539,7 +539,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         updateScopePrevPage($window.location.href);
         localStorageService.set('prevPage', null);
         localStorageService.set('prevPage', $window.location.href);
-        $window.location.href = '/eventDetails.html';
+        $window.location.href = '/orgEvents.html';
     }
     // view event details function end
 
@@ -579,16 +579,23 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
     }
     //--END: Content from Event Details page controller
 
-    $scope.updateField = false;
+    $scope.updateProfileField = false;
+    $scope.updateEventField = false;
 
     $scope.dobError = false;
     $scope.mobileError = false;
 
-    // function to enable users to modify Profile details start
-    $scope.modify = function () {
-        $scope.updateField = true;
+    // enable users to modify Profile details start
+    $scope.modifyProfile = function () {
+        $scope.updateProfileField = true;
     };
-    // function to enable users to modify Profile details end
+    // enable users to modify Profile details end
+
+    // enable users to modify Event details start
+    $scope.modifyEvent = function () {
+        $scope.updateEventField = true;
+    };
+    // enable users to modify Event details end
 
     // function for a volunteer to apply for a event start.
     $scope.applyEvent = function (event) {
@@ -597,7 +604,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             'u_Id': $scope.user.uId
         };
 
-        console.log('Applying for Event: ' + JSON.stringify(eventApplication));
+        console.log('Applying for Event: ' + JSON.stringify(eventplication));
 
         $http({
             method: 'POST',
@@ -757,6 +764,26 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         }
     }
 
+    function testingDateTimeStr(str) {
+        if (str) {
+            console.log('validating date of birth.');
+            var t = str.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+            if (t === null)
+                return false;
+            var m = +t[1], d = +t[2], y = +t[3];
+
+            // Below should be a more acurate algorithm
+            if (m >= 1 && m <= 12 && d >= 1 && d <= 31) {
+                return true;
+            }
+
+            return false;
+        } else {
+            console.log('no date of birth to validate.');
+            return true;
+        }
+    }
+
     function testingPhoneStr(str) {
         if (str) {
             console.log('validating Phone number.');
@@ -771,8 +798,22 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         }
     }
 
+    function testingEventMembers(str) {
+        if (str) {
+            console.log('validating number of members required for events.');
+            var t = str.match(/^(0|[1-9]\d*)$/);
+            if (t == null)
+                return false;
+
+            return true;
+        } else {
+            console.log('');
+        }
+
+    }
+
     // update user Profile details function
-    $scope.update = function (user) {
+    $scope.updateProfile = function (user) {
         console.log('update user called for user ' + user.uName);
         var updateUserURL = serviceURL + '/edit-user';
         var updateUserInfo = {
@@ -819,7 +860,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
                     console.log('updated records for user.');
                     localStorageService.set('sessionUser', null);
                     localStorageService.set('sessionUser', user);
-                    $scope.updateField = false;
+                    $scope.updateProfileField = false;
                     $window.location.href = '/profile.html';
                     $scope.dobError = false;
                     $scope.mobileError = false;
@@ -844,8 +885,8 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
     };
 
     // cancel Profile update function
-    $scope.cancelUpdate = function () {
-        $scope.updateField = false;
+    $scope.cancelUpdateProfile = function () {
+        $scope.updateProfileField = false;
         $window.location.href = '/profile.html';
     };
 
@@ -1134,4 +1175,96 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
     }
     // Update Scope Participants function end
 
+    $scope.vieworgEventDetails = function (event) {
+        console.log('displaying event details for event: ' + JSON.stringify(event));
+        console.log('Current scope organization is: ' + JSON.stringify($scope.organization));
+        updateScopeEvent(event);
+        console.log('updating session event.');
+        localStorageService.set('event', null);
+        localStorageService.set('event', event);
+        updateScopePrevPage($window.location.href);
+        localStorageService.set('prevPage', null);
+        localStorageService.set('prevPage', $window.location.href);
+        $window.location.href = '/orgEventDetails.html';
+    }
+
+    // update org Event details function
+    $scope.updateEvent = function (event, user) {
+        console.log('update event called for event ' + event.eName);
+        var updateEventURL = serviceURL + '/edit-event';
+        var updateEventInfo = {
+            'EVENT_EID': $scope.event.eId,
+            'EVENT_ENAME': $scope.event.eName,
+            'EVENT_LOCATION': $scope.event.location,
+            'EVENT_DATETIME': $scope.event.datetime,
+            'EVENT_DESCRIPTION': $scope.event.description,
+            'EVENT_MEMBERS': $scope.event.members,
+            'EVENT_STATUS': $scope.event.status,
+        };
+
+        //validating input
+        //check for correct format of dob
+        // if (!testingDateTimeStr(event.datetime)) {
+        //     $scope.dateTimeError = true;
+        // } else {
+        //     $scope.dateTimeError = false;
+        // }
+
+        // //check for correct format of dob
+        // if (!testingEventMembers(event.members)) {
+        //     $scope.eventMembersError = true;
+        // } else {
+        //     $scope.eventMembersError = false;
+        // }
+
+        //calling the API only if there are no error on forms
+        // if (!$scope.dobError && !$scope.mobileError) {
+            $scope.dataLoading = true;
+            $http({
+                url: updateEventURL,
+                method: 'POST',
+                data: updateEventInfo,
+                headers: { 'Content-Type': 'application/json' }
+            }).then(function (response) {
+                // console.log('API response: ' + JSON.stringify(response));
+                if (response.data.status != 'error') {
+                    var event = JSON.parse(response.data.event);
+                    // updateScopeUser(user);
+                    // console.log('updated records for user.');
+                    // localStorageService.set('sessionUser', null);
+                    // localStorageService.set('sessionUser', user);
+                    updateScopeEvent(event);
+                    console.log('updating session event.');
+                    localStorageService.set('event', null);
+                    localStorageService.set('event', event);
+                    $scope.updateEventField = false;
+                    $window.location.href = '/orgEventDetails.html';
+                    // $scope.dobError = false;
+                    // $scope.mobileError = false;
+                } else {
+                    console.log('ERROR: ' + response.data.message);
+                    showToast('Something went wrong while updating Profile. Please try again later.');
+                }
+            }, function (response) {
+                console.log('ERROR: ' + JSON.stringify(response));
+                showToast('Something went wrong while updating Profile. Please try again later.');
+            }).finally(function () {
+                $scope.dataLoading = false;
+            });
+        // } else {
+        //     if ($scope.dobError) {
+        //         showToast('Error: Please Check Date of Birth.');
+        //     }
+        //     if ($scope.mobileError) {
+        //         showToast('Error: Please Check Mobile number.');
+        //     }
+        // }
+    };
+
+    // cancel Profile update function
+    $scope.cancelUpdateEvent = function () {
+        $scope.updateEventField = false;
+        $window.location.href = '/orgEventDetails.html';
+    };
+   
 }]);
