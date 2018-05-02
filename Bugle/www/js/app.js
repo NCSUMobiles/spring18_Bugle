@@ -539,7 +539,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         updateScopePrevPage($window.location.href);
         localStorageService.set('prevPage', null);
         localStorageService.set('prevPage', $window.location.href);
-        $window.location.href = '/orgEvents.html';
+        $window.location.href = '/eventDetails.html';
     }
     // view event details function end
 
@@ -604,7 +604,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             'u_Id': $scope.user.uId
         };
 
-        console.log('Applying for Event: ' + JSON.stringify(eventplication));
+        console.log('Applying for Event: ' + JSON.stringify(eventApplication));
 
         $http({
             method: 'POST',
@@ -682,7 +682,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         };
 
         console.log('Approving Volunteers: ' + JSON.stringify(eventApplication));
-
+        $scope.dataLoading = true;
         $http({
             method: 'POST',
             url: serviceURL + '/approve-volunteers',
@@ -700,6 +700,8 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             }
         }, function (response) {
             console.log('ERROR: ' + JSON.stringify(response));
+        }).finally(function () {
+            $scope.dataLoading = false;
         });
     };
     // function for a org to approve volunteer end.
@@ -712,7 +714,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         };
 
         console.log('Rejecting Volunteers: ' + JSON.stringify(eventApplication));
-
+        $scope.dataLoading = true;
         $http({
             method: 'POST',
             url: serviceURL + '/reject-volunteers',
@@ -730,6 +732,8 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             }
         }, function (response) {
             console.log('ERROR: ' + JSON.stringify(response));
+        }).finally(function () {
+            $scope.dataLoading = false;
         });
     };
     // function for a org to reject volunteer end.
