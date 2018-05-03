@@ -26,6 +26,7 @@ app.service('UserService', function () {
     var chat = '';
     var tmpGUser = '';
     var participants = '';
+    var dVol = '';
 
     return {
         getLoggedInUser: function () {
@@ -93,6 +94,12 @@ app.service('UserService', function () {
         },
         setParticipants: function (p) {
             participants = p;
+        },
+        getDVol: function () {
+            return dVol;
+        },
+        setDVol: function (v) {
+            dVol = v;
         }
     }
 });
@@ -145,6 +152,8 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
 
     $scope.participants = [];
 
+    $scope.dVol = {};
+
     //Loading Google API
     function onLoad() {
         gapi.load('auth2', function () {
@@ -165,6 +174,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         $scope.chat = localStorageService.get('chat');
         $scope.tempGUser = localStorageService.get('tempGUser');
         $scope.participants = localStorageService.get('participants');
+        $scope.dVol = localStorageService.get('dVol');
 
         //only do this for profile page.
         if ($window.location.href.includes('/profile.html')) {
@@ -539,7 +549,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         updateScopePrevPage($window.location.href);
         localStorageService.set('prevPage', null);
         localStorageService.set('prevPage', $window.location.href);
-        $window.location.href = '/orgEvents.html';
+        $window.location.href = '/eventDetails.html';
     }
     // view event details function end
 
@@ -608,7 +618,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             'u_Id': $scope.user.uId
         };
 
-        console.log('Applying for Event: ' + JSON.stringify(eventplication));
+        console.log('Applying for Event: ' + JSON.stringify(eventApplication));
 
         $http({
             method: 'POST',
@@ -686,7 +696,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         };
 
         console.log('Approving Volunteers: ' + JSON.stringify(eventApplication));
-
+        $scope.dataLoading = true;
         $http({
             method: 'POST',
             url: serviceURL + '/approve-volunteers',
@@ -704,6 +714,8 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             }
         }, function (response) {
             console.log('ERROR: ' + JSON.stringify(response));
+        }).finally(function () {
+            $scope.dataLoading = false;
         });
     };
     // function for a org to approve volunteer end.
@@ -716,7 +728,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         };
 
         console.log('Rejecting Volunteers: ' + JSON.stringify(eventApplication));
-
+        $scope.dataLoading = true;
         $http({
             method: 'POST',
             url: serviceURL + '/reject-volunteers',
@@ -734,6 +746,8 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             }
         }, function (response) {
             console.log('ERROR: ' + JSON.stringify(response));
+        }).finally(function () {
+            $scope.dataLoading = false;
         });
     };
     // function for a org to reject volunteer end.
@@ -1358,5 +1372,25 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         $scope.updateEventField = false;
         $window.location.href = '/orgEventDetails.html';
     };
+
+    $scope.showUsrDetails = function(usr) {
+        console.log('Showing Volunteer details.');
+        updateScopeDVol(usr);
+        console.log('updating session dVol.');
+        localStorageService.set('dVol', null);
+        localStorageService.set('dVol', usr);
+        updateScopePrevPage($window.location.href);
+        localStorageService.set('prevPage', null);
+        localStorageService.set('prevPage', $window.location.href);
+        $window.location.href = '/volunteerDetails.html';
+    };
+
+    // Update Scope DVol function Start
+    var updateScopeDVol = function (v) {
+        console.log('updating Service Detail Volunteers.');
+        UserService.dVol = v;
+        $scope.dVol = v;
+    }
+    // Update Scope DVol function end
    
 }]);
