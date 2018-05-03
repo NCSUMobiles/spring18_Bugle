@@ -669,6 +669,34 @@ public class HomeController extends Controller {
 	}
 
 	/**
+	 * Deletes an Event and its associated Applicants, Chats and messages for a
+	 * given Event ID.
+	 * 
+	 * @param eId
+	 *            the event ID
+	 * @return
+	 */
+	public Result deleteEvent(String eId) {
+		LOG.debug("deleteEvent method called for Event ID: " + eId);
+		if (eId != null && eId.length() > 0) {
+			int eventId = 0;
+			try {
+				eventId = Integer.valueOf(eId);
+				if (databaseService.deleteEventCascade(eventId)) {
+					return ok(createSuccessResponse(Strings.MESSAGE, "Event Deleted Succesfully!"))
+							.withHeader(Strings.CORS, Strings.STAR);
+				} else {
+					return ok(createErrorResponse("Unable to Delete Event!")).withHeader(Strings.CORS, Strings.STAR);
+				}
+			} catch (Exception e) {
+				return badRequest("Correct Event ID needed for deleting Event!").withHeader(Strings.CORS, Strings.STAR);
+			}
+		} else {
+			return badRequest("Correct Event ID needed for deleting Event!").withHeader(Strings.CORS, Strings.STAR);
+		}
+	}
+
+	/**
 	 * This method returns the following JSON response:
 	 * 
 	 * <pre>
