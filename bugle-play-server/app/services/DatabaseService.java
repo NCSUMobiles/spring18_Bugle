@@ -1320,7 +1320,9 @@ public class DatabaseService {
 			psda.setInt(1, eId);
 			PreparedStatement psde = con.prepareStatement(deleteEvent);
 			psde.setInt(1, eId);
-			return (psdm.executeUpdate() > 0 && psdc.executeUpdate() > 0 && psda.executeUpdate() > 0
+			// There can be zero applicants but there will always be an initial chat and
+			// message entry for an event.
+			return (psdm.executeUpdate() > 0 && psdc.executeUpdate() > 0 && psda.executeUpdate() >= 0
 					&& psde.executeUpdate() > 0);
 		} catch (Exception e) {
 			LOG.error("Error while cascade deleting Event.");

@@ -790,7 +790,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             var t = str.match(/[0-1]\d\/[0-3]\d\/\d{4} [0-1]\d:[0-5]\d[AaPp][Mm]/);
             if (t === null)
                 return false;
-            
+
             return true;
         } else {
             console.log('datetime not available to validate.');
@@ -832,7 +832,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         if (str) {
             console.log('validating website url.');
             var t = str.match(/^((https?):\/\/)?([w|W]{3}\.)+[a-zA-Z0-9\-\.]{3,}\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,})?$/);
-            if(t === null)
+            if (t === null)
                 return false;
 
             return true;
@@ -844,7 +844,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
     // validation for location text
     function testingLocationStr(str) {
         console.log('validating location text.');
-        if(str.length == 0)
+        if (!str || str.length == 0)
             return false;
 
         return true;
@@ -854,7 +854,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
     function testingDescriptionStr(str) {
         if (str) {
             console.log('validating description text.');
-            if(str.length == 0 || str.length > 200)
+            if (str.length == 0 || str.length > 200)
                 return false;
 
             return true;
@@ -919,7 +919,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
                 $scope.websiteError = false;
             }
         }
-        
+
         //calling the API only if there are no error on forms
         if (!$scope.dobError && !$scope.mobileError && !$scope.locationError && !$scope.websiteError && !$scope.descriptionError) {
             $scope.dataLoading = true;
@@ -962,11 +962,11 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             }
             if ($scope.locationError) {
                 showToast('Error: Please Check Location.');
-            } 
+            }
             if ($scope.websiteError) {
                 showToast('Error: Please Check Website URL.');
-            } 
-            if($scope.descriptionError) {
+            }
+            if ($scope.descriptionError) {
                 showToast('Error: Please Check Description.');
             }
         }
@@ -984,7 +984,6 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
     };
 
     $scope.createEvent = function () {
-        $scope.dataLoading = true;
         console.log('creating event.');
 
         var eventInfo = {
@@ -996,7 +995,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             "u_id": $scope.user.uId,
             "status": "active"
         };
-
+        $scope.dataLoading = true;
         $http({
             url: serviceURL + '/event',
             method: 'POST',
@@ -1251,7 +1250,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         });
     }
 
-    $scope.okPModal = function() {
+    $scope.okPModal = function () {
         $mdDialog.cancel();
     }
 
@@ -1298,8 +1297,8 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             $scope.dateTimeError = false;
         }
 
-         //check for correct format of description
-         if (!testingDescriptionStr(event.description)) {
+        //check for correct format of description
+        if (!testingDescriptionStr(event.description)) {
             $scope.descriptionError = true;
         } else {
             $scope.descriptionError = false;
@@ -1320,7 +1319,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         }
 
         //calling the API only if there are no error on forms
-        if (!$scope.dateTimeError &&  !$scope.locationError && !$scope.eventMembersError && !$scope.descriptionError) {
+        if (!$scope.dateTimeError && !$scope.locationError && !$scope.eventMembersError && !$scope.descriptionError) {
             $scope.dataLoading = true;
             $http({
                 url: updateEventURL,
@@ -1373,7 +1372,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         $window.location.href = '/orgEventDetails.html';
     };
 
-    $scope.showUsrDetails = function(usr) {
+    $scope.showUsrDetails = function (usr) {
         console.log('Showing Volunteer details.');
         updateScopeDVol(usr);
         console.log('updating session dVol.');
@@ -1392,5 +1391,42 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         $scope.dVol = v;
     }
     // Update Scope DVol function end
-   
+
+    $scope.deleteEvent = function (ev, eId) {
+        console.log('delete called for event: ' + eId + '... confirming from user.');
+        // Appending dialog to document.body to cover sidenav in docs app
+        var confirm = $mdDialog.confirm()
+            .title('Warning! Deleting Event.')
+            .textContent('This will delete the event along with all its volunteers and chats. This cannot be undone.')
+            .ariaLabel('Confirm Delete Event')
+            .targetEvent(ev)
+            .ok('Confirm')
+            .cancel('Cancel');
+
+        $mdDialog.show(confirm).then(function () {
+            console.log('User Confirmed... Deleting Event...');
+            $scope.dataLoading = true;
+            $http({
+                method: 'GET',
+                url: serviceURL + '/delete-event/' + eId,
+                headers: { 'Content-Type': '*/*' }
+            }).then(function (response) {
+                if (response.data.status != 'error') {
+                    console.log('delete event response message: ' + response.data.message);
+                    showToast('Event Deleted!');
+                    $window.location.href = '/organization.html';
+                } else {
+                    console.log('delete event ERROR: ' + response.data.message);
+                    showToast('Sorry, could not delete Event!');
+                }
+            }, function (response) {
+                console.log('ERROR: ' + JSON.stringify(response));
+            }).finally(function () {
+                $scope.dataLoading = false;
+            });
+        }, function () {
+            console.log('User cancelled... Do nothing.');
+        });
+    }
+
 }]);

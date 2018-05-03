@@ -26,75 +26,77 @@
 	<link rel="stylesheet" type="text/css" href="css/style.css" />
 	<link rel="stylesheet" type="text/css" href="css/base.css" />
 	<script type="text/javascript" src="js/app.js"></script>
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJOkPwk7suopdiPBSnM3qep_Nsd-LC_24&libraries=places"
-	async defer></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJOkPwk7suopdiPBSnM3qep_Nsd-LC_24&libraries=places" async
+	 defer></script>
 	<script>
-	var geocoder;
-var map;
+		var geocoder;
+		var map;
 
-function initMap() {   
-address=document.getElementById("locationDetails").innerHTML
-	geocoder = new google.maps.Geocoder();
-  var latlng = new google.maps.LatLng(-34.397, 150.644);
-  var myOptions = {
-    zoom: 8,
-    center: latlng,
-    mapTypeControl: true,
-    mapTypeControlOptions: {
-      style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+		function initMap() {
 
+			if (document.getElementById('map_canvas').style.display == 'none') {
+				document.getElementById("mapbtn").innerText = "Hide Map";
+				address = document.getElementById("locationDetails").innerHTML
+				geocoder = new google.maps.Geocoder();
+				var latlng = new google.maps.LatLng(-34.397, 150.644);
+				var myOptions = {
+					zoom: 8,
+					center: latlng,
+					mapTypeControl: true,
+					mapTypeControlOptions: {
+						style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+					},
+					navigationControl: true,
+					mapTypeId: google.maps.MapTypeId.ROADMAP
+				};
+				map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+				if (geocoder) {
+					geocoder.geocode({
+						'address': address
+					}, function (results, status) {
+						if (status == google.maps.GeocoderStatus.OK) {
+							if (status != google.maps.GeocoderStatus.ZERO_RESULTS) {
+								map.setCenter(results[0].geometry.location);
 
-    },
-    navigationControl: true,
-    mapTypeId: google.maps.MapTypeId.ROADMAP
-  };
-  map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-  if (geocoder) {
-    geocoder.geocode({
-      'address': address
-    }, function(results, status) {
-      if (status == google.maps.GeocoderStatus.OK) {
-        if (status != google.maps.GeocoderStatus.ZERO_RESULTS) {
-          map.setCenter(results[0].geometry.location);
+								var infowindow = new google.maps.InfoWindow({
+									content: '<b>' + address + '</b>',
+									size: new google.maps.Size(150, 50)
+								});
 
-          var infowindow = new google.maps.InfoWindow({
-            content: '<b>' + address + '</b>',
-            size: new google.maps.Size(150, 50)
-          });
+								var marker = new google.maps.Marker({
+									position: results[0].geometry.location,
+									map: map,
+									title: address
+								});
+								google.maps.event.addListener(marker, 'click', function () {
+									infowindow.open(map, marker);
+								});
 
-          var marker = new google.maps.Marker({
-            position: results[0].geometry.location,
-            map: map,
-            title: address
-          });
-          google.maps.event.addListener(marker, 'click', function() {
-            infowindow.open(map, marker);
-          });
+							} else {
+								alert("No results found");
+							}
+						} else {
+							alert("Geocode was not successful for the following reason: " + status);
+						}
+					});
+				}
+				document.getElementById('map_canvas').style.display = 'block';
+			} else {
+				document.getElementById("mapbtn").innerText = "View Map";
+				document.getElementById('map_canvas').style.display = "none";
+			}
+		}
 
-        } else {
-          alert("No results found");
-        }
-      } else {
-        alert("Geocode was not successful for the following reason: " + status);
-      }
-    });
-  }
-  document.getElementById('map_canvas').style.display = 'block';
-        }
-		
-		function navigate()
-		{
-			address= document.getElementById("locationDetails").innerHTML
+		function navigate() {
+			address = document.getElementById("locationDetails").innerHTML
 			document.getElementById('map_canvas').style.display = 'block';
-
 		}
 	</script>
 </head>
 
-<body ng-controller="index" ng-init="fetchSession()" >
+<body ng-controller="index" ng-init="fetchSession()">
 
 	<!-- The Event Details Page -->
-
 	<div class='home active'>
 
 		<md-toolbar>
@@ -124,8 +126,7 @@ address=document.getElementById("locationDetails").innerHTML
 						<span id="locationDetails">{{event.location}}</span>
 					</td>
 					<td style="text-align: right;">
-						<md-button class="md-raised md-accent" onclick="initMap()">View Map</md-button>
-</td>
+						<md-button class="md-raised md-accent" id="mapbtn" onclick="initMap()">View Map</md-button>
 					</td>
 				</tr>
 				<tr style="padding: 1.2rem;">
@@ -147,7 +148,7 @@ address=document.getElementById("locationDetails").innerHTML
 					</td>
 				</tr>
 			</table>
-			<div id="map_canvas"  style="position: relative; overflow: hidden; height:300px;width:100%;display: none;" ></div>
+			<div id="map_canvas" style="position: relative; overflow: hidden; height:300px;width:100%;display: none;"></div>
 			<br>
 			<div class="wrapper">
 				<md-button class="md-raised md-primary" ng-click="applyEvent(event)" ng-show="appliedStatus != 'applied' && appliedStatus != 'approved'">Join Event</md-button>
