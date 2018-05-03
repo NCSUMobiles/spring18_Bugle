@@ -932,10 +932,14 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         $window.location.href = '/' + page + '.html';
     };
 
+   
+
+ 
     $scope.createEvent = function () {
         $scope.dataLoading = true;
         console.log('creating event.');
-
+  console.log($scope.datetime)
+  console.log($scope.location)
         var eventInfo = {
             "e_name": $scope.eName,
             "location": $scope.location,

@@ -24,6 +24,12 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg"
         crossorigin="anonymous">
     <script type="text/javascript" src="js/app.js"></script>
+    <script language="javascript"> 
+        function openWindow() { 
+          window.open("mapEvents.html","_blank","height=350,width=600, status=yes,toolbar=no,menubar=no,location=no"); 
+        }
+      </script>
+
 </head>
 
 <body ng-controller="index" ng-init="fetchSession()">
@@ -65,7 +71,7 @@
 
                     <md-input-container>
                         <label for="location">Location</label>
-                        <input ng-model="location" type="text" required flex>
+                        <input ng-model="location" id="location" type="text" value="Click here to select location" onfocus="javascript:openWindow();"  onclick="javascript:openWindow();" >
                     </md-input-container>
 
                     <md-input-container>
