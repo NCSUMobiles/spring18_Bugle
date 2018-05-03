@@ -594,6 +594,10 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
 
     $scope.dobError = false;
     $scope.mobileError = false;
+    $scope.locationError = false;
+    $scope.websiteError = false;
+    $scope.descriptionError = false;
+    $scope.eventMembersError = false;
 
     // enable users to modify Profile details start
     $scope.modifyProfile = function () {
@@ -758,6 +762,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
     }
     // Function to show toast message end
 
+    // validation for date (format: mm/dd/yyyy)
     function testingDateStr(str) {
         if (str) {
             console.log('validating date of birth.');
@@ -778,26 +783,22 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         }
     }
 
+    // validation for datetime (format: mm/dd/yyy hh:mmAM/PM)
     function testingDateTimeStr(str) {
         if (str) {
-            console.log('validating date of birth.');
-            var t = str.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+            console.log('validating datetime.');
+            var t = str.match(/[0-1]\d\/[0-3]\d\/\d{4} [0-1]\d:[0-5]\d[AaPp][Mm]/);
             if (t === null)
                 return false;
-            var m = +t[1], d = +t[2], y = +t[3];
-
-            // Below should be a more acurate algorithm
-            if (m >= 1 && m <= 12 && d >= 1 && d <= 31) {
-                return true;
-            }
-
-            return false;
+            
+            return true;
         } else {
-            console.log('no date of birth to validate.');
+            console.log('datetime not available to validate.');
             return true;
         }
     }
 
+    // validation for 10 digit phone number 
     function testingPhoneStr(str) {
         if (str) {
             console.log('validating Phone number.');
@@ -812,18 +813,54 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         }
     }
 
-    function testingEventMembers(str) {
+    // validation for number of members (format: 1 - 100)
+    function testingMembersStr(str) {
         if (str) {
             console.log('validating number of members required for events.');
-            var t = str.match(/^(0|[1-9]\d*)$/);
+            var t = str.match(/^(?:(?!0)\d{1,2}|100)$/);
             if (t == null)
                 return false;
 
             return true;
         } else {
-            console.log('');
+            console.log('number of members not available to validate.');
         }
+    }
 
+    // validation for website urls (format: 'http://www.volunteer.org')
+    function testingWebsiteStr(str) {
+        if (str) {
+            console.log('validating website url.');
+            var t = str.match(/^((https?):\/\/)?([w|W]{3}\.)+[a-zA-Z0-9\-\.]{3,}\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,})?$/);
+            if(t === null)
+                return false;
+
+            return true;
+        } else {
+            console.log('no website url to validate.');
+        }
+    }
+
+    // validation for location text
+    function testingLocationStr(str) {
+        console.log('validating location text.');
+        if(str.length == 0)
+            return false;
+
+        return true;
+    }
+
+    // validation for description textarea (200 max char)
+    function testingDescriptionStr(str) {
+        if (str) {
+            console.log('validating description text.');
+            if(str.length == 0 || str.length > 200)
+                return false;
+
+            return true;
+        } else {
+            console.log('no description to validate');
+        }
     }
 
     // update user Profile details function
@@ -844,22 +881,47 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         };
 
         //validating input
-        //check for correct format of dob
-        if (!testingDateStr(user.dob)) {
-            $scope.dobError = true;
-        } else {
-            $scope.dobError = false;
-        }
-
-        //check for correct format of dob
+        //check for correct format of mobile number
         if (!testingPhoneStr(user.mobile)) {
             $scope.mobileError = true;
         } else {
             $scope.mobileError = false;
         }
 
+        //check for correct format of description
+        if (!testingDescriptionStr(user.description)) {
+            $scope.descriptionError = true;
+        } else {
+            $scope.descriptionError = false;
+        }
+
+        if (user.type === 'vol') {
+            //check for correct format of dob
+            if (!testingDateStr(user.dob)) {
+                $scope.dobError = true;
+            } else {
+                $scope.dobError = false;
+            }
+        }
+
+        if (user.type === 'org') {
+            //check for correct format of location
+            if (!testingLocationStr(user.location)) {
+                $scope.locationError = true;
+            } else {
+                $scope.locationError = false;
+            }
+
+            //check for correct format of website url
+            if (!testingWebsiteStr(user.website)) {
+                $scope.websiteError = true;
+            } else {
+                $scope.websiteError = false;
+            }
+        }
+        
         //calling the API only if there are no error on forms
-        if (!$scope.dobError && !$scope.mobileError) {
+        if (!$scope.dobError && !$scope.mobileError && !$scope.locationError && !$scope.websiteError && !$scope.descriptionError) {
             $scope.dataLoading = true;
             $http({
                 url: updateUserURL,
@@ -878,6 +940,9 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
                     $window.location.href = '/profile.html';
                     $scope.dobError = false;
                     $scope.mobileError = false;
+                    $scope.locationError = false;
+                    $scope.websiteError = false;
+                    $scope.descriptionError = false;
                 } else {
                     console.log('ERROR: ' + response.data.message);
                     showToast('Something went wrong while updating Profile. Please try again later.');
@@ -894,6 +959,15 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             }
             if ($scope.mobileError) {
                 showToast('Error: Please Check Mobile number.');
+            }
+            if ($scope.locationError) {
+                showToast('Error: Please Check Location.');
+            } 
+            if ($scope.websiteError) {
+                showToast('Error: Please Check Website URL.');
+            } 
+            if($scope.descriptionError) {
+                showToast('Error: Please Check Description.');
             }
         }
     };
@@ -1217,22 +1291,36 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         };
 
         //validating input
-        //check for correct format of dob
-        // if (!testingDateTimeStr(event.datetime)) {
-        //     $scope.dateTimeError = true;
-        // } else {
-        //     $scope.dateTimeError = false;
-        // }
+        //check for correct format of event date
+        if (!testingDateTimeStr(event.datetime)) {
+            $scope.dateTimeError = true;
+        } else {
+            $scope.dateTimeError = false;
+        }
 
-        // //check for correct format of dob
-        // if (!testingEventMembers(event.members)) {
-        //     $scope.eventMembersError = true;
-        // } else {
-        //     $scope.eventMembersError = false;
-        // }
+         //check for correct format of description
+         if (!testingDescriptionStr(event.description)) {
+            $scope.descriptionError = true;
+        } else {
+            $scope.descriptionError = false;
+        }
+
+        //check for format of number of members
+        if (!testingMembersStr(event.members)) {
+            $scope.eventMembersError = true;
+        } else {
+            $scope.eventMembersError = false;
+        }
+
+        //check for correct format of location
+        if (!testingLocationStr(event.location)) {
+            $scope.locationError = true;
+        } else {
+            $scope.locationError = false;
+        }
 
         //calling the API only if there are no error on forms
-        // if (!$scope.dobError && !$scope.mobileError) {
+        if (!$scope.dateTimeError &&  !$scope.locationError && !$scope.eventMembersError && !$scope.descriptionError) {
             $scope.dataLoading = true;
             $http({
                 url: updateEventURL,
@@ -1243,18 +1331,16 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
                 // console.log('API response: ' + JSON.stringify(response));
                 if (response.data.status != 'error') {
                     var event = JSON.parse(response.data.event);
-                    // updateScopeUser(user);
-                    // console.log('updated records for user.');
-                    // localStorageService.set('sessionUser', null);
-                    // localStorageService.set('sessionUser', user);
                     updateScopeEvent(event);
                     console.log('updating session event.');
                     localStorageService.set('event', null);
                     localStorageService.set('event', event);
                     $scope.updateEventField = false;
                     $window.location.href = '/orgEventDetails.html';
-                    // $scope.dobError = false;
-                    // $scope.mobileError = false;
+                    $scope.dateTimeError = false;
+                    $scope.descriptionError = false;
+                    $scope.eventMembersError = false;
+                    $scope.locationError = false;
                 } else {
                     console.log('ERROR: ' + response.data.message);
                     showToast('Something went wrong while updating Profile. Please try again later.');
@@ -1265,14 +1351,20 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             }).finally(function () {
                 $scope.dataLoading = false;
             });
-        // } else {
-        //     if ($scope.dobError) {
-        //         showToast('Error: Please Check Date of Birth.');
-        //     }
-        //     if ($scope.mobileError) {
-        //         showToast('Error: Please Check Mobile number.');
-        //     }
-        // }
+        } else {
+            if ($scope.dateTimeError) {
+                showToast('Error: Please Check Date of Event.');
+            }
+            if ($scope.locationError) {
+                showToast('Error: Please Check Location.');
+            }
+            if ($scope.eventMembersError) {
+                showToast('Error: Please Check Required Members.');
+            }
+            if ($scope.descriptionError) {
+                showToast('Error: Please Check Event Description.');
+            }
+        }
     };
 
     // cancel Profile update function

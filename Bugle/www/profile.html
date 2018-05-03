@@ -101,7 +101,7 @@
                             <div ng-show="updateProfileField">
                                 <input class="form-control form-control-sm frminput" type="text" ng-model="user.mobile" />
                             </div>
-                            <div ng-if="mobileError">Expected Format: 10 digits</div>
+                            <div ng-if="mobileError" style="color:red;">Expected Format: 10 digits</div>
                         </td>
                     </tr>
                     <tr ng-if="user.type == 'vol'">
@@ -114,7 +114,7 @@
                             <div ng-show="updateProfileField">
                                 <input class="form-control form-control-sm frminput" type="text" ng-required="true" ng-model="user.dob" />
                             </div>
-                            <div ng-if="dobError">Expected Format: MM/DD/YYYY</div>
+                            <div ng-if="dobError" style="color:red;">Expected Format: MM/DD/YYYY</div>
                         </td>
                     </tr>
                     <tr ng-if="user.type == 'org'">
@@ -127,6 +127,7 @@
                             <div ng-show="updateProfileField">
                                 <input class="form-control form-control-sm frminput" type="text" ng-model="user.location" />
                             </div>
+                            <div ng-if="locationError" style="color:red;">Location cannot be Empty</div>
                         </td>
                     </tr>
                     <tr ng-if="user.type == 'org'">
@@ -139,6 +140,7 @@
                             <div ng-show="updateProfileField">
                                 <input class="form-control form-control-sm" type="text" ng-model="user.website" />
                             </div>
+                            <div ng-if="websiteError" style="color:red;">Expected Format: 'http://www.volunteer.org'</div>
                         </td>
                     </tr>
                     <tr>
@@ -151,6 +153,7 @@
                             <div ng-show="updateProfileField">
                                 <textarea class="form-control form-control-sm" ng-model="user.description"></textarea>
                             </div>
+                            <div ng-if="descriptionError" style="color:red;">Expected Format: 1 - 200 Characters</div>
                         </td>
                     </tr>
                 </tbody>
