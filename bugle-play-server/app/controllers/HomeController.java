@@ -683,15 +683,20 @@ public class HomeController extends Controller {
 			try {
 				eventId = Integer.valueOf(eId);
 				if (databaseService.deleteEventCascade(eventId)) {
+					LOG.debug("Cascade delete successful for event: " + eId);
 					return ok(createSuccessResponse(Strings.MESSAGE, "Event Deleted Succesfully!"))
 							.withHeader(Strings.CORS, Strings.STAR);
 				} else {
+					LOG.debug("Cascade delete unsuccessful for event: " + eId);
 					return ok(createErrorResponse("Unable to Delete Event!")).withHeader(Strings.CORS, Strings.STAR);
 				}
 			} catch (Exception e) {
+				LOG.debug("Error while cascade deleting event: " + eId);
+				e.printStackTrace();
 				return badRequest("Correct Event ID needed for deleting Event!").withHeader(Strings.CORS, Strings.STAR);
 			}
 		} else {
+			LOG.debug("event ID missing in cascade delete request. eID: " + eId);
 			return badRequest("Correct Event ID needed for deleting Event!").withHeader(Strings.CORS, Strings.STAR);
 		}
 	}
