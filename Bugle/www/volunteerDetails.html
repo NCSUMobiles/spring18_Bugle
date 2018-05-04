@@ -78,10 +78,8 @@
     <div class='home__footer'>
         <div class="nav_bar">
             <a href="organization.html" ng-if="user.type == 'org'">Events</a>
-            <a href="volunteer.html" ng-if="user.type == 'vol'" class="active">Organizations</a>
-            <a href="volunteerEvents.html" ng-if="user.type == 'vol'">Applied</a>
-            <a href="eventVolunteers.html" ng-if="user.type == 'org'">Volunteers</a>
-            <a href="chats.html">Chats</a>
+            <a href="eventVolunteers.html"  ng-class="{active: prevPage.includes('eventVolunteers.html')}">Volunteers</a>
+            <a href="chats.html" ng-class="{active: prevPage.includes('chat.html')}">Chats</a>
             <a href="profile.html">Profile</a>
         </div>
     </div>

@@ -161,19 +161,19 @@ public class DatabaseService {
 				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Melinda May' limit 1), (select e_id from events where e_name='Event 123' limit 1), 'applied')");
 		// messages - inserting default messages
 		insertStatements.add(
-				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 1' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 1: Chat<p><br>','active')");
+				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 1' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 1: Chat</p><br>','active')");
 		insertStatements.add(
-				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 28' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 28: Chat<p><br>','active')");
+				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 28' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 28: Chat</p><br>','active')");
 		insertStatements.add(
-				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 123' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 123: Chat<p><br>','active')");
+				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 123' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 123: Chat</p><br>','active')");
 		insertStatements.add(
-				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 234' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 234: Chat<p><br>','active')");
+				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 234' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 234: Chat</p><br>','active')");
 		insertStatements.add(
-				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 23' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 23: Chat<p><br>','active')");
+				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 23' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 23: Chat</p><br>','active')");
 		insertStatements.add(
-				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 47' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 47: Chat<p><br>','active')");
+				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 47' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 47: Chat</p><br>','active')");
 		insertStatements.add(
-				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 74' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 74: Chat<p><br>','active')");
+				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 74' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 74: Chat</p><br>','active')");
 		// chats - organizers
 		insertStatements.add(
 				"INSERT INTO chats (c_name, u_id, e_id, status, m_id) values ((('Event 1')::text || ': Chat'), (SELECT u_id from events where e_name='Event 1' order by u_id LIMIT 1), (SELECT e_id from events where e_name='Event 1' LIMIT 1), 'active', (SELECT m_id FROM messages where e_id IN (SELECT e_id from events where e_name='Event 1' LIMIT 1)))");
@@ -424,7 +424,7 @@ public class DatabaseService {
 				LOG.debug("Inserting message...");
 				PreparedStatement psMessage = con.prepareStatement(insertMessage);
 				psMessage.setInt(1, eId);
-				psMessage.setString(2, "<p>Welcome to " + event.geteName() + ": Chat<p><br>");
+				psMessage.setString(2, "<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to " + event.geteName() + ": Chat</p><br>");
 				psMessage.setString(3, Strings.STATUS_ACTIVE);
 				int mId = 0;
 				psMessage.execute();
