@@ -1,181 +1,3 @@
-<<<<<<< HEAD
-<!DOCTYPE html>
-<html ng-app="root">
-
-<head>
-	<meta content="img/logo_128.png" itemprop="image">
-	<link href="img/logo_128.png" rel="icon">
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="google-signin-client_id" content="<yourclientID>.apps.googleusercontent.com">
-	<title>Bugle: Event Details</title>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<!-- Angular Material style sheet -->
-	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-animate.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-aria.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-messages.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
-	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg"
-	 crossorigin="anonymous">
-	<script src="/node_modules/angular-local-storage/src/angular-local-storage.js"></script>
-	<script src="/node_modules/read-more/js/directives/readmore.js"></script>
-	<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
-	<link rel="stylesheet" type="text/css" href="css/style.css" />
-	<link rel="stylesheet" type="text/css" href="css/base.css" />
-	<script type="text/javascript" src="js/app.js"></script>
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJOkPwk7suopdiPBSnM3qep_Nsd-LC_24&libraries=places"
-	async defer></script>
-	<script>
-	var geocoder;
-var map;
-
-function initMap() {   
-address=document.getElementById("locationDetails").innerHTML
-	geocoder = new google.maps.Geocoder();
-  var latlng = new google.maps.LatLng(-34.397, 150.644);
-  var myOptions = {
-    zoom: 8,
-    center: latlng,
-    mapTypeControl: true,
-    mapTypeControlOptions: {
-      style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
-
-
-    },
-    navigationControl: true,
-    mapTypeId: google.maps.MapTypeId.ROADMAP
-  };
-  map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-  if (geocoder) {
-    geocoder.geocode({
-      'address': address
-    }, function(results, status) {
-      if (status == google.maps.GeocoderStatus.OK) {
-        if (status != google.maps.GeocoderStatus.ZERO_RESULTS) {
-          map.setCenter(results[0].geometry.location);
-
-          var infowindow = new google.maps.InfoWindow({
-            content: '<b>' + address + '</b>',
-            size: new google.maps.Size(150, 50)
-          });
-
-          var marker = new google.maps.Marker({
-            position: results[0].geometry.location,
-            map: map,
-            title: address
-          });
-          google.maps.event.addListener(marker, 'click', function() {
-            infowindow.open(map, marker);
-          });
-
-        } else {
-          alert("No results found");
-        }
-      } else {
-        alert("Geocode was not successful for the following reason: " + status);
-      }
-    });
-  }
-  document.getElementById('map_canvas').style.display = 'block';
-        }
-		
-		function navigate()
-		{
-			address= document.getElementById("locationDetails").innerHTML
-			document.getElementById('map_canvas').style.display = 'block';
-
-		}
-	</script>
-</head>
-
-<body ng-controller="index" ng-init="fetchSession()" >
-
-	<!-- The Event Details Page -->
-
-	<div class='home active'>
-
-		<md-toolbar>
-			<div class="md-toolbar-tools">
-				<md-button ng-if="prevPage.includes('orgEvents.html')" class="md-icon-button" aria-label="Go Back" ng-click="gotoPage('orgEvents')">
-					<i class="fas fa-angle-left"></i>
-				</md-button>
-				<md-button ng-if="prevPage.includes('volunteerEvents.html')" class="md-icon-button" aria-label="Go Back" ng-click="gotoPage('volunteerEvents')">
-					<i class="fas fa-angle-left"></i>
-				</md-button>
-				<span flex>{{event.eName}}: Details</span>
-			</div>
-		</md-toolbar>
-
-		<div class='home__content' style='padding: 20px'>
-
-			<table style="border: none;">
-				<tr style="padding: 1.2rem;">
-					<th>Organizer</th>
-					<td style="padding: 0.8rem;" colspan="2">
-						{{detailOrgName}}
-					</td>
-				</tr>
-				<tr style="padding: 1.2rem;">
-					<th>Location</th>
-					<td style="padding: 0.8rem;">
-						<span id="locationDetails">{{event.location}}</span>
-					</td>
-					<td style="text-align: right;">
-						<md-button class="md-raised md-accent" onclick="initMap()">View Map</md-button>
-</td>
-					</td>
-				</tr>
-				<tr style="padding: 1.2rem;">
-					<th>Date/Time</th>
-					<td style="padding: 0.8rem;" colspan="2">
-						{{event.datetime}}
-					</td>
-				</tr>
-				<tr style="padding: 1.2rem;">
-					<th>Members</th>
-					<td style="padding: 0.8rem;" colspan="2">
-						{{event.members}}
-					</td>
-				</tr>
-				<tr style="padding: 1.2rem;">
-					<th>Description</th>
-					<td style="padding: 0.8rem;" colspan="2">
-						<p read-more ng-model="event.description" words="false" length="50"></p>
-					</td>
-				</tr>
-			</table>
-			<div id="map_canvas"  style="position: relative; overflow: hidden; height:300px;width:100%;display: none;" ></div>
-			<br>
-			<div class="wrapper">
-				<md-button class="md-raised md-primary" ng-click="applyEvent(event)" ng-show="appliedStatus != 'applied' && appliedStatus != 'approved'">Join Event</md-button>
-				<md-button class="md-raised md-warn" ng-click="leaveEvent(event)" ng-show="appliedStatus == 'applied' || appliedStatus == 'approved'"
-				 ng-disabled="appliedStatus == 'approved'">Leave Event</md-button>
-			</div>
-		</div>
-
-		<div class='home__footer'>
-			<div class="nav_bar">
-				<a href="organization.html" ng-if="user.type == 'org'">Events</a>
-				<a href="volunteer.html" ng-if="user.type == 'vol'" ng-class="{'active': prevPage.includes('orgEvents.html')}">Organizations</a>
-				<a href="volunteerEvents.html" ng-if="user.type == 'vol'" ng-class="{'active': prevPage.includes('volunteerEvents.html')}">Applied</a>
-				<a href="eventVolunteers.html" ng-if="user.type == 'org'">Volunteers</a>
-				<a href="chats.html">Chats</a>
-				<a href="profile.html">Profile</a>
-			</div>
-		</div>
-
-	</div>
-
-	<!-- End Event Details Page -->
-
-</body>
-
-</html>
-=======
 <!DOCTYPE html>
 <html ng-app="root">
 
@@ -209,9 +31,7 @@ address=document.getElementById("locationDetails").innerHTML
 	<script>
 		var geocoder;
 		var map;
-
 		function initMap() {
-
 			if (document.getElementById('map_canvas').style.display == 'none') {
 				document.getElementById("mapbtn").innerText = "Hide Map";
 				address = document.getElementById("locationDetails").innerHTML
@@ -235,12 +55,10 @@ address=document.getElementById("locationDetails").innerHTML
 						if (status == google.maps.GeocoderStatus.OK) {
 							if (status != google.maps.GeocoderStatus.ZERO_RESULTS) {
 								map.setCenter(results[0].geometry.location);
-
 								var infowindow = new google.maps.InfoWindow({
 									content: '<b>' + address + '</b>',
 									size: new google.maps.Size(150, 50)
 								});
-
 								var marker = new google.maps.Marker({
 									position: results[0].geometry.location,
 									map: map,
@@ -249,7 +67,6 @@ address=document.getElementById("locationDetails").innerHTML
 								google.maps.event.addListener(marker, 'click', function () {
 									infowindow.open(map, marker);
 								});
-
 							} else {
 								alert("No results found");
 							}
@@ -264,7 +81,6 @@ address=document.getElementById("locationDetails").innerHTML
 				document.getElementById('map_canvas').style.display = "none";
 			}
 		}
-
 		function navigate() {
 			address = document.getElementById("locationDetails").innerHTML
 			document.getElementById('map_canvas').style.display = 'block';
@@ -353,4 +169,3 @@ address=document.getElementById("locationDetails").innerHTML
 </body>
 
 </html>
->>>>>>> master
