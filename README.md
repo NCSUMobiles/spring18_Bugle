@@ -80,13 +80,13 @@ Following functionalities implemented as part of the construction and implementa
 [Report 1](Documentation/Progress%20Reports/Report%201.txt), [Report 2](Documentation/Progress%20Reports/Report%202.txt), [Report 3](Documentation/Progress%20Reports/Report%203.txt), [Report 4](Documentation/Progress%20Reports/Report%204.txt), [Report 5](Documentation/Progress%20Reports/Report%205.txt), [Report 6](Documentation/Progress%20Reports/Report%206.txt).
 
 ## GitHub: 
-[Bugle](https://github.com/NCSUMobiles/spring18_Bugle)
+[Bugle on GitHub](https://github.com/NCSUMobiles/spring18_Bugle)
 
 ## Live URL: 
-[Bugle](https://bugle-npm-srv.herokuapp.com/)- deployed on Heroku
-Sample Users:
-Organization- email: org1@org.com, pwd: o1
-Volunteer- email: usr1@vol.com, pwd: v1
+[Bugle](https://bugle-npm-srv.herokuapp.com/) - It is deployed on Heroku
+* Sample Users:<br/>
+Organization - email: org1@org.com, pwd: o1 <br/> 
+Volunteer - email: usr1@vol.com, pwd: v1 <br/>
 
 ## Specification: 
 [Backend API Specification](bugle-play-server/README.md)
