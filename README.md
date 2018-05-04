@@ -12,9 +12,8 @@ Bugle is a mobile website that helps bridge the disconnect between volunteers an
 ## Project Milestones:
 
 1. Requirement Gathering and Design
-
-Gathered requirements from the client: [Requirements](Requirements.md)
-Developed wireframes for the design: [Wireframes](Wireframes)
+* Gathered requirements from the client: [Requirements](Requirements.md)
+* Developed wireframes for the design: [Wireframes](Wireframes)
 
 2. Construction and Implementation
 
