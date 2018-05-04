@@ -1,0 +1,4 @@
+{
+    "status": "success",
+    "volunteers": "[{\"uId\":45,\"uName\":\"Daisy Johnson\",\"email\":\"usr7@vol.com\",\"mobile\":\"1230978345\",\"dob\":\"08/16/1994\",\"password\":\"v7\",\"type\":\"vol\",\"description\":\"I am a lawyer and I love to volunteer. Hello\"},{\"uId\":39,\"uName\":\"John Smith\",\"email\":\"usr1@vol.com\",\"mobile\":\"1232233421\",\"dob\":\"08/21/1993\",\"password\":\"v1\",\"type\":\"vol\",\"description\":\"Reliable, Dependable and always on time. I would love to volunteer for you!\"}]"
+}
