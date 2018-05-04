@@ -147,3 +147,13 @@ div.wrapper {
 .btn-center {
     margin: 0 auto;
 }
+
+.md-cancel-button {
+    background-color: #ff5722 !important;
+    color: white !important;
+}
+
+.md-confirm-button {
+    background-color: #536dfe !important;
+    color: white !important;
+}

@@ -86,3 +86,6 @@ GET    /get-gprof/:pId						 		   controllers.HomeController.getGoogleProfile(pI
 
 # Get list of volunteers approved for an event.
 GET    /approved-vols/:eId						 	   controllers.HomeController.getApprovedVolunteers(eId: String)
+
+# Delete an event.
+GET    /delete-event/:eId						 	   controllers.HomeController.deleteEvent(eId: String)

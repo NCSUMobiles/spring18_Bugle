@@ -106,19 +106,19 @@ public class DatabaseService {
 				"INSERT INTO users (u_name, email, mobile, password, type, description, location, website) values ('Organization 3','org3@org.com','1236547894','o3','org','This is the third volunteer organization. We do volunteer work for this and that. For more information visit: xyz.org3.com','Chicago','xyz.org3.com')");
 		// users-volunteers
 		insertStatements.add(
-				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('John Smith','usr1@vol.com','1232233421','08/21/1993','v1','vol')");
+				"INSERT INTO users (u_name, email, mobile, dob, password, type, description) values ('John Smith','usr1@vol.com','1232233421','08/21/1993','v1','vol', 'Reliable, Dependable and always on time. I would love to volunteer for you!')");
 		insertStatements.add(
-				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Peter Parker','usr2@vol.com','1231231233','01/19/1990','v2','vol')");
+				"INSERT INTO users (u_name, email, mobile, dob, password, type, description) values ('Peter Parker','usr2@vol.com','1231231233','01/19/1990','v2','vol', 'I am an enthusiastic Volunteer and I have volunteered for many events.')");
 		insertStatements.add(
-				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Phil Coulson','usr3@vol.com','1233213458','01/18/1995','v3','vol')");
+				"INSERT INTO users (u_name, email, mobile, dob, password, type, description) values ('Phil Coulson','usr3@vol.com','1233213458','01/18/1995','v3','vol', 'I am a very good person and I volunteer.')");
 		insertStatements.add(
-				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Harry Potter','usr4@vol.com','123764543','09/24/1985','v4','vol')");
+				"INSERT INTO users (u_name, email, mobile, dob, password, type, description) values ('Harry Potter','usr4@vol.com','123764543','09/24/1985','v4','vol', 'I like to volunteer for food banks and farms.')");
 		insertStatements.add(
-				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Melinda May','usr5@vol.com','123987456','09/30/1989','v5','vol')");
+				"INSERT INTO users (u_name, email, mobile, dob, password, type, description) values ('Melinda May','usr5@vol.com','123987456','09/30/1989','v5','vol', 'Full Time Website developer looking for some volunteer work.')");
 		insertStatements.add(
-				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Will Smith','usr6@vol.com','1239873458','11/11/1990','v6','vol')");
+				"INSERT INTO users (u_name, email, mobile, dob, password, type, description) values ('Will Smith','usr6@vol.com','1239873458','11/11/1990','v6','vol', 'Teacher looking for volunteering opportunities.')");
 		insertStatements.add(
-				"INSERT INTO users (u_name, email, mobile, dob, password, type) values ('Daisy Johnson','usr7@vol.com','1230978345','08/16/1994','v7','vol')");
+				"INSERT INTO users (u_name, email, mobile, dob, password, type, description) values ('Daisy Johnson','usr7@vol.com','1230978345','08/16/1994','v7','vol', 'I am a lawyer and I love to volunteer.')");
 		// events
 		insertStatements.add(
 				"INSERT INTO events (e_name, location, datetime, description, members, u_id, status) values ('Event 1','Raleigh','05/24/2018 11:00AM','description of a volunteering event!! come volunteer with us','12',(select u_id from users where u_name='Organization 1' limit 1),'active')");
@@ -161,19 +161,19 @@ public class DatabaseService {
 				"INSERT INTO applicants (u_id, e_id, status) values ((select u_id from users where u_name='Melinda May' limit 1), (select e_id from events where e_name='Event 123' limit 1), 'applied')");
 		// messages - inserting default messages
 		insertStatements.add(
-				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 1' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 1: Chat<p><br>','active')");
+				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 1' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 1: Chat</p><br>','active')");
 		insertStatements.add(
-				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 28' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 28: Chat<p><br>','active')");
+				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 28' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 28: Chat</p><br>','active')");
 		insertStatements.add(
-				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 123' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 123: Chat<p><br>','active')");
+				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 123' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 123: Chat</p><br>','active')");
 		insertStatements.add(
-				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 234' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 234: Chat<p><br>','active')");
+				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 234' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 234: Chat</p><br>','active')");
 		insertStatements.add(
-				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 23' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 23: Chat<p><br>','active')");
+				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 23' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 23: Chat</p><br>','active')");
 		insertStatements.add(
-				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 47' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 47: Chat<p><br>','active')");
+				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 47' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 47: Chat</p><br>','active')");
 		insertStatements.add(
-				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 74' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 74: Chat<p><br>','active')");
+				"INSERT INTO messages (e_id, msg, status) values ((SELECT e_id from events where e_name='Event 74' LIMIT 1),'<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to Event 74: Chat</p><br>','active')");
 		// chats - organizers
 		insertStatements.add(
 				"INSERT INTO chats (c_name, u_id, e_id, status, m_id) values ((('Event 1')::text || ': Chat'), (SELECT u_id from events where e_name='Event 1' order by u_id LIMIT 1), (SELECT e_id from events where e_name='Event 1' LIMIT 1), 'active', (SELECT m_id FROM messages where e_id IN (SELECT e_id from events where e_name='Event 1' LIMIT 1)))");
@@ -424,7 +424,7 @@ public class DatabaseService {
 				LOG.debug("Inserting message...");
 				PreparedStatement psMessage = con.prepareStatement(insertMessage);
 				psMessage.setInt(1, eId);
-				psMessage.setString(2, "<p>Welcome to " + event.geteName() + ": Chat<p><br>");
+				psMessage.setString(2, "<p style=\"text-align: center !important; font-weight: bold !important;\">Welcome to " + event.geteName() + ": Chat</p><br>");
 				psMessage.setString(3, Strings.STATUS_ACTIVE);
 				int mId = 0;
 				psMessage.execute();
@@ -1293,6 +1293,51 @@ public class DatabaseService {
 		}
 		LOG.debug("Fetched Approved Volunteers.");
 		return volunteers;
+	}
+
+	/**
+	 * This method deletes an event and its associated applicants, chats and
+	 * messages for the given event ID.
+	 * 
+	 * @param eId
+	 *            the event ID.
+	 * @return
+	 */
+	public boolean deleteEventCascade(int eId) {
+		LOG.debug("Cascading Delete for Event ID: " + eId);
+		String deleteEvent = "DELETE FROM events WHERE e_id = ?";
+		String deleteApplicants = "DELETE FROM applicants WHERE e_id = ?";
+		String deleteChats = "DELETE FROM chats WHERE e_id = ?";
+		String deleteMessages = "DELETE FROM messages WHERE e_id = ?";
+		Connection con = null;
+		try {
+			con = db.getConnection();
+			PreparedStatement psdm = con.prepareStatement(deleteMessages);
+			psdm.setInt(1, eId);
+			PreparedStatement psdc = con.prepareStatement(deleteChats);
+			psdc.setInt(1, eId);
+			PreparedStatement psda = con.prepareStatement(deleteApplicants);
+			psda.setInt(1, eId);
+			PreparedStatement psde = con.prepareStatement(deleteEvent);
+			psde.setInt(1, eId);
+			// There can be zero applicants but there will always be an initial chat and
+			// message entry for an event.
+			return (psdm.executeUpdate() > 0 && psdc.executeUpdate() > 0 && psda.executeUpdate() >= 0
+					&& psde.executeUpdate() > 0);
+		} catch (Exception e) {
+			LOG.error("Error while cascade deleting Event.");
+			e.printStackTrace();
+			return false;
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					LOG.error("Error while closing the connection from delete Event Cascade method");
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 }

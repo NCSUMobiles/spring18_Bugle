@@ -26,6 +26,7 @@ app.service('UserService', function () {
     var chat = '';
     var tmpGUser = '';
     var participants = '';
+    var dVol = '';
 
     return {
         getLoggedInUser: function () {
@@ -93,6 +94,12 @@ app.service('UserService', function () {
         },
         setParticipants: function (p) {
             participants = p;
+        },
+        getDVol: function () {
+            return dVol;
+        },
+        setDVol: function (v) {
+            dVol = v;
         }
     }
 });
@@ -145,6 +152,8 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
 
     $scope.participants = [];
 
+    $scope.dVol = {};
+
     //Loading Google API
     function onLoad() {
         gapi.load('auth2', function () {
@@ -165,6 +174,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         $scope.chat = localStorageService.get('chat');
         $scope.tempGUser = localStorageService.get('tempGUser');
         $scope.participants = localStorageService.get('participants');
+        $scope.dVol = localStorageService.get('dVol');
 
         //only do this for profile page.
         if ($window.location.href.includes('/profile.html')) {
@@ -226,7 +236,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
                 $window.location.href = '/organization.html';
             }
         } else {
-            var orgPage = $window.location.href.includes('/organization.html') || $window.location.href.includes('/createEvent.html') || $window.location.href.includes('/eventVolunteers.html');
+            var orgPage = $window.location.href.includes('/organization.html') || $window.location.href.includes('/createEvent.html') || $window.location.href.includes('/eventVolunteers.html') || $window.location.href.includes('/orgEventDetails.html');
             if (orgPage && $scope.user.type == 'vol') {
                 console.log('redirecting lost volunteer to Volunteer Home page.');
                 $window.location.href = '/volunteer.html';
@@ -579,16 +589,27 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
     }
     //--END: Content from Event Details page controller
 
-    $scope.updateField = false;
+    $scope.updateProfileField = false;
+    $scope.updateEventField = false;
 
     $scope.dobError = false;
     $scope.mobileError = false;
+    $scope.locationError = false;
+    $scope.websiteError = false;
+    $scope.descriptionError = false;
+    $scope.eventMembersError = false;
 
-    // function to enable users to modify Profile details start
-    $scope.modify = function () {
-        $scope.updateField = true;
+    // enable users to modify Profile details start
+    $scope.modifyProfile = function () {
+        $scope.updateProfileField = true;
     };
-    // function to enable users to modify Profile details end
+    // enable users to modify Profile details end
+
+    // enable users to modify Event details start
+    $scope.modifyEvent = function () {
+        $scope.updateEventField = true;
+    };
+    // enable users to modify Event details end
 
     // function for a volunteer to apply for a event start.
     $scope.applyEvent = function (event) {
@@ -753,7 +774,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         };
 
         console.log('Approving Volunteers: ' + JSON.stringify(eventApplication));
-
+        $scope.dataLoading = true;
         $http({
             method: 'POST',
             url: serviceURL + '/approve-volunteers',
@@ -771,6 +792,8 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             }
         }, function (response) {
             console.log('ERROR: ' + JSON.stringify(response));
+        }).finally(function () {
+            $scope.dataLoading = false;
         });
     };
     // function for a org to approve volunteer end.
@@ -783,7 +806,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         };
 
         console.log('Rejecting Volunteers: ' + JSON.stringify(eventApplication));
-
+        $scope.dataLoading = true;
         $http({
             method: 'POST',
             url: serviceURL + '/reject-volunteers',
@@ -801,6 +824,8 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             }
         }, function (response) {
             console.log('ERROR: ' + JSON.stringify(response));
+        }).finally(function () {
+            $scope.dataLoading = false;
         });
     };
     // function for a org to reject volunteer end.
@@ -815,6 +840,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
     }
     // Function to show toast message end
 
+    // validation for date (format: mm/dd/yyyy)
     function testingDateStr(str) {
         if (str) {
             console.log('validating date of birth.');
@@ -835,6 +861,22 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         }
     }
 
+    // validation for datetime (format: mm/dd/yyy hh:mmAM/PM)
+    function testingDateTimeStr(str) {
+        if (str) {
+            console.log('validating datetime.');
+            var t = str.match(/[0-1]\d\/[0-3]\d\/\d{4} [0-1]\d:[0-5]\d[AaPp][Mm]/);
+            if (t === null)
+                return false;
+
+            return true;
+        } else {
+            console.log('datetime not available to validate.');
+            return true;
+        }
+    }
+
+    // validation for 10 digit phone number 
     function testingPhoneStr(str) {
         if (str) {
             console.log('validating Phone number.');
@@ -849,8 +891,58 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         }
     }
 
+    // validation for number of members (format: 1 - 100)
+    function testingMembersStr(str) {
+        if (str) {
+            console.log('validating number of members required for events.');
+            var t = str.match(/^(?:(?!0)\d{1,2}|100)$/);
+            if (t == null)
+                return false;
+
+            return true;
+        } else {
+            console.log('number of members not available to validate.');
+        }
+    }
+
+    // validation for website urls (format: 'http://www.volunteer.org')
+    function testingWebsiteStr(str) {
+        if (str) {
+            console.log('validating website url.');
+            var t = str.match(/^((https?):\/\/)?([w|W]{3}\.)+[a-zA-Z0-9\-\.]{3,}\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,})?$/);
+            if (t === null)
+                return false;
+
+            return true;
+        } else {
+            console.log('no website url to validate.');
+        }
+    }
+
+    // validation for location text
+    function testingLocationStr(str) {
+        console.log('validating location text.');
+        if (!str || str.length == 0)
+            return false;
+
+        return true;
+    }
+
+    // validation for description textarea (200 max char)
+    function testingDescriptionStr(str) {
+        if (str) {
+            console.log('validating description text.');
+            if (str.length == 0 || str.length > 200)
+                return false;
+
+            return true;
+        } else {
+            console.log('no description to validate');
+        }
+    }
+
     // update user Profile details function
-    $scope.update = function (user) {
+    $scope.updateProfile = function (user) {
         console.log('update user called for user ' + user.uName);
         var updateUserURL = serviceURL + '/edit-user';
         var updateUserInfo = {
@@ -867,22 +959,47 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         };
 
         //validating input
-        //check for correct format of dob
-        if (!testingDateStr(user.dob)) {
-            $scope.dobError = true;
-        } else {
-            $scope.dobError = false;
-        }
-
-        //check for correct format of dob
+        //check for correct format of mobile number
         if (!testingPhoneStr(user.mobile)) {
             $scope.mobileError = true;
         } else {
             $scope.mobileError = false;
         }
 
+        //check for correct format of description
+        if (!testingDescriptionStr(user.description)) {
+            $scope.descriptionError = true;
+        } else {
+            $scope.descriptionError = false;
+        }
+
+        if (user.type === 'vol') {
+            //check for correct format of dob
+            if (!testingDateStr(user.dob)) {
+                $scope.dobError = true;
+            } else {
+                $scope.dobError = false;
+            }
+        }
+
+        if (user.type === 'org') {
+            //check for correct format of location
+            if (!testingLocationStr(user.location)) {
+                $scope.locationError = true;
+            } else {
+                $scope.locationError = false;
+            }
+
+            //check for correct format of website url
+            if (!testingWebsiteStr(user.website)) {
+                $scope.websiteError = true;
+            } else {
+                $scope.websiteError = false;
+            }
+        }
+
         //calling the API only if there are no error on forms
-        if (!$scope.dobError && !$scope.mobileError) {
+        if (!$scope.dobError && !$scope.mobileError && !$scope.locationError && !$scope.websiteError && !$scope.descriptionError) {
             $scope.dataLoading = true;
             $http({
                 url: updateUserURL,
@@ -897,10 +1014,13 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
                     console.log('updated records for user.');
                     localStorageService.set('sessionUser', null);
                     localStorageService.set('sessionUser', user);
-                    $scope.updateField = false;
+                    $scope.updateProfileField = false;
                     $window.location.href = '/profile.html';
                     $scope.dobError = false;
                     $scope.mobileError = false;
+                    $scope.locationError = false;
+                    $scope.websiteError = false;
+                    $scope.descriptionError = false;
                 } else {
                     console.log('ERROR: ' + response.data.message);
                     showToast('Something went wrong while updating Profile. Please try again later.');
@@ -918,12 +1038,21 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             if ($scope.mobileError) {
                 showToast('Error: Please Check Mobile number.');
             }
+            if ($scope.locationError) {
+                showToast('Error: Please Check Location.');
+            }
+            if ($scope.websiteError) {
+                showToast('Error: Please Check Website URL.');
+            }
+            if ($scope.descriptionError) {
+                showToast('Error: Please Check Description.');
+            }
         }
     };
 
     // cancel Profile update function
-    $scope.cancelUpdate = function () {
-        $scope.updateField = false;
+    $scope.cancelUpdateProfile = function () {
+        $scope.updateProfileField = false;
         $window.location.href = '/profile.html';
     };
 
@@ -936,7 +1065,6 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
 
  
     $scope.createEvent = function () {
-        $scope.dataLoading = true;
         console.log('creating event.');
   console.log($scope.datetime)
   console.log($scope.location)
@@ -949,7 +1077,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
             "u_id": $scope.user.uId,
             "status": "active"
         };
-
+        $scope.dataLoading = true;
         $http({
             url: serviceURL + '/event',
             method: 'POST',
@@ -1204,7 +1332,7 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         });
     }
 
-    $scope.okPModal = function() {
+    $scope.okPModal = function () {
         $mdDialog.cancel();
     }
 
@@ -1215,5 +1343,172 @@ app.controller('index', ['$scope', '$http', '$window', '$mdToast', 'UserService'
         $scope.participants = p;
     }
     // Update Scope Participants function end
+
+    $scope.vieworgEventDetails = function (event) {
+        console.log('displaying event details for event: ' + JSON.stringify(event));
+        console.log('Current scope organization is: ' + JSON.stringify($scope.organization));
+        updateScopeEvent(event);
+        console.log('updating session event.');
+        localStorageService.set('event', null);
+        localStorageService.set('event', event);
+        updateScopePrevPage($window.location.href);
+        localStorageService.set('prevPage', null);
+        localStorageService.set('prevPage', $window.location.href);
+        $window.location.href = '/orgEventDetails.html';
+    }
+
+    // update org Event details function
+    $scope.updateEvent = function (event, user) {
+        console.log('update event called for event ' + event.eName);
+        var updateEventURL = serviceURL + '/edit-event';
+        var updateEventInfo = {
+            'EVENT_EID': $scope.event.eId,
+            'EVENT_ENAME': $scope.event.eName,
+            'EVENT_LOCATION': $scope.event.location,
+            'EVENT_DATETIME': $scope.event.datetime,
+            'EVENT_DESCRIPTION': $scope.event.description,
+            'EVENT_MEMBERS': $scope.event.members,
+            'EVENT_STATUS': $scope.event.status,
+        };
+
+        //validating input
+        //check for correct format of event date
+        if (!testingDateTimeStr(event.datetime)) {
+            $scope.dateTimeError = true;
+        } else {
+            $scope.dateTimeError = false;
+        }
+
+        //check for correct format of description
+        if (!testingDescriptionStr(event.description)) {
+            $scope.descriptionError = true;
+        } else {
+            $scope.descriptionError = false;
+        }
+
+        //check for format of number of members
+        if (!testingMembersStr(event.members)) {
+            $scope.eventMembersError = true;
+        } else {
+            $scope.eventMembersError = false;
+        }
+
+        //check for correct format of location
+        if (!testingLocationStr(event.location)) {
+            $scope.locationError = true;
+        } else {
+            $scope.locationError = false;
+        }
+
+        //calling the API only if there are no error on forms
+        if (!$scope.dateTimeError && !$scope.locationError && !$scope.eventMembersError && !$scope.descriptionError) {
+            $scope.dataLoading = true;
+            $http({
+                url: updateEventURL,
+                method: 'POST',
+                data: updateEventInfo,
+                headers: { 'Content-Type': 'application/json' }
+            }).then(function (response) {
+                // console.log('API response: ' + JSON.stringify(response));
+                if (response.data.status != 'error') {
+                    var event = JSON.parse(response.data.event);
+                    updateScopeEvent(event);
+                    console.log('updating session event.');
+                    localStorageService.set('event', null);
+                    localStorageService.set('event', event);
+                    $scope.updateEventField = false;
+                    $window.location.href = '/orgEventDetails.html';
+                    $scope.dateTimeError = false;
+                    $scope.descriptionError = false;
+                    $scope.eventMembersError = false;
+                    $scope.locationError = false;
+                } else {
+                    console.log('ERROR: ' + response.data.message);
+                    showToast('Something went wrong while updating Profile. Please try again later.');
+                }
+            }, function (response) {
+                console.log('ERROR: ' + JSON.stringify(response));
+                showToast('Something went wrong while updating Profile. Please try again later.');
+            }).finally(function () {
+                $scope.dataLoading = false;
+            });
+        } else {
+            if ($scope.dateTimeError) {
+                showToast('Error: Please Check Date of Event.');
+            }
+            if ($scope.locationError) {
+                showToast('Error: Please Check Location.');
+            }
+            if ($scope.eventMembersError) {
+                showToast('Error: Please Check Required Members.');
+            }
+            if ($scope.descriptionError) {
+                showToast('Error: Please Check Event Description.');
+            }
+        }
+    };
+
+    // cancel Profile update function
+    $scope.cancelUpdateEvent = function () {
+        $scope.updateEventField = false;
+        $window.location.href = '/orgEventDetails.html';
+    };
+
+    $scope.showUsrDetails = function (usr) {
+        console.log('Showing Volunteer details.');
+        updateScopeDVol(usr);
+        console.log('updating session dVol.');
+        localStorageService.set('dVol', null);
+        localStorageService.set('dVol', usr);
+        updateScopePrevPage($window.location.href);
+        localStorageService.set('prevPage', null);
+        localStorageService.set('prevPage', $window.location.href);
+        $window.location.href = '/volunteerDetails.html';
+    };
+
+    // Update Scope DVol function Start
+    var updateScopeDVol = function (v) {
+        console.log('updating Service Detail Volunteers.');
+        UserService.dVol = v;
+        $scope.dVol = v;
+    }
+    // Update Scope DVol function end
+
+    $scope.deleteEvent = function (ev, eId) {
+        console.log('delete called for event: ' + eId + '... confirming from user.');
+        // Appending dialog to document.body to cover sidenav in docs app
+        var confirm = $mdDialog.confirm()
+            .title('Warning! Deleting Event.')
+            .textContent('This will delete the event along with all its volunteers and chats. This cannot be undone.')
+            .ariaLabel('Confirm Delete Event')
+            .targetEvent(ev)
+            .ok('Confirm')
+            .cancel('Cancel');
+
+        $mdDialog.show(confirm).then(function () {
+            console.log('User Confirmed... Deleting Event...');
+            $scope.dataLoading = true;
+            $http({
+                method: 'GET',
+                url: serviceURL + '/delete-event/' + eId,
+                headers: { 'Content-Type': '*/*' }
+            }).then(function (response) {
+                if (response.data.status != 'error') {
+                    console.log('delete event response message: ' + response.data.message);
+                    showToast('Event Deleted!');
+                    $window.location.href = '/organization.html';
+                } else {
+                    console.log('delete event ERROR: ' + response.data.message);
+                    showToast('Sorry, could not delete Event!');
+                }
+            }, function (response) {
+                console.log('ERROR: ' + JSON.stringify(response));
+            }).finally(function () {
+                $scope.dataLoading = false;
+            });
+        }, function () {
+            console.log('User cancelled... Do nothing.');
+        });
+    }
 
 }]);

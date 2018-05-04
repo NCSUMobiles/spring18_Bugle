@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg"
         crossorigin="anonymous">
     <script type="text/javascript" src="js/app.js"></script>
+<<<<<<< HEAD
     
   
 <script>
@@ -134,33 +135,132 @@ document.getElementById("locationshow").value=address
   </script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJOkPwk7suopdiPBSnM3qep_Nsd-LC_24&libraries=places&callback=initAutocomplete"
        async defer></script>
+=======
+
+
+    <script>
+        // This example adds a search box to a map, using the Google Place Autocomplete
+        // feature. People can enter geographical searches. The search box will return a
+        // pick list containing a mix of places and predicted search terms.
+
+        // This example requires the Places library. Include the libraries=places
+        // parameter when you first load the API. For example:
+        // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
+
+        function initAutocomplete() {
+            var map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 35.7720577, lng: -78.6763447 },
+                zoom: 13,
+                mapTypeId: 'roadmap'
+            });
+
+            // Create the search box and link it to the UI element.
+            var input = document.getElementById('pac-input');
+            var searchBox = new google.maps.places.SearchBox(input);
+            map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+            // Bias the SearchBox results towards current map's viewport.
+            map.addListener('bounds_changed', function () {
+                searchBox.setBounds(map.getBounds());
+            });
+
+            // Update lat/long value of div when anywhere in the map is clicked    
+            google.maps.event.addListener(map, 'click', function (event) {
+                latVal = event.latLng.lat()
+                longVal = event.latLng.lng()
+                getReverseGeocodingData(event.latLng.lat(), event.latLng.lng())
+            });
+            var markers = [];
+            // Listen for the event fired when the user selects a prediction and retrieve
+            // more details for that place.
+            searchBox.addListener('places_changed', function () {
+                var places = searchBox.getPlaces();
+
+                if (places.length == 0) {
+                    return;
+                }
+
+                // Clear out the old markers.
+                markers.forEach(function (marker) {
+                    marker.setMap(null);
+                });
+                markers = [];
+
+
+
+                // For each place, get the icon, name and location.
+                var bounds = new google.maps.LatLngBounds();
+                places.forEach(function (place) {
+                    if (!place.geometry) {
+                        console.log("Returned place contains no geometry");
+                        return;
+                    }
+                    var icon = {
+                        url: place.icon,
+                        size: new google.maps.Size(71, 71),
+                        origin: new google.maps.Point(0, 0),
+                        anchor: new google.maps.Point(17, 34),
+                        scaledSize: new google.maps.Size(25, 25)
+                    };
+
+                    // Create a marker for each place.
+                    markers.push(new google.maps.Marker({
+                        map: map,
+                        icon: icon,
+                        title: place.name,
+                        position: place.geometry.location
+                    }));
+
+                    if (place.geometry.viewport) {
+                        // Only geocodes have viewport.
+                        bounds.union(place.geometry.viewport);
+                    } else {
+                        bounds.extend(place.geometry.location);
+                    }
+                });
+                map.fitBounds(bounds);
+            });
+        }
+        function getReverseGeocodingData(lat, lng) {
+            var latlng = new google.maps.LatLng(lat, lng);
+            // This is making the Geocode request
+            var geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ 'latLng': latlng }, function (results, status) {
+                if (status !== google.maps.GeocoderStatus.OK) {
+                    alert(status);
+                }
+                // This is checking to see if the Geoeode Status is OK before proceeding
+                if (status == google.maps.GeocoderStatus.OK) {
+                    var address = (results[0].formatted_address);
+                    //window.opener.focus();
+                    //window.opener.angular.element('#ctrl').scope();
+                    //angular.element($("#location")).scope().location=address
+
+                    var scope = angular.element(document.getElementById("location")).scope();
+
+                    scope.location = address
+                    document.getElementById("locationshow").value = address;
+                    document.getElementById("locationshow").focus();
+                    document.getElementById('map').style.display = 'none';
+                }
+            });
+        }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJOkPwk7suopdiPBSnM3qep_Nsd-LC_24&libraries=places&callback=initAutocomplete"
+        async defer></script>
+>>>>>>> master
 </head>
 
-<body ng-controller="index" ng-init="fetchSession()">
+<body ng-controller="index" ng-init="fetchSession()" onload="document.getElementById('map').style.display = 'none';">
 
     <!-- The Create Event Page -->
-
     <div class='home active'>
-
-        <!-- <div class='home__header center_text'>
-            <h3><b>{{user.uName}}</b></h3>
-        </div> -->
-
         <md-toolbar>
             <div class="md-toolbar-tools">
                 <md-button class="md-icon-button" aria-label="Go Back" ng-click="gotoPage('organization')">
                     <i class="fas fa-angle-left"></i>
                 </md-button>
-
-                <!-- <md-truncate class="center_text" style="position: absolute; left: 90px; right: 170px; top: 13px; bottom: 13px;">{{user.uName}}</md-truncate> -->
-
                 <span flex>Create Event</span>
-                <!-- <md-button class="md-raised" aria-label="Learn More">
-                Learn More
-              </md-button>
-              <md-button class="md-fab md-mini" aria-label="Favorite">
-                <md-icon md-svg-icon="img/icons/favorite.svg"></md-icon>
-              </md-button> -->
             </div>
         </md-toolbar>
 
@@ -175,30 +275,44 @@ document.getElementById("locationshow").value=address
 
                     <md-input-container>
                         <label for="location">Location</label>
+<<<<<<< HEAD
                         <input id="locationshow" type="text" value="Click a place on map to select location"  >
                         <input type="hidden" id="location" ng-model="location"  required flex/>
 
                         <input id="pac-input" class="controls" type="text" placeholder="Search Box">
                         <div id="map" style="position: relative; overflow: hidden; height:300px;width:100%"></div>
 
+=======
+                        <input id="locationshow" type="text" onfocus="document.getElementById('map').style.display = 'block';"
+                            placeholder="Click a place on map to select location" readonly/>
+                        <input type="hidden" id="location" ng-model="location" required flex/>
+>>>>>>> master
                     </md-input-container>
              
                        
 
+                    <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+                    <div id="map" style="position: relative; overflow: hidden; height:300px;width:100%"></div>
+
                     <md-input-container>
-                        <label for="datetime">Time</label>
-                        <input ng-model="datetime" type="datetime" required flex>
+                        <label for="datetime">Date/Time (MM/DD/YYYY hh:mmAM/PM)</label>
+                        <input ng-model="datetime" type="datetime-local" required flex>
                     </md-input-container>
 
                     <md-input-container>
-                        <label for="description">Description</label>
+                        <label for="description">Description (Max 200 characters)</label>
                         <input ng-model="description" type="text" maxlength="150" required flex>
                     </md-input-container>
 
                     <md-input-container>
+<<<<<<< HEAD
                         <label for="members">Members</label>
                         <input ng-model="members" min=1 type="number" required flex>
                         
+=======
+                        <label for="members">Members (Max 100)</label>
+                        <input ng-model="members" name="members" min="1" max="100" integer required flex>
+>>>>>>> master
                     </md-input-container>
                    
                     <input class="form-control" type="hidden" id='u_id' name="u_id" value="{{user.id}}" />
@@ -221,9 +335,7 @@ document.getElementById("locationshow").value=address
                 <a href="profile.html">Profile</a>
             </div>
         </div>
-
     </div>
-
     <!-- End Create Event Page -->
 
 </body>

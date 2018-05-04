@@ -49,7 +49,8 @@
 
         <div class='home__content my_container'>
             <md-list flex ng-init="getOrganizationEvents(user.uId)">
-                <md-list-item class="md-1-line" ng-repeat="event in events" ng-click="gotoPage('eventVolunteers')">
+                <md-list-item class="md-1-line" ng-repeat="event in events" ng-click="vieworgEventDetails(event)">
+                <!-- <md-list-item class="md-1-line" ng-repeat="event in events" ng-click="viewEventDetails(event)"> -->
                     <md-card flex>
                         <md-card-title>
                             <md-card-title-text>{{event.eName}}</md-card-title-text>
