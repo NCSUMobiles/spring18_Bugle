@@ -203,7 +203,7 @@
                             <div ng-hide="updateEventField">{{event.location}}</div>
                             <div ng-show="updateEventField">
                                 <input id="locationshow" class="form-control form-control-sm frminput" type="text" onfocus="document.getElementById('map').style.display = 'block';"
-                                    placeholder="Click a place on map to select location" />
+                                    placeholder="Click a place on map to select location" readonly />
                                 <input type="hidden" id="location" ng-model="event.location" required flex/>
                             </div>
                             <input id="pac-input" class="controls" type="text" placeholder="Search Box">
