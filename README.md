@@ -36,10 +36,10 @@ Following functionalities implemented as part of the construction and implementa
           - Option to login with google authentication
           
 3. User Testing
-Validation of features
+* Validation of features
 
 4. Deployment
-Deployment of application on Heroku platform for public access.
+* Deployment of application on Heroku platform for public access.
 
 ## Technology Stack used
 * Node express - UI server
