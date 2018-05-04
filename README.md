@@ -12,34 +12,39 @@ Bugle is a mobile website that helps bridge the disconnect between volunteers an
 ## Project Milestones:
 
 1. Requirement Gathering and Design
-* Gathered requirements from the client: [Requirements](Requirements.md)
-* Developed wireframes for the design: [Wireframes](Wireframes)
+  * Gathered requirements from the client: [Requirements](Requirements.md)
+  * Developed wireframes for the design: [Wireframes](Wireframes)
 
 2. Construction and Implementation
 
-Following functionalities implemented as part of the construction and implementation phase:
+Following functionalities implemented as part of the construction and implementation phase:<br/>
 
-     1. Login/Sign Up and Profile Page
-          - Login and signup functionality for volunteers and organisations
-     2. Volunteer Home Page
-          - See list of available events to apply
-          - Apply for a event
-     3. Organization Home Page
-          - Host events
-     4. Event Details Page and Approve/Reject Page
-          - Approve or Reject volunteers for the hosted event
-          - More description about the event
-     5. Chat Page
-          - Volunteers and Organisers can interact with chat
-          - Separate persistent chat for each event
-     6. Optional Features (Google Login)
-          - Option to login with google authentication
+* Login/Sign Up and Profile Page
+  * Login and signup functionality for volunteers and organization
+
+* Volunteer Home Page
+  * See list of available events to apply
+  * Apply for a event
+     
+* Organization Home Page
+  * Host events
+     
+* Event Details Page and Approve/Reject Page
+  * Approve or Reject volunteers for the hosted event
+  * More description about the event
+
+* Chat Page
+  * Volunteers and Organisers can interact with chat
+  * Separate persistent chat for each event
+
+* Optional Features (Google Login)
+  * Option to login with google authentication
           
 3. User Testing
-* Validation of features
+  * Validation of features
 
 4. Deployment
-* Deployment of application on Heroku platform for public access.
+  * Deployment of application on Heroku platform for public access.
 
 ## Technology Stack used
 * Node express - UI server
@@ -83,7 +88,7 @@ Following functionalities implemented as part of the construction and implementa
 [Bugle on GitHub](https://github.com/NCSUMobiles/spring18_Bugle)
 
 ## Live URL: 
-[Bugle](https://bugle-npm-srv.herokuapp.com/) - It is deployed on Heroku <br/>
+[Bugle](https://bugle-npm-srv.herokuapp.com/)(Deployed on Heroku) <br/>
 
 Sample Users:<br/>
 Organization - email: org1@org.com, pwd: o1 <br/> 
