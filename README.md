@@ -21,20 +21,20 @@ Developed wireframes for the design: [Wireframes](Wireframes)
 Following functionalities implemented as part of the construction and implementation phase:
 
      1. Login/Sign Up and Profile Page
-     Login and signup functionality for volunteers and organisations
+          - Login and signup functionality for volunteers and organisations
      2. Volunteer Home Page
-     * See list of available events to apply
-     * Apply for a event
+          - See list of available events to apply
+          - Apply for a event
      3. Organization Home Page
-     Host events
+          - Host events
      4. Event Details Page and Approve/Reject Page
-     * Approve or Reject volunteers for the hosted event
-     * More description about the event
+          - Approve or Reject volunteers for the hosted event
+          - More description about the event
      5. Chat Page
-     * Volunteers and Organisers can interact with chat
-     * Separate persistent chat for each event
+          - Volunteers and Organisers can interact with chat
+          - Separate persistent chat for each event
      6. Optional Features (Google Login)
-     * Option to login with google authentication
+          - Option to login with google authentication
           
 3. User Testing
 Validation of features
@@ -75,7 +75,7 @@ Deployment of application on Heroku platform for public access.
 * [Organization Screens](Media/Screenshots/Organization)
 
 ## Screencast: 
-[Bugle Demo](Media/Screencast/Bugle%20Demo.mov)
+[![Bugle Video](https://img.youtube.com/vi/LVQ9Lop0-x4/0.jpg)](https://www.youtube.com/watch?v=LVQ9Lop0-x4)
 
 ## Progress Reports: 
 [Report 1](Documentation/Progress%20Reports/Report%201.txt), [Report 2](Documentation/Progress%20Reports/Report%202.txt), [Report 3](Documentation/Progress%20Reports/Report%203.txt), [Report 4](Documentation/Progress%20Reports/Report%204.txt), [Report 5](Documentation/Progress%20Reports/Report%205.txt), [Report 6](Documentation/Progress%20Reports/Report%206.txt).
