@@ -20,21 +20,21 @@ Developed wireframes for the design: [Wireframes](Wireframes)
 
 Following functionalities implemented as part of the construction and implementation phase:
 
-     i)   Login/Sign Up and Profile Page
-Login and signup functionality for volunteers and organisations
-     ii)  Volunteer Home Page
-See list of available events to apply
-Apply for a event
-     iii) Organization Home Page
-Host events
-     iv) Event Details Page and Approve/Reject Page
-Approve or Reject volunteers for the hosted event
-More description about the event
-      v) Chat Page
-Volunteers and Organisers can interact with chat
-Separate persistent chat for each event
-      vi) Optional Features (Google Login)
-Option to login with google authentication
+     1. Login/Sign Up and Profile Page
+     Login and signup functionality for volunteers and organisations
+     2. Volunteer Home Page
+     * See list of available events to apply
+     * Apply for a event
+     3. Organization Home Page
+     Host events
+     4. Event Details Page and Approve/Reject Page
+     * Approve or Reject volunteers for the hosted event
+     * More description about the event
+     5. Chat Page
+     * Volunteers and Organisers can interact with chat
+     * Separate persistent chat for each event
+     6. Optional Features (Google Login)
+     * Option to login with google authentication
           
 3. User Testing
 Validation of features
