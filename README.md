@@ -83,8 +83,9 @@ Following functionalities implemented as part of the construction and implementa
 [Bugle on GitHub](https://github.com/NCSUMobiles/spring18_Bugle)
 
 ## Live URL: 
-[Bugle](https://bugle-npm-srv.herokuapp.com/) - It is deployed on Heroku
-* Sample Users:<br/>
+[Bugle](https://bugle-npm-srv.herokuapp.com/) - It is deployed on Heroku <br/>
+
+Sample Users:<br/>
 Organization - email: org1@org.com, pwd: o1 <br/> 
 Volunteer - email: usr1@vol.com, pwd: v1 <br/>
 
