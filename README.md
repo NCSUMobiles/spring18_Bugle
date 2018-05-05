@@ -9,6 +9,10 @@ Making a difference just got easier!
 ## Description
 Bugle is a mobile website that helps bridge the disconnect between volunteers and volunteering organizations. It provides a platform for volunteers interested to participate in volunteering events that suit their interests. It also helps organizations searching for the enthusiastic volunteers who share their passion.
 
+## How to install
+- Instructions for running UI: [README](Bugle/README.md)
+- Instructions for running backend: [README](bugle-play-server/README.md)
+
 ## Project Milestones:
 
 1. Requirement Gathering and Design
